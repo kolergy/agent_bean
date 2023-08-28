@@ -14,15 +14,28 @@ class AgentAction():
 
 
     def __action_summarize__(self, inputs):
-      """Summarize the input text."""
-      prompt = self.setup['prompts_templates']["summarize"].format(text=inputs[0])
-      return(self.model.predict(prompt,
-                                max_tokens       = 1000,
-                                temperature      =    0.0,
-                                top_p            =    1,
-                                frequency_penalty=    0,
-                                presence_penalty =    0.6,
-                                stop             = ["\n"]))
+        """Summarize the input text."""
+        # Tokenize the input text
+        input_tokens = self.enc.encode(inputs[0])
+        max_tokens = int(0.8 * self.setup['model']['max_tokens'])
+        summaries = []
+
+        # Split the tokenized input into chunks and summarize each chunk
+        for i in range(0, len(input_tokens), max_tokens):
+            chunk = input_tokens[i:i+max_tokens]
+            chunk_text = self.enc.decode(chunk)
+            prompt = self.setup['prompts_templates']["summarize"].format(text=chunk_text)
+            summary = self.model.predict(prompt,
+                                         max_tokens       = max_tokens,
+                                         temperature      = 0.0,
+                                         top_p            = 1,
+                                         frequency_penalty= 0,
+                                         presence_penalty = 0.6,
+                                         stop             = ["\n"])
+            summaries.append(summary)
+
+        # Concatenate the summaries to form the final summary
+        return ' '.join(summaries)
 
 
     def __action_search__(self, inputs):
