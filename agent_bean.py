@@ -72,6 +72,17 @@ class AgentBean:
                             chunk_overlap = self.setup['vectorstore']['chunk_overlap'])
 
 
+  def manage_context_length(self) -> None:
+    """Ensure the total number of tokens in the context is below max_tokens. If not, summarize it."""
+    max_tokens = self.setup['model']['max_tokens']
+    while sum(self._context_n_tok) > max_tokens:
+      # Summarize the first context element and replace it in the context
+      summarized_context = self.actions.perform_action('summarize', [self._context[0]])
+      summarized_context_encoded = self.enc.encode(summarized_context)
+      self._context[0] = summarized_context
+      self._context_tok[0] = summarized_context_encoded
+      self._context_n_tok[0] = len(summarized_context_encoded)
+
   def agent_action(self, action_type: str, inputs: list) -> str:
     """prepare the prompt for a given action and call the model"""
     inputs_encoded    = []
