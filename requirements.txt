@@ -1,0 +1,10 @@
+langchain
+openai
+ipykernel
+tiktoken
+faiss-cpu
+duckduckgo-search
+aider-chat
+wikipedia
+python-dotenv
+

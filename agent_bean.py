@@ -22,7 +22,6 @@ class AgentBean:
     self._context_n_tok = []
     self.search         = DuckDuckGoSearchResults()
     self.debug          = setup['debug']
-    self.actions        = AgentAction(setup)
     self.instantiate_model()
     self.instantiate_vectorstore()
 
@@ -49,6 +48,9 @@ class AgentBean:
       self.model      = ChatOpenAI(openai_api_key=api_key, model_name=self.setup['model']['model_id'])
       self.enc        = tiktoken.encoding_for_model(self.setup['model']['model_id'])
       self.embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+
+    self.actions        = AgentAction(self.setup, self.enc)
+    
     if self.debug:
       print(f"Model initiated, type: {self.setup['model']['model_type']}, id: {self.setup['model']['model_id']}")
 
@@ -77,11 +79,12 @@ class AgentBean:
     max_tokens = self.setup['model']['max_tokens']
     while sum(self._context_n_tok) > max_tokens:
       # Summarize the first context element and replace it in the context
-      summarized_context = self.actions.perform_action('summarize', [self._context[0]])
+      summarized_context         = self.actions.perform_action('summarize', [self._context[0]])
       summarized_context_encoded = self.enc.encode(summarized_context)
-      self._context[0] = summarized_context
-      self._context_tok[0] = summarized_context_encoded
-      self._context_n_tok[0] = len(summarized_context_encoded)
+
+      self._context        = [summarized_context]
+      self._context_tok    = [summarized_context_encoded]
+      self._context_n_tok  = [len(summarized_context_encoded)]
 
   def agent_action(self, action_type: str, inputs: list) -> str:
     """prepare the prompt for a given action and call the model"""

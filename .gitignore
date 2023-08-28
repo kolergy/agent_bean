@@ -1,0 +1,4 @@
+.aider*
+.env
+vectors/
+__pycache__/

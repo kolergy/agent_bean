@@ -1,11 +1,13 @@
+from typing import List, Any
+
 class AgentAction():
     """This class is used to define the actions that the agent can take."""
-    def __init__(self, setup, encoder):
+    def __init__(self, setup: dict, encoder: Any) -> None:
         self.setup          = setup
         self.enc            = encoder
         self.actions_list   = [ m for m in self.__dir__() if m.startswith('action_') ]
 
-    def perform_action(self, action_type, inputs):
+    def perform_action(self, action_type: str, inputs: List[str]) -> str:
         """Perform the action specified by action_type on the inputs."""
         action_name = f"__action_{action_type}__"
         if action_name in self.actions_list:
@@ -14,7 +16,7 @@ class AgentAction():
             return("AgentAction ERROR: Action {action_name} not implemented (yet?)")
 
 
-    def __action_summarize__(self, inputs):
+    def __action_summarize__(self, inputs: List[str]) -> str:
         """Summarize the input text."""
         # Tokenize the input text
         input_tokens = self.enc.encode(inputs[0])
@@ -39,7 +41,7 @@ class AgentAction():
         return ' '.join(summaries)
 
 
-    def __action_search__(self, inputs):
+    def __action_search__(self, inputs: List[str]) -> List[str]:
         """Search internet for the input text subject."""
         prompt    = self.setup['prompts_templates']["search"].format(text=inputs[0])
         responses = self.model.predict(prompt,
