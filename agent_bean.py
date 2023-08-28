@@ -48,6 +48,10 @@ class AgentBean:
       self.model      = ChatOpenAI(openai_api_key=api_key, model_name=self.setup['model']['model_id'])
       self.enc        = tiktoken.encoding_for_model(self.setup['model']['model_id'])
       self.embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+    elif self.setup['model']['model_type'] == "transformers":
+      # Instantiate the Transformers model here
+      # You will need to fill in the details based on how you want to use the Transformers library
+      pass
 
     self.actions        = AgentAction(self.setup, self.enc)
     
