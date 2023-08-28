@@ -15,14 +15,32 @@ class AgentAction():
 
     def __action_summarize__(self, inputs):
       """Summarize the input text."""
-      prompt = self.setup['prompts_templates']["summarize"].format(text=inputs[0])
-      return(self.model.predict(prompt,
-                                max_tokens       = 1000,
-                                temperature      =    0.0,
-                                top_p            =    1,
-                                frequency_penalty=    0,
-                                presence_penalty =    0.6,
-                                stop             = ["\n"]))
+      max_tokens = self.setup['model']['max_tokens']
+      max_length = int(0.8 * max_tokens)
+      input_text = inputs[0]
+      if len(input_text) > max_length:
+        chunks = [input_text[i:i+max_length] for i in range(0, len(input_text), max_length)]
+        summaries = []
+        for chunk in chunks:
+          prompt = self.setup['prompts_templates']["summarize"].format(text=chunk)
+          summary = self.model.predict(prompt,
+                                       max_tokens       = max_length,
+                                       temperature      = 0.0,
+                                       top_p            = 1,
+                                       frequency_penalty= 0,
+                                       presence_penalty = 0.6,
+                                       stop             = ["\n"])
+          summaries.append(summary)
+        return summaries
+      else:
+        prompt = self.setup['prompts_templates']["summarize"].format(text=input_text)
+        return [self.model.predict(prompt,
+                                   max_tokens       = max_length,
+                                   temperature      = 0.0,
+                                   top_p            = 1,
+                                   frequency_penalty= 0,
+                                   presence_penalty = 0.6,
+                                   stop             = ["\n"])]
 
 
     def __action_search__(self, inputs):
