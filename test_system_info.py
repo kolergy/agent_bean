@@ -11,8 +11,8 @@ class TestSystemInfo(unittest.TestCase):
         self.assertIsNotNone(cpu_info)
         self.assertIn('brand', cpu_info)
         self.assertIn('cores', cpu_info)
-        self.assertIn('ram_total', cpu_info)
-        self.assertIn('ram_used', cpu_info)
+        self.assertIn('ram_total_gb', cpu_info)
+        self.assertIn('ram_used_gb', cpu_info)
 
     def test_gpu_info(self):
         gpu_info = self.system_info.get_gpu_info()
@@ -20,8 +20,8 @@ class TestSystemInfo(unittest.TestCase):
         self.assertIsNotNone(gpu_info)
         if gpu_info:
             self.assertIn('brand', gpu_info[0])
-            self.assertIn('vram_total', gpu_info[0])
-            self.assertIn('vram_used', gpu_info[0])
+            self.assertIn('vram_total_gb', gpu_info[0])
+            self.assertIn('vram_used_gb', gpu_info[0])
 
 if __name__ == '__main__':
     unittest.main()
