@@ -1,12 +1,15 @@
 import psutil
 import GPUtil
-from typing import List, Dict
+from typing import List, Dict, Any
 
+# SystemInfo class collects system information related to CPU and GPU
 class SystemInfo:
+    # Constructor initializes CPU and GPU information
     def __init__(self):
         self.cpu_info: Dict[str, Any] = self.get_cpu_info()
         self.gpu_info: List[Dict[str, Any]] = self.get_gpu_info()
 
+    # Method to get CPU information
     def get_cpu_info(self) -> Dict[str, Any]:
         cpu_info = {
             "brand": psutil.cpu_freq().current,
@@ -16,6 +19,7 @@ class SystemInfo:
         }
         return cpu_info
 
+    # Method to get GPU information
     def get_gpu_info(self) -> List[Dict[str, Any]]:
         gpus = GPUtil.getGPUs()
         gpu_info = []
