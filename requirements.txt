@@ -10,6 +10,10 @@ python-dotenv
 torch
 torchvision
 torchaudio
-transformers[torch]
+bitsandbytes
+git+https://github.com/huggingface/transformers
 psutil
 gputil
+py-cpuinfo
+optimum
+auto-gptq
