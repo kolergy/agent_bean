@@ -16,6 +16,7 @@ from   langchain.text_splitter           import CharacterTextSplitter
 from   langchain.llms                    import HuggingFacePipeline
 from   agent_actions                     import AgentAction
 from   system_info                       import SystemInfo
+from   transformers_pipeline             import TfPipeline
 
 class AgentBean:
   """ LangIf is a langchain interface to collect questions and feed them to a llm """
@@ -58,9 +59,12 @@ class AgentBean:
     elif self.setup['model']['model_type'] == "transformers":
       # Instantiate the Transformers model here
       # You will need to fill in the details based on how you want to use the Transformers library
-      pass
+      TF_pipe         = TfPipeline(self.setup, self.system_info)
+      self.model      = TF_pipe.pipeline
+      self.enc        = TF_pipe.tokenizer
+      self.embeddings = TF_pipe.embeddings
 
-    self.actions        = AgentAction(self.setup, self.enc)
+    self.actions = AgentAction(self.setup, self.enc)
     
     if self.debug:
       print(f"Model initiated, type: {self.setup['model']['model_type']}, id: {self.setup['model']['model_id']}")
@@ -93,9 +97,9 @@ class AgentBean:
       summarized_context         = self.actions.perform_action('summarize', [self._context[0]])
       summarized_context_encoded = self.enc.encode(summarized_context)
 
-      self._context        = [summarized_context]
-      self._context_tok    = [summarized_context_encoded]
-      self._context_n_tok  = [len(summarized_context_encoded)]
+      self._context              = [summarized_context]
+      self._context_tok          = [summarized_context_encoded]
+      self._context_n_tok        = [len(summarized_context_encoded)]
 
   def agent_action(self, action_type: str, inputs: list) -> str:
     """prepare the prompt for a given action and call the model"""
@@ -104,7 +108,7 @@ class AgentBean:
     responses         = []
     responses_encoded = []
     responses_n_tok   = []
-    i = 0
+    i                 = 0
     self.v_db.from_texts(inputs, self.embeddings)
     for ip in inputs:
       inputs_encoded.append(self.enc.encode(ip))
@@ -122,6 +126,7 @@ class AgentBean:
     for res in responses:
       responses_encoded.append(self.enc.encode(res))
       responses_n_tok.append(len(responses_encoded[-1]))
+
     self._context.extend(inputs)
     self._context_n_tok.extend(inputs_n_tok)
     self._context.extend(responses)
