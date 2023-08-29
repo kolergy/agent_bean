@@ -18,8 +18,8 @@ class SystemInfo:
 
         gpu_info        = self.get_gpu_info()
         self.gpu_brand  = gpu_info[0]["brand"] if gpu_info else None
-        self.vram_total = gpu_info[0]["vram_total"] if gpu_info else None
-        self.vram_used  = gpu_info[0]["vram_used"] if gpu_info else None
+        self.vram_total_gb = gpu_info[0]["vram_total_gb"] if gpu_info else None
+        self.vram_used_gb  = gpu_info[0]["vram_used_gb"] if gpu_info else None
 
     def get_cpu_info(self) -> Dict[str, Any]:
         """
@@ -37,15 +37,15 @@ class SystemInfo:
     def get_gpu_info(self) -> List[Dict[str, Any]]:
         """
         Method to get GPU information.
-        Returns a list of dictionaries, each containing GPU brand, total VRAM, and used VRAM.
+        Returns a list of dictionaries, each containing GPU brand, total VRAM in GB, and used VRAM in GB.
         """
         gpus = GPUtil.getGPUs()
         gpu_info = []
         for gpu in gpus:
             info = {
                 "brand": gpu.name,
-                "vram_total": gpu.memoryTotal,
-                "vram_used": gpu.memoryUsed
+                "vram_total_gb": gpu.memoryTotal / (1024 ** 3),
+                "vram_used_gb": gpu.memoryUsed / (1024 ** 3)
             }
             gpu_info.append(info)
         return gpu_info
