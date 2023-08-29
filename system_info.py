@@ -10,8 +10,16 @@ class SystemInfo:
         """
         Constructor initializes CPU and GPU information.
         """
-        self.cpu_info: Dict[str, Any] = self.get_cpu_info()
-        self.gpu_info: List[Dict[str, Any]] = self.get_gpu_info()
+        cpu_info        = self.get_cpu_info()
+        self.cpu_brand  = cpu_info["brand"]
+        self.cpu_cores  = cpu_info["cores"]
+        self.ram_total  = cpu_info["ram_total"]
+        self.ram_used   = cpu_info["ram_used"]
+
+        gpu_info        = self.get_gpu_info()
+        self.gpu_brand  = gpu_info[0]["brand"] if gpu_info else None
+        self.vram_total = gpu_info[0]["vram_total"] if gpu_info else None
+        self.vram_used  = gpu_info[0]["vram_used"] if gpu_info else None
 
     def get_cpu_info(self) -> Dict[str, Any]:
         """
@@ -41,3 +49,26 @@ class SystemInfo:
             }
             gpu_info.append(info)
         return gpu_info
+
+    def get_cpu_brand(self) -> Any:
+        return self.cpu_brand
+
+    def get_cpu_cores(self) -> Any:
+        return self.cpu_cores
+
+    def get_ram_total(self) -> Any:
+        return self.ram_total
+
+    def get_ram_used(self) -> Any:
+        return self.ram_used
+
+    def get_gpu_brand(self) -> Any:
+        return self.gpu_brand
+
+    def get_vram_total(self) -> Any:
+        return self.vram_total
+
+    def get_vram_used(self) -> Any:
+        return self.vram_used
+    
+    
