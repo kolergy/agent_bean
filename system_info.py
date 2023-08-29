@@ -13,8 +13,8 @@ class SystemInfo:
         cpu_info        = self.get_cpu_info()
         self.cpu_brand  = cpu_info["brand"]
         self.cpu_cores  = cpu_info["cores"]
-        self.ram_total  = cpu_info["ram_total"]
-        self.ram_used   = cpu_info["ram_used"]
+        self.ram_total_gb  = cpu_info["ram_total_gb"]
+        self.ram_used_gb   = cpu_info["ram_used_gb"]
 
         gpu_info        = self.get_gpu_info()
         self.gpu_brand  = gpu_info[0]["brand"] if gpu_info else None
@@ -24,13 +24,13 @@ class SystemInfo:
     def get_cpu_info(self) -> Dict[str, Any]:
         """
         Method to get CPU information.
-        Returns a dictionary with CPU brand, number of cores, total RAM, and used RAM.
+        Returns a dictionary with CPU brand, number of cores, total RAM in GB, and used RAM in GB.
         """
         cpu_info = {
             "brand": psutil.cpu_freq().current,
             "cores": psutil.cpu_count(),
-            "ram_total": psutil.virtual_memory().total,
-            "ram_used": psutil.virtual_memory().used
+            "ram_total_gb": psutil.virtual_memory().total / (1024 ** 3),
+            "ram_used_gb": psutil.virtual_memory().used / (1024 ** 3)
         }
         return cpu_info
 
