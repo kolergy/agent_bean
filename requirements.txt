@@ -11,3 +11,5 @@ torch
 torchvision
 torchaudio
 transformers[torch]
+psutil
+gputil
