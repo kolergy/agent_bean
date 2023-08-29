@@ -33,6 +33,27 @@ class AgentBean:
     self.instantiate_model()
     self.instantiate_vectorstore()
 
+  def eliminate_agent(self):
+    """Destroy the agent and free all memory occupied by the agent, including VRAM."""
+    # Delete the model
+    del self.model
+    # Delete the vectorstore
+    del self.v_db
+    # Delete the context
+    del self._context
+    del self._context_tok
+    del self._context_n_tok
+    # Delete the search
+    del self.search
+    # Delete the system info
+    del self.system_info
+    # Collect garbage
+    import gc
+    gc.collect()
+    # Empty the CUDA cache
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
 
   def add_context(self, context_elements: list) -> None:
     """Add an array of context elements to the current context"""
