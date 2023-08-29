@@ -2,15 +2,22 @@ import psutil
 import GPUtil
 from typing import List, Dict, Any
 
-# SystemInfo class collects system information related to CPU and GPU
 class SystemInfo:
-    # Constructor initializes CPU and GPU information
+    """
+    SystemInfo class collects system information related to CPU and GPU.
+    """
     def __init__(self):
+        """
+        Constructor initializes CPU and GPU information.
+        """
         self.cpu_info: Dict[str, Any] = self.get_cpu_info()
         self.gpu_info: List[Dict[str, Any]] = self.get_gpu_info()
 
-    # Method to get CPU information
     def get_cpu_info(self) -> Dict[str, Any]:
+        """
+        Method to get CPU information.
+        Returns a dictionary with CPU brand, number of cores, total RAM, and used RAM.
+        """
         cpu_info = {
             "brand": psutil.cpu_freq().current,
             "cores": psutil.cpu_count(),
@@ -19,8 +26,11 @@ class SystemInfo:
         }
         return cpu_info
 
-    # Method to get GPU information
     def get_gpu_info(self) -> List[Dict[str, Any]]:
+        """
+        Method to get GPU information.
+        Returns a list of dictionaries, each containing GPU brand, total VRAM, and used VRAM.
+        """
         gpus = GPUtil.getGPUs()
         gpu_info = []
         for gpu in gpus:
