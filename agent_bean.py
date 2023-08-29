@@ -1,3 +1,7 @@
+
+#
+#  conda activate AB311
+#
 import os
 import json
 import tiktoken
@@ -9,6 +13,7 @@ from   langchain.tools                   import DuckDuckGoSearchResults
 from   langchain.document_loaders        import TextLoader
 from   langchain.embeddings.openai       import OpenAIEmbeddings
 from   langchain.text_splitter           import CharacterTextSplitter
+from   langchain.llms                    import HuggingFacePipeline
 from   agent_actions                     import AgentAction
 
 class AgentBean:
