@@ -10,6 +10,10 @@ class TestAgentBean(unittest.TestCase):
             setup  = json.load(f)
         self.agent = AgentBean(setup['AgentBean_settings'])
 
+    def tearDown(self):
+        # Call the eliminate_agent method after each test
+        self.agent.eliminate_agent()
+
 
     def test_instantiate_model(self):
         # Test the instantiate_model method
