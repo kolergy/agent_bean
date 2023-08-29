@@ -44,8 +44,8 @@ class SystemInfo:
         for gpu in gpus:
             info = {
                 "brand": gpu.name,
-                "vram_total_gb": gpu.memoryTotal / (1024 ** 3),
-                "vram_used_gb": gpu.memoryUsed / (1024 ** 3)
+                "vram_total_gb": gpu.memoryTotal / (1024),
+                "vram_used_gb": gpu.memoryUsed / (1024)
             }
             gpu_info.append(info)
         return gpu_info
