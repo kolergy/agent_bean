@@ -1,4 +1,5 @@
 import json
+import time
 
 import gradio as gr
 
@@ -18,6 +19,18 @@ def load_document(document_path):
     agent.load_document([document_path])
     return "Document loaded successfully."
 
+# Define the function to get system information
+def get_system_info():
+    cpu_brand = agent.system_info.get_cpu_brand()
+    cpu_cores = agent.system_info.get_cpu_cores()
+    ram_total = agent.system_info.get_ram_total()
+    ram_used = agent.system_info.get_ram_used()
+    gpu_brand = agent.system_info.get_gpu_brand()
+    vram_total = agent.system_info.get_vram_total()
+    vram_used = agent.system_info.get_vram_used()
+    vram_available = agent.system_info.get_vram_available()
+    return f"CPU Brand: {cpu_brand}\nCPU Cores: {cpu_cores}\nRAM Total: {ram_total} GB\nRAM Used: {ram_used} GB\nGPU Brand: {gpu_brand}\nVRAM Total: {vram_total} GB\nVRAM Used: {vram_used} GB\nVRAM Available: {vram_available} GB"
+
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
     action_type          = gr.inputs.Dropdown(choices = ["summarize", "search"], label = "Action Type" ) 
@@ -26,11 +39,11 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     document_path        = gr.inputs.File(    label   = "Document Path")
     load_document_button = gr.Button(  label   = "Load Document")
     text                 = gr.outputs.Textbox(label   = "Output Text"  )
+    system_info          = gr.outputs.Textbox(label   = "System Info"  )
 
     run_button.click(run_action, [action_type, action_input], outputs = text)
     load_document_button.click(load_document, [document_path], outputs = text)
-   
-
+    gr.Interface(fn=get_system_info, live=True, layout='vertical').launch()
 
 # Launch the interface
 iface.launch()
