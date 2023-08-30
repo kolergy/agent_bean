@@ -26,9 +26,9 @@ iface = gr.Interface(
         "load_document": load_document
     },
     inputs = [
-        gr.inputs.Dropdown(choices=["summarize", "search"], label="Action Type"),
-        gr.inputs.Textbox(lines=5, label="Action Input"),
-        gr.inputs.Textbox(label="Document Path")
+        gr.components.Dropdown(choices=["summarize", "search"], label="Action Type"),
+        gr.components.Textbox(lines=5, label="Action Input"),
+        gr.components.Textbox(label="Document Path")
     ],
     outputs = "text",
     title = "Agent Bean Interface",
