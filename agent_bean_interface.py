@@ -14,16 +14,25 @@ agent = AgentBean(setup['AgentBean_settings'])
 def run_action(action_type, action_input):
     return agent.agent_action(action_type, [action_input])
 
+# Define the function to be called when the Load Document button is pressed
+def load_document(document_path):
+    agent.load_document([document_path])
+    return "Document loaded successfully."
+
 # Define the Gradio interface
 iface = gr.Interface(
-    fn          = run_action, 
-    inputs      = [
+    functions = {
+        "run_action": run_action,
+        "load_document": load_document
+    },
+    inputs = [
         gr.inputs.Dropdown(choices=["summarize", "search"], label="Action Type"),
-        gr.inputs.Textbox(lines=5, label="Action Input")
-    ], 
-    outputs     = "text",
-    title       = "Agent Bean Interface",
-    description = "Select an action and provide the input for the action. Then press Run to execute the action."
+        gr.inputs.Textbox(lines=5, label="Action Input"),
+        gr.inputs.Textbox(label="Document Path")
+    ],
+    outputs = "text",
+    title = "Agent Bean Interface",
+    description = "Select an action and provide the input for the action. Then press Run to execute the action. You can also load a document into the vectorstore by providing its path and pressing Load Document."
 )
 
 # Launch the interface
