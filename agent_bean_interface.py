@@ -1,6 +1,6 @@
 import json
 
-import gradio.blocks as gr
+import gradio.inputs as gr
 
 from agent_bean import AgentBean
 
