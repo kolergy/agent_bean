@@ -21,17 +21,17 @@ def load_document(document_path):
 
 # Define the Gradio interface
 iface = gr.Interface(
-    functions = {
+    fn   = {
         "run_action": run_action,
         "load_document": load_document
     },
-    inputs = [
+    inputs      = [
         gr.components.Dropdown(choices=["summarize", "search"], label="Action Type"),
         gr.components.Textbox(lines=5, label="Action Input"),
         gr.components.Textbox(label="Document Path")
     ],
-    outputs = "text",
-    title = "Agent Bean Interface",
+    outputs     = "text",
+    title       = "Agent Bean Interface",
     description = "Select an action and provide the input for the action. Then press Run to execute the action. You can also load a document into the vectorstore by providing its path and pressing Load Document."
 )
 
