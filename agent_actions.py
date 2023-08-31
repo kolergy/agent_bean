@@ -38,7 +38,7 @@ class AgentAction():
         for i in range(0, len(input_tokens), max_tokens):
             chunk      = input_tokens[i:i+max_tokens]
             chunk_text = self.enc.decode(chunk)
-            prompt     = self.setup['prompts_templates']["summarize"].format(text=chunk_text)
+            prompt     = ''.join(self.setup['prompts_templates']["summarize"]).format(text=chunk_text)
             self.system_info.print_GPU_info()
             print(f"BBB--- CHUNK LEN: {len(chunk)}, chunk_text len: {len(chunk_text)}, prompt len: {len(prompt)}")
             #print(f"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB chunk_text:\n{chunk_text}\nBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
@@ -62,7 +62,7 @@ class AgentAction():
     def __action_search__(self, inputs: List[str]) -> str:
         """Search internet for the input text subject."""
         resp = []
-        prompt        = self.setup['prompts_templates']["search"].format(text=inputs[0])
+        prompt        = ''.join(self.setup['prompts_templates']["search"]).format(text=inputs[0])
         search_querry = self.model.predict(prompt,
                                        max_tokens       = 1000,
                                        temperature      =    0.01,
