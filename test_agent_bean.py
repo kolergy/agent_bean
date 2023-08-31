@@ -6,35 +6,24 @@ from   agent_bean import AgentBean
 class TestAgentBean(unittest.TestCase):
     def setUp(self):
         # Load the settings json file and create a AgentBean object
-        with open('settings.json') as f:
+        with open('settings_opai.json') as f:
             setup  = json.load(f)
         self.agent = AgentBean(setup['AgentBean_settings'])
 
+
     def tearDown(self):
-        # Call the eliminate_agent method after each test
-        self.agent.eliminate_agent()
+        # clear the context
+        self.agent.clear_context()
 
 
     def test_instantiate_model(self):
         # Test the instantiate_model method
-        self.agent.instantiate_model()
         self.assertIsNotNone(self.agent.model)
 
 
     def test_instantiate_vectorstore(self):
         # Test the instantiate_vectorstore method
-        self.agent.instantiate_vectorstore()
         self.assertIsNotNone(self.agent.v_db)
-
-
-    def test_manage_context_length(self):
-        # Test the manage_context_length method
-        wikipedia_page1   = wiki.page("Python (programming language)")
-        wikipedia_page2   = wiki.page("Neural network")
-        self.agent.add_context([wikipedia_page1.content, wikipedia_page2.content])
-        self.agent.manage_context_length()
-        print(f"TST CTX: context length: {sum(len(c) for c in self.agent._context)}")
-        self.assertTrue(sum(len(c) for c in self.agent._context) < 0.8 * self.agent.setup['model']['max_tokens'])
 
 
     def test_agent_action(self):
@@ -48,6 +37,16 @@ class TestAgentBean(unittest.TestCase):
         response       = self.agent.agent_action(action_type, inputs)
         print(f"TST ACTION: {response}")
         self.assertTrue(len(response) > 10)
+
+
+    def test_manage_context_length(self):
+        # Test the manage_context_length method
+        wikipedia_page1   = wiki.page("Python (programming language)")
+        wikipedia_page2   = wiki.page("Neural network")
+        self.agent.add_context([wikipedia_page1.content, wikipedia_page2.content])
+        self.agent.manage_context_length()
+        print(f"TST CTX: context length: {sum(len(c) for c in self.agent._context)}")
+        self.assertTrue(sum(len(c) for c in self.agent._context) < 0.8 * self.agent.setup['model']['max_tokens'])
 
 
     def test_load_document(self):

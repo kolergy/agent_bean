@@ -1,0 +1,21 @@
+{
+    "AgentBean_settings": {
+        "debug": true,
+        "model": {
+            "model_type": "openAI",
+            "model_id": "gpt-3.5-turbo-0613",
+            "max_tokens": 4000
+        },
+        "vectorstore": {
+            "type": "faiss",
+            "path": "vectors",
+            "chunk_size": 800,
+            "chunk_overlap": 100
+        },
+        "prompts_templates":{
+            "summarize": "You will be given a text enclosed in triple backticks.\nPlease provide a cohesive summary of the following text, focusing on the key points and main ideas, while maintaining clarity and conciseness.\n'''{text}'''\nFULL SUMMARY #~!|MODEL OUTPUT|!~#:\n",
+            "search": "You will be given a text enclosed in triple backticks.\nPlease generate a search querry in adequation to the provided text.\n'''{text}'''\nSEARCH QUERRY #~!|MODEL OUTPUT|!~#:\n"
+        }
+
+    }
+}
