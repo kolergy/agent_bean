@@ -70,18 +70,18 @@ class AgentAction():
                                        frequency_penalty=    0,
                                        presence_penalty =    0.6,
                                        stop             = ["\n"])
-        #print(f"Search search_querry type: {type(search_querry[-1])}, len: {len(search_querry)}")
-        #print(f"Search search_querry: {search_querry}")
         resp.append(search_querry[-1])
         search_resp = str(self.search.run(search_querry[-1]))
-        #print(f"Search response type: {type(search_resp)}, len: {len(search_resp)}")
-        #print(f"Search response: {search_resp}")
         resp.append(search_resp)
-        #print(f"Search resp type: {type(resp)}, len: {len(resp)}")
-        #print(f"Search resp: {resp}")
         return ' '.join(resp)
 
-    
+    def __action_split__(self, inputs: List[str]) -> List[str]:
+        """Split a complex task into a set of simple tasks."""
+        # Here you can implement the logic to split the complex task
+        # For the sake of this example, let's assume the input is a string with tasks separated by commas
+        tasks = inputs[0].split(',')
+        return tasks
+
     def __del__(self):
         """Delete the model."""
         del self.model
