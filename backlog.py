@@ -1,6 +1,7 @@
 import abc
 
-from neo4j import GraphDatabase
+from neo4j   import GraphDatabase
+from typing  import List
 
 class Task(abc.ABC):
     """
