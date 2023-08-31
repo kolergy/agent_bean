@@ -82,6 +82,20 @@ class AgentAction():
         tasks = inputs[0].split(',')
         return tasks
 
+    def __action_code__(self, inputs: List[str]) -> str:
+        """Generate code based on the input text."""
+        # Here you can implement the logic to generate code based on the input text
+        # For the sake of this example, let's assume the input is a string describing the code to be generated
+        code = inputs[0]  # replace this with your code generation logic
+        return code
+
+    def __action_code_quality__(self, inputs: List[str]) -> str:
+        """Check the quality of the input code."""
+        # Here you can implement the logic to check the quality of the input code
+        # For the sake of this example, let's assume the input is a string containing the code to be checked
+        code_quality = inputs[0]  # replace this with your code quality checking logic
+        return code_quality
+
     def __del__(self):
         """Delete the model."""
         del self.model
