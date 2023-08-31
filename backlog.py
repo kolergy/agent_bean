@@ -44,7 +44,7 @@ class ComplexTask(Task):
     """
     Class for a complex task, which is a task that can be broken down into smaller tasks.
     """
-    def __init__(self, id: int, description: str, subtasks: List[Task], inputs: List[str], outputs: List[str]) -> None:
+    def __init__(self, id: int, description: str, subtasks: List[Task], inputs: List[str], outputs: List[str], parent_task: Task = None) -> None:
         """
         Initialize a ComplexTask.
 
@@ -53,9 +53,11 @@ class ComplexTask(Task):
         :param subtasks: The subtasks that make up the complex task.
         :param inputs: The inputs of the task.
         :param outputs: The outputs of the task.
+        :param parent_task: The parent task of the complex task.
         """
         super().__init__(id, description, inputs, outputs)
         self.subtasks = subtasks
+        self.parent_task = parent_task
 
 class TasksGraph:
     """
