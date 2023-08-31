@@ -7,7 +7,7 @@ class Task(abc.ABC):
     """
     Abstract base class for a task.
     """
-    def __init__(self, id: int, description: str, inputs: List[str], outputs: List[str]) -> None:
+    def __init__(self, id: int, description: str, inputs: List[str], outputs: List[str], parent_task: Task = None) -> None:
         """
         Initialize a Task.
 
@@ -15,11 +15,13 @@ class Task(abc.ABC):
         :param description: The description of the task.
         :param inputs: The inputs of the task.
         :param outputs: The outputs of the task.
+        :param parent_task: The parent task of the task.
         """
         self.id = id
         self.description = description
         self.inputs = inputs
         self.outputs = outputs
+        self.parent_task = parent_task
 
 class AtomicTask(Task):
     """
