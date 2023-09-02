@@ -36,30 +36,7 @@ class AgentBean:
 
   def instantiate_model(self) -> None:
     """instantiate the model defined in the set-up """
-    if self.setup['model']['model_type'] == "openAI":
-      api_key         = os.getenv('OPENAI_API_KEY')
-      self.model      = ChatOpenAI(openai_api_key=api_key, model_name=self.setup['model']['model_id'])
-      self.enc        = tiktoken.encoding_for_model(self.setup['model']['model_id'])
-      self.embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-
-    elif self.setup['model']['model_type'] == "transformers":
-      if hasattr(self, "model"):      del self.model        # fighting with a memory leak
-      if hasattr(self, "enc"):        del self.enc
-      if hasattr(self, "embeddings"): del self.embeddings
-      if hasattr(self, "actions"):    del self.actions
-      if torch.cuda.is_available():
-        print("-°---Emptying CUDA cache----")
-        torch.cuda.empty_cache()
-
-      print(f"GPU state before model instantiation: {torch.cuda.is_available()}")
-      self.system_info.print_GPU_info()
-      self.model      = TfModel(self.setup, self.system_info)
-      self.enc        = self.model.tokenizer
-      self.embeddings = self.model.embeddings
-      print(f"GPU state after model instantiation: {torch.cuda.is_available()}")
-      self.system_info.print_GPU_info()
-
-    self.actions = AgentAction(self.setup, self.model, self.enc, self.system_info)
+    self.actions = AgentAction(self.setup, self.system_info)
     
     if self.debug:
       print(f"Model initiated, type: {self.setup['model']['model_type']}, id: {self.setup['model']['model_id']}")
