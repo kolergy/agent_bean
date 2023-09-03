@@ -58,7 +58,7 @@ class ModelsManager():
                 print(f"      RAM need: {self.known_models[model_name]['ram_need'  ]} Gb, system available RAM: {self.system_info.get_ram_free()  } Gb")
                 print(f"Video RAM need: {self.known_models[model_name]['v_ram_need']} Gb,  GPU available V RAM: {self.system_info.get_v_ram_free()} Gb")
             if self.known_models[model_name]['ram_need'  ] > self.system_info.get_ram_free()  or self.known_models[model_name]['v_ram_need'] > self.system_info.get_v_ram_free():
-                return self.free_resources(required_free_ram = self.known_models[model_name]['ram_need'  ], required_free_v_ram = self.known_models[model_name]['v_ram_need']):
+                return self.free_resources(self.known_models[model_name]['ram_need'  ], self.known_models[model_name]['v_ram_need'])
             else:
                 return True
             
@@ -91,15 +91,24 @@ class ModelsManager():
 
                 if FLAG_RAM_Ok and FLAG_V_RAM_Ok:
                     self.deinstantiate_model(model_name)
+                    current_free_ram_gb   = self.system_info.get_ram_free()
+                    current_free_v_ram_gb = self.system_info.get_v_ram_free()
                     if self.debug:
                         print(f"Model {model_name} deinstantiated")
+                    if current_free_ram_gb >= required_free_ram_gb and current_free_v_ram_gb >= required_free_v_ram_gb:
+                        return True
+                    else:
+                        print(f"ERROR: Model {model_name} deinstantiation did not recover enough resources: free RAM: {current_free_ram_gb} Gb, free V RAM: {current_free_v_ram_gb} Gb")
+                        return False
+            if current_free_ram_gb >= required_free_ram_gb and current_free_v_ram_gb >= required_free_v_ram_gb:
+                return True
+            else:
+                print(f"ERROR: Model {model_name} deinstantiation full loop did not recover enough resources: free RAM: {current_free_ram_gb} Gb, free V RAM: {current_free_v_ram_gb} Gb")
+                return False            
         else:   
             if self.debug:
                 print(f"No active model -> model to deinstantiate")
             return False
-
-
-
 
 
     def test_models_ressources_reqs(self) -> None:
@@ -276,6 +285,7 @@ class AgentAction():
 
     def __del__(self):
         """Delete the model."""
+        
         del self.model
         del self.enc
         del self.setup
