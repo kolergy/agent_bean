@@ -10,7 +10,7 @@ from   langchain.embeddings.openai       import OpenAIEmbeddings
 from   langchain.tools                   import DuckDuckGoSearchResults
 from   system_info                       import SystemInfo
 
-class ModelManager():
+class ModelsManager():
     def __init__(self, setup, debug) -> None:
         self.setup             = setup
         self.system_info       = SystemInfo()
