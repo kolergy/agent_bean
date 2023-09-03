@@ -167,8 +167,9 @@ class ModelManager():
             print(f"GPU state before model deinstantiation: {torch.cuda.is_available()}")
             self.system_info.print_GPU_info()
         self.embeddings[model_name].__del__()
-        self.active_models[model_name].__del__()
-        
+        self.active_models[model_name].free()
+        self.active_models[model_name].cuda()
+
         self.embeddings.pop(model_name)
         self.active_models.pop(model_name)
 
