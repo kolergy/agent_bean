@@ -1,13 +1,18 @@
-import abc
+import abc     # Abstract base class
 
-from neo4j   import GraphDatabase
-from typing  import List
+from   neo4j   import GraphDatabase
+from   typing  import List
+from   typing  import Any
 
 class Task(abc.ABC):
     """
     Abstract base class for a task.
     """
-    def __init__(self, id: int, description: str, inputs: List[str], outputs: List[str], parent_task: Task = None) -> None:
+    def __init__(self, id: int, 
+                 description: str, 
+                 inputs: List[str], 
+                 outputs: List[str], 
+                 parent_task: Any = None) -> None:
         """
         Initialize a Task.
 
@@ -17,36 +22,23 @@ class Task(abc.ABC):
         :param outputs: The outputs of the task.
         :param parent_task: The parent task of the task.
         """
-        self.id = id
+        self.id          = id
         self.description = description
-        self.inputs = inputs
-        self.outputs = outputs
+        self.inputs      = inputs
+        self.outputs     = outputs
         self.parent_task = parent_task
 
-class AtomicTask(Task):
-    """
-    Class for an atomic task, which is a task that cannot be broken down into smaller tasks.
-    """
-    def __init__(self, id: int, description: str, action: str, queries: List[str], inputs: List[str], outputs: List[str]) -> None:
-        """
-        Initialize an AtomicTask.
-
-        :param id: The unique identifier of the task.
-        :param description: The description of the task.
-        :param action: The action to be performed by the task.
-        :param queries: The queries associated with the task.
-        :param inputs: The inputs of the task.
-        :param outputs: The outputs of the task.
-        """
-        super().__init__(id, description, inputs, outputs)
-        self.action = action
-        self.queries = queries
 
 class ComplexTask(Task):
     """
     Class for a complex task, which is a task that can be broken down into smaller tasks.
     """
-    def __init__(self, id: int, description: str, subtasks: List[Task], inputs: List[str], outputs: List[str], parent_task: Task = None) -> None:
+    def __init__(self, id: int, 
+                 description: str, 
+                 subtasks: List[Task], 
+                 inputs: List[str], 
+                 outputs: List[str], 
+                 parent_task: Task = None) -> None:
         """
         Initialize a ComplexTask.
 
@@ -57,9 +49,35 @@ class ComplexTask(Task):
         :param outputs: The outputs of the task.
         :param parent_task: The parent task of the complex task.
         """
-        super().__init__(id, description, inputs, outputs)
+        super().__init__(id, description, inputs, outputs, parent_task)
         self.subtasks = subtasks
-        self.parent_task = parent_task
+
+class AtomicTask(Task):
+    """
+    Class for an atomic task, which is a task that cannot be broken down into smaller tasks.
+    """
+    def __init__(self, id: int, 
+                 description: str, 
+                 action: str, 
+                 queries: List[str], 
+                 inputs: List[str], 
+                 outputs: List[str], 
+                 parent_task: ComplexTask = None) -> None:
+        """
+        Initialize an AtomicTask.
+
+        :param id: The unique identifier of the task.
+        :param description: The description of the task.
+        :param action: The action to be performed by the task.
+        :param queries: The queries associated with the task.
+        :param inputs: The inputs of the task.
+        :param outputs: The outputs of the task.
+        """
+        super().__init__(id, description, inputs, outputs, parent_task)
+        self.action  = action
+        self.queries = queries
+
+
 
 class TasksGraph:
     """
@@ -89,7 +107,10 @@ class TasksGraph:
         """
         with self.driver.session() as session:
             session.run("CREATE (t:Task {id: $id, description: $description, inputs: $inputs, outputs: $outputs})",
-                        id=task.id, description=task.description, inputs=task.inputs, outputs=task.outputs)
+                        id          = task.id, 
+                        description = task.description, 
+                        inputs      = task.inputs, 
+                        outputs     = task.outputs)
 
     def add_relationship(self, task1: Task, task2: Task, relationship: str) -> None:
         """

@@ -53,14 +53,14 @@ class SystemInfo:
         gpus = GPUtil.getGPUs()
         gpu_info = []
         for gpu in gpus:
-            info = {
-                "brand_raw": str(gpu.name),
-
-            }
+            info = { "brand_raw": str(gpu.name),}
             gpu_info.append(info)
         return gpu_info
 
-
+    def get_ram_free(self) -> float:
+        cpu_info = self.get_cpu_info(self)
+        return cpu_info["ram_total_gb"] - cpu_info["ram_used_gb"]
+ 
     def get_cpu_brand(self) -> str:
         return self.cpu_brand
 
@@ -71,19 +71,20 @@ class SystemInfo:
         return self.ram_total_gb
 
     def get_ram_used(self) -> float:
-        return self.ram_used_gb
+        cpu_info = self.get_cpu_info(self)
+        return cpu_info["ram_used_gb"]
 
     def get_gpu_brand(self) -> str:
         return self.gpu_brand
 
-    def get_vram_total(self) -> float:
+    def get_v_ram_total(self) -> float:
         return self.vram_total_gb
 
-    def get_vram_used(self) -> float:
+    def get_v_ram_used(self) -> float:
         self.vram_used_gb = torch.cuda.mem_get_info()[1]/(1024 ** 3) if torch.cuda.is_available() else None
         return self.vram_used_gb
 
-    def get_vram_free(self) -> float:
+    def get_v_ram_free(self) -> float:
         vram  = torch.cuda.mem_get_info()   if torch.cuda.is_available() else None
         print(f"XXX vram XXX: {vram}")
         self.vram_free_gb = (vram[0]) / (1024 ** 3) if vram else None
@@ -93,9 +94,9 @@ class SystemInfo:
         return self.GPU_current_device
     
     def print_GPU_info(self) -> None:
-        vram  = torch.cuda.mem_get_info()   if torch.cuda.is_available() else None
-        self.vram_used_gb       = self.vram_total_gb - vram[0]/(1024 ** 3)                       if vram else None
-        self.vram_free_gb       = vram[0]/(1024 ** 3)                       if vram else None
+        vram               = torch.cuda.mem_get_info()                 if torch.cuda.is_available() else None
+        self.vram_used_gb  = self.vram_total_gb - vram[0]/(1024 ** 3)  if vram else None
+        self.vram_free_gb  = vram[0]/(1024 ** 3)                       if vram else None
         print(f"GPU device: {self.GPU_current_device}, brand: {self.gpu_brand}, VRAM [used: {self.vram_used_gb}, free: {self.vram_free_gb}, total: {self.vram_total_gb} GB")
 
     

@@ -1,24 +1,75 @@
+import os
+import json
 import torch
+import tiktoken
 
-from typing          import List, Any
-from langchain.tools import DuckDuckGoSearchResults
-from system_info     import SystemInfo
+from   typing                            import List
+from   transformers_model                import TfModel
+from   langchain.chat_models             import ChatOpenAI
+from   langchain.embeddings.openai       import OpenAIEmbeddings
+from   langchain.tools                   import DuckDuckGoSearchResults
+from   system_info                       import SystemInfo
 
-class AgentAction():
-    """This class is used to define the actions that the agent can take."""
-    def __init__(self, setup: dict, sys_info: SystemInfo) -> None:
-        self.setup          = setup
-        self.system_info    = sys_info
-        self.search         = DuckDuckGoSearchResults()
-        self.actions_list   = [ m for m in dir(self) if m.startswith('__action_') ]
-        print(f"Actions list: {self.actions_list}")
-        self.instantiate_model()
+class ModelManager():
+    def __init__(self, setup, debug) -> None:
+        self.setup             = setup
+        self.system_info       = SystemInfo()
+        self.debug             = debug
+        self.active_models     = {}
+        self.active_embeddings = {}
+        if os.path.exists(self.setup["known_models_file_name"]):
+            with open(self.setup["known_models_file_name"]) as f:
+                self.known_models  = json.load(f)
+        else:
+            self.known_models      = {}
+    
+    
+    def model_need(self, model_name:str):
+        if model_name not in self.active_models:
+            self.require_instantiaton(model_name)
+        
 
-    def instantiate_model(self) -> None:
+    def test_models_ressources_reqs(self):
+        if self.debug:
+            print(f"Testing models memory ressources requirements")
+            self.system_info.print_GPU_info()
+        for model_name in self.setup["models_list"].keys():
+            if model_name["model_id"] not in self.known_models.keys():
+                self.known_models[model_name]["model_id"] = {}
+                if self.debug:
+                    print(f"Model {model_name}: is not yet known Testing model memory ressources requirements")
+                    self.system_info.print_GPU_info()
+                    
+                if self.setup["models_list"][model_name]["model_type"] == "transformers":
+                    ram_b4   = self.system_info.get_ram_free()
+                    v_ram_b4 = self.system_info.get_v_ram_free()
+                    self.instantiate_model(model_name)
+                    
+                    delta_ram_gb   = max(0, ram_b4   - self.system_info.get_ram_free()  ) # min value is 0
+                    delta_v_ram_gb = max(0, v_ram_b4 - self.system_info.get_v_ram_free()) # to avoid noise on the unused ram
+                    self.known_models[model_name]["system_ram_gb"] = delta_ram_gb
+                    self.known_models[model_name]["GPU_ram_gb"   ] = delta_v_ram_gb
+                    if self.debug:
+                        print(f"Model {model_name} instantiated using: {delta_ram_gb} Gb of system RAM and: {delta_v_ram_gb} Gb of V RAM on the GPU")
+                        self.system_info.print_GPU_info()
+
+                    self.deinstantiate_model(model_name)
+
+                elif self.setup["models_list"][model_name]["model_type"] == "openAI":
+                    self.known_models[model_name]["v_ram_need"] = 0.0
+                    self.known_models[model_name]["ram_need"  ] = 0.0
+
+                else:
+                    print(f"ERROR: Unknown model type: {self.setup['models_list'][model]['model_type']}")
+
+        #need to write the known modelt to the file at the end
+
+
+    def instantiate_model(self, model_name) -> None:
         """instantiate the model defined in the set-up """
         if self.setup['model']['model_type'] == "openAI":
             api_key         = os.getenv('OPENAI_API_KEY')
-            self.model      = ChatOpenAI(openai_api_key=api_key, model_name=self.setup['model']['model_id'])
+            self.active_models[model_name] ChatOpenAI(openai_api_key=api_key, model_name=self.setup['model']['model_id'])
             self.enc        = tiktoken.encoding_for_model(self.setup['model']['model_id'])
             self.embeddings = OpenAIEmbeddings(openai_api_key=api_key)
 
@@ -37,6 +88,24 @@ class AgentAction():
             self.embeddings = self.model.embeddings
             print(f"GPU state after model instantiation: {torch.cuda.is_available()}")
             self.system_info.print_GPU_info()
+    
+    def deinstantiate_model(self, model_name):
+        del self.embeddings
+
+        if torch.cuda.is_available():
+            print("-m--Emptying CUDA cache----")
+            torch.cuda.empty_cache()
+        pass
+
+class AgentAction():
+    """This class is used to define the actions that the agent can take."""
+    def __init__(self, setup: dict, sys_info: SystemInfo) -> None:
+        self.setup          = setup
+        self.system_info    = sys_info
+        self.search         = DuckDuckGoSearchResults()
+        self.actions_list   = [ m for m in dir(self) if m.startswith('__action_') ]
+        print(f"Actions list: {self.actions_list}")
+        self.instantiate_model()
 
     def perform_action(self, action_type: str, inputs: List[str]) -> str:
         """Perform the action specified by action_type on the inputs."""

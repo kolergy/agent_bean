@@ -3,6 +3,7 @@ import json
 import wikipedia  as     wiki
 from   agent_bean import AgentBean
 
+
 class TestAgentBean(unittest.TestCase):
     def setUp(self):
         # Load the settings json file and create a AgentBean object
@@ -54,6 +55,7 @@ class TestAgentBean(unittest.TestCase):
         files_path = ['README.md']
         self.agent.load_document(files_path)
         self.assertTrue(self.agent.v_db.index.ntotal > 0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -5,19 +5,14 @@
 import os
 import gc
 import json
-import tiktoken
 import torch
 
 from   dotenv                            import load_dotenv
-from   langchain.chat_models             import ChatOpenAI
 from   langchain.vectorstores            import FAISS
 from   langchain.document_loaders        import TextLoader
-from   langchain.embeddings.openai       import OpenAIEmbeddings
 from   langchain.text_splitter           import CharacterTextSplitter
 from   langchain.llms                    import HuggingFacePipeline
 from   agent_actions                     import AgentAction
-from   system_info                       import SystemInfo
-from   transformers_model                import TfModel
 
 class AgentBean:
   """ LangIf is a langchain interface to collect questions and feed them to a llm """
@@ -29,8 +24,7 @@ class AgentBean:
     self._context_tok   = []  # new attribute to store tokenized context
     self._context_n_tok = []
     self.debug          = setup['debug']
-    self.system_info    = SystemInfo()
-    self.instantiate_model()
+    #self.instantiate_model()
     #self.instantiate_vectorstore()
 
 
