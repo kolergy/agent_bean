@@ -13,6 +13,7 @@ from   langchain.document_loaders        import TextLoader
 from   langchain.text_splitter           import CharacterTextSplitter
 from   langchain.llms                    import HuggingFacePipeline
 from   agent_actions                     import AgentAction
+from   models_manager                    import ModelsManager
 
 class AgentBean:
   """ LangIf is a langchain interface to collect questions and feed them to a llm """
@@ -24,16 +25,8 @@ class AgentBean:
     self._context_tok   = []  # new attribute to store tokenized context
     self._context_n_tok = []
     self.debug          = setup['debug']
-    #self.instantiate_model()
+    self.mm             = ModelsManager(setup)
     #self.instantiate_vectorstore()
-
-
-  def instantiate_model(self) -> None:
-    """instantiate the model defined in the set-up """
-    self.actions = AgentAction(self.setup, self.system_info)
-    
-    if self.debug:
-      print(f"Model initiated, type: {self.setup['model']['model_type']}, id: {self.setup['model']['model_id']}")
 
 
   def instantiate_vectorstore(self) -> None:
@@ -68,6 +61,7 @@ class AgentBean:
     self._context       = []
     self._context_tok   = []
     self._context_n_tok = []
+
 
   def manage_context_length(self) -> None:
     """Ensure the total number of tokens in the context is below max_tokens. If not, summarize it."""
@@ -127,6 +121,7 @@ class AgentBean:
       #documents     = self.text_splitter.split_documents(raw_documents)
       #self.v_db.from_documents(documents, self.embeddings)
       #self.v_db.save_local(self.setup['vectorstore']['path'])
+
 
   def eliminate_agent(self):
     """Destroy the agent and free all memory occupied by the agent, including VRAM."""

@@ -10,10 +10,10 @@ from   system_info                       import SystemInfo
 
 
 class ModelsManager():
-    def __init__(self, setup, debug) -> None:
+    def __init__(self, setup) -> None:
         self.setup             = setup
         self.system_info       = SystemInfo()
-        self.debug             = debug
+        self.debug             = setup['debug']
         self.active_models     = {}
         self.active_embeddings = {}
         if os.path.exists(self.setup["known_models_file_name"]):
@@ -21,6 +21,7 @@ class ModelsManager():
                 self.known_models  = json.load(f)
         else:
             self.known_models      = {}
+        self.test_models_ressources_reqs()
     
     
     def model_need(self, model_name:str) -> bool:
@@ -43,6 +44,7 @@ class ModelsManager():
                 print(f"Model {model_name} already instantiated")
             return True
         
+
     def manage_mem_resources(self, model_name:str) -> bool:
         """check model memory need va available resources may remove other instantiated models if needed"""
         if self.debug:
@@ -61,6 +63,7 @@ class ModelsManager():
             else:
                 return True
             
+
     def free_resources(self, required_free_ram_gb:float, required_free_v_ram_gb:float) -> bool:
         """free resources to meet the required free resources"""
         ram_contrib_ratio     = {}
@@ -169,6 +172,7 @@ class ModelsManager():
                 print(f"GPU state after model instantiation: {torch.cuda.is_available()}")
                 self.system_info.print_GPU_info()
     
+
     def deinstantiate_model(self, model_name:str) -> None: 
         """deinstantiate the model provided in the argument end ensure proper deletion of all the model ressources"""
         if self.debug:
