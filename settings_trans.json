@@ -41,6 +41,24 @@
                 "you are an expert python code quality checker trained to ensure that the code provided to you in triple dolar signperform \n",
                 "it's intended objective provided in triple backticks and repsects the bests standards of codding\n"
             ]    
-        }
+        },
+        "known_models_file_name": "known_models.json",
+        "models_list":[
+            {"model1": {
+                "model_type": "openAI",
+                "model_id": "gpt-4",
+                "max_tokens": 8000
+            }},
+            {"model2": {
+                "model_type": "openAI",
+                "model_id": "gpt-3.5-turbo-16k",
+                "max_tokens": 16000
+            }},
+            {"model3": {
+                "model_type": "openAI",
+                "model_id": "gpt-3.5-turbo-0613",
+                "max_tokens": 4000
+            }}
+        ]
     }
 }
