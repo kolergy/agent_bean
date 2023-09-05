@@ -9,13 +9,15 @@ from   models_manager                    import ModelsManager
 
 class AgentAction():
     """This class is used to define the actions that the agent can take."""
-    def __init__(self, setup: dict, sys_info: SystemInfo) -> None:
+    def __init__(self, setup: dict, sys_info: SystemInfo, mm: ModelsManager) -> None:
         self.setup          = setup
         self.system_info    = sys_info
         self.search         = DuckDuckGoSearchResults()
         self.actions_list   = [ m for m in dir(self) if m.startswith('__action_') ]
+        self.mm             = mm
         print(f"Actions list: {self.actions_list}")
         self.instantiate_model()
+
 
     def perform_action(self, action_type: str, inputs: List[str]) -> str:
         """Perform the action specified by action_type on the inputs."""
@@ -31,6 +33,7 @@ class AgentAction():
         # Tokenize the input text
         input_tokens = self.enc.encode(inputs[0])
         max_tokens   = int(0.7 * self.setup['model']['max_tokens'])
+        model_name   = self.setup['model']['name']
         summaries    = []
         tot_input    = ' '.join(inputs)
         print(f"AAA input_tokens len: {len(input_tokens)} max_tokens: {max_tokens}")
@@ -44,7 +47,7 @@ class AgentAction():
             self.system_info.print_GPU_info()
             print(f"BBB--- CHUNK LEN: {len(chunk)}, chunk_text len: {len(chunk_text)}, prompt len: {len(prompt)}")
             #print(f"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB chunk_text:\n{chunk_text}\nBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-            summary    = self.model.predict(prompt,
+            summary    = self.mm.predict(model_name, prompt,
                                             max_tokens       = max_tokens,
                                             temperature      = 0.01,
                                             top_p            = 1,
@@ -63,9 +66,10 @@ class AgentAction():
 
     def __action_search__(self, inputs: List[str]) -> str:
         """Search internet for the input text subject."""
+        model_name   = self.setup['model']['name']
         resp = []
         prompt        = ''.join(self.setup['prompts_templates']["search"]).format(text=inputs[0])
-        search_querry = self.model.predict(prompt,
+        search_querry = self.mm.predict(model_name, prompt,
                                        max_tokens       = 1000,
                                        temperature      =    0.01,
                                        top_p            =    1,

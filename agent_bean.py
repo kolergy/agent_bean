@@ -26,6 +26,7 @@ class AgentBean:
     self._context_n_tok = []
     self.debug          = setup['debug']
     self.mm             = ModelsManager(setup)
+    self.aa             = AgentAction(setup, self.mm)
     #self.instantiate_vectorstore()
 
 
@@ -95,7 +96,7 @@ class AgentBean:
     if self.debug:
       print(f"Action: {action_type}, sum of Inputs: {sum(inputs_n_tok)}, Context n tok: {sum(self._context_n_tok)}")
 
-    resp = self.actions.perform_action(action_type, inputs)
+    resp = self.aa.perform_action(action_type, inputs)
     #for r in resps:
     responses.append(resp)
 

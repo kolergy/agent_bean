@@ -10,6 +10,7 @@ from   system_info                       import SystemInfo
 
 
 class ModelsManager():
+    """This class is used to manage the models and their ressources useage"""
     def __init__(self, setup) -> None:
         self.setup             = setup
         self.system_info       = SystemInfo()
@@ -23,7 +24,7 @@ class ModelsManager():
             self.known_models      = {}
         self.test_models_ressources_reqs()
     
-    
+
     def model_need(self, model_name:str) -> bool:
         """check memory resources and instantiate a nneded model if not already instantiated, may remove other instantiated models if needed"""
         if model_name not in self.active_models:
@@ -44,6 +45,12 @@ class ModelsManager():
                 print(f"Model {model_name} already instantiated")
             return True
         
+    def predict(self, model_name:str, prompt:str, max_tokens:int, temperature:float, top_p:float, frequency_penalty:float, presence_penalty:float, stop:list) -> str:
+        """predict using a model"""
+        if self.model_need(model_name):
+            return self.active_models[model_name].predict(prompt, max_tokens, temperature, top_p, frequency_penalty, presence_penalty, stop)
+        else:
+            return None
 
     def manage_mem_resources(self, model_name:str) -> bool:
         """check model memory need va available resources may remove other instantiated models if needed"""
