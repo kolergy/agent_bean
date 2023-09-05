@@ -2,6 +2,17 @@
 #
 #  conda activate AB311
 #
+# Code quality:
+# - pylint
+# - pycodestyle
+# - black
+# - design patterns
+
+# - flake8
+# - mypy
+# - unittest
+#
+
 import os
 import gc
 import json
@@ -27,7 +38,7 @@ class AgentBean:
     self.debug          = setup['debug']
     self.mm             = ModelsManager(setup)
     self.aa             = AgentAction(setup, self.mm)
-    #self.instantiate_vectorstore()
+    self.instantiate_vectorstore()
 
 
   def instantiate_vectorstore(self) -> None:

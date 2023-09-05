@@ -58,7 +58,7 @@ class SystemInfo:
         return gpu_info
 
     def get_ram_free(self) -> float:
-        cpu_info = self.get_cpu_info(self)
+        cpu_info = self.get_cpu_info()
         return cpu_info["ram_total_gb"] - cpu_info["ram_used_gb"]
  
     def get_cpu_brand(self) -> str:
@@ -71,7 +71,7 @@ class SystemInfo:
         return self.ram_total_gb
 
     def get_ram_used(self) -> float:
-        cpu_info = self.get_cpu_info(self)
+        cpu_info = self.get_cpu_info()
         return cpu_info["ram_used_gb"]
 
     def get_gpu_brand(self) -> str:
@@ -81,11 +81,17 @@ class SystemInfo:
         return self.vram_total_gb
 
     def get_v_ram_used(self) -> float:
-        self.vram_used_gb = torch.cuda.mem_get_info()[1]/(1024 ** 3) if torch.cuda.is_available() else None
+        if torch.cuda.is_available():
+            self.vram_used_gb = torch.cuda.mem_get_info()[1]/(1024 ** 3) if torch.cuda.is_available() else None
+        else:
+            self.vram_used_gb = None
         return self.vram_used_gb
 
     def get_v_ram_free(self) -> float:
-        vram  = torch.cuda.mem_get_info()   if torch.cuda.is_available() else None
+        if torch.cuda.is_available():
+            vram  = torch.cuda.mem_get_info()   if torch.cuda.is_available() else None
+        else:
+            vram = None
         print(f"XXX vram XXX: {vram}")
         self.vram_free_gb = (vram[0]) / (1024 ** 3) if vram else None
         return(self.vram_free_gb)

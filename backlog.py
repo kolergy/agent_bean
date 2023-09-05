@@ -8,6 +8,7 @@ class Task(abc.ABC):
     """
     Abstract base class for a task.
     """
+    @abc.abstractmethod
     def __init__(self, id: int, 
                  description: str, 
                  inputs: List[str], 
@@ -35,7 +36,7 @@ class ComplexTask(Task):
     """
     def __init__(self, id: int, 
                  description: str, 
-                 subtasks: List[Task], 
+                 sub_tasks: List[Task], 
                  inputs: List[str], 
                  outputs: List[str], 
                  parent_task: Task = None) -> None:
@@ -44,13 +45,13 @@ class ComplexTask(Task):
 
         :param id: The unique identifier of the task.
         :param description: The description of the task.
-        :param subtasks: The subtasks that make up the complex task.
+        :param sub_tasks: The subtasks that make up the complex task.
         :param inputs: The inputs of the task.
         :param outputs: The outputs of the task.
         :param parent_task: The parent task of the complex task.
         """
         super().__init__(id, description, inputs, outputs, parent_task)
-        self.subtasks = subtasks
+        self.sub_tasks = sub_tasks
 
 class AtomicTask(Task):
     """
