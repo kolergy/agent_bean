@@ -2,7 +2,7 @@
 #
 #  conda activate AB311
 #
-# Code quality:
+# need to implement Code quality checking:
 # - pylint
 # - pycodestyle
 # - black
@@ -12,6 +12,7 @@
 # - mypy
 # - unittest
 #
+# need to implement dockerized runningof code
 
 import os
 import gc

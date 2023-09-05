@@ -19,3 +19,5 @@ optimum
 auto-gptq
 gradio
 neo4j
+pylint
+docker
