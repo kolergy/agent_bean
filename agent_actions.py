@@ -25,7 +25,8 @@ class AgentAction():
         if action_name in self.actions_list:
             return(getattr(self, action_name)(inputs))
         else:
-            return([f"AgentAction ERROR: Action {action_name} not implemented (yet?)"])
+            #return([f"AgentAction ERROR: Action {action_name} not implemented (yet?)"])
+            raise NotImplementedError(f"AgentAction ERROR: Action {action_name} not implemented (yet?)")
 
 
     def __action_summarize__(self, inputs: List[str]) -> str:

@@ -29,6 +29,22 @@ class Task(abc.ABC):
         self.outputs     = outputs
         self.parent_task = parent_task
 
+        
+def get_parent_task(self, task: Task) -> Task:
+    """
+    Get the parent task of a task.
+
+    :param task: The task.
+    :return: The parent task of the task.
+    """
+    with self.driver.session() as session:
+        result = session.run("MATCH (t:Task {id: $id})-[:PARENT_TASK]->(p:Task) "
+                             "RETURN p",
+                             id=task.id)
+        if result:
+            return result.single()[0]
+        else:
+            return None
 
 class ComplexTask(Task):
     """

@@ -154,8 +154,9 @@ class ModelsManager():
                 else:
                     print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")
 
-        with open(self.setup["known_models_file_name"], 'w') as f:
+        with open(self.setup["known_models_file_name"], 'w') as f:  # store the known models dict to a file to avoid doing it again
             json.dump(self.known_models, f, indent=4)
+
         if self.debug:
             print(f"Models memory ressources requirements test complete")
             self.system_info.print_GPU_info()

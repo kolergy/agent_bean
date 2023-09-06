@@ -12,7 +12,8 @@
 # - mypy
 # - unittest
 #
-# need to implement dockerized runningof code
+# need to implement dockerized running of code
+# pip install docker
 
 import os
 import gc
