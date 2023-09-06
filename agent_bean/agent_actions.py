@@ -3,8 +3,8 @@ import torch
 
 from   typing                            import List
 from   langchain.tools                   import DuckDuckGoSearchResults
-from   system_info                       import SystemInfo
-from   models_manager                    import ModelsManager
+from   agent_bean.system_info                       import SystemInfo
+from   agent_bean.models_manager                    import ModelsManager
 
 
 class AgentAction():

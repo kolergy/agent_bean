@@ -3,7 +3,7 @@ import torch
 import transformers
 
 from   typing       import List, Optional
-from   system_info  import SystemInfo
+from   agent_bean.system_info  import SystemInfo
 
 
 class TransformersEmbeddings:

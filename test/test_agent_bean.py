@@ -1,7 +1,7 @@
 import unittest
 import json    
 import wikipedia  as     wiki
-from   agent_bean import AgentBean
+from   agent_bean.agent_bean import AgentBean
 
 
 class TestAgentBean(unittest.TestCase):

@@ -3,10 +3,10 @@ import os
 import json
 import torch
 
-from   transformers_model                import TfModel
+from   agent_bean.transformers_model                import TfModel
 from   langchain.chat_models             import ChatOpenAI
 from   langchain.embeddings.openai       import OpenAIEmbeddings
-from   system_info                       import SystemInfo
+from   agent_bean.system_info                       import SystemInfo
 
 
 class ModelsManager():
@@ -51,6 +51,15 @@ class ModelsManager():
             return self.active_models[model_name].predict(prompt, max_tokens, temperature, top_p, frequency_penalty, presence_penalty, stop)
         else:
             return None
+
+
+    def get_embeddings(self, model_name:str, text:str) -> torch.tensor:
+        """get embeddings using a model"""
+        if self.model_need(model_name):
+            return self.embeddings[model_name].get_embeddings(text)
+        else:
+            return None
+
 
     def manage_mem_resources(self, model_name:str) -> bool:
         """check model memory need va available resources may remove other instantiated models if needed"""

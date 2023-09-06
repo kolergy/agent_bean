@@ -2,8 +2,8 @@
 import json  
 import unittest
 
-from   transformers_model import TfModel
-from   system_info           import SystemInfo
+from   agent_bean.transformers_model import TfModel
+from   agent_bean.system_info           import SystemInfo
 
 class TestTfPipeline(unittest.TestCase):
     def setUp(self):

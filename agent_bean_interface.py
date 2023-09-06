@@ -3,7 +3,7 @@ import time
 
 import gradio as gr
 
-from agent_bean import AgentBean
+from agent_bean.agent_bean import AgentBean
 
 # Load the settings json file and create a AgentBean object
 with open('settings_opai.json') as f:
