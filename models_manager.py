@@ -126,7 +126,7 @@ class ModelsManager():
             print(f"Testing models memory ressources requirements")
             self.system_info.print_GPU_info()
         for model_name in self.setup["models_list"].keys():
-            if model_name["model_id"] not in self.known_models.keys():
+            if self.setup["models_list"][model_name]["model_id"] not in self.known_models.keys():
                 self.known_models[model_name]["model_id"] = {}
                 if self.debug:
                     print(f"Model {model_name}: is not yet known Testing model memory ressources requirements")
@@ -163,7 +163,7 @@ class ModelsManager():
 
 
     def instantiate_model(self, model_name:str) -> None:
-        """instantiate the model defined in the set-up """
+        """instantiate the model defined in the set-up by adding it to the active model list and creating the corresponding embeddings"""
         if self.setup['model']['model_type'] == "openAI":
             api_key                        = os.getenv('OPENAI_API_KEY')
             self.active_models[model_name] = ChatOpenAI(openai_api_key=api_key, model_name=self.setup['model']['model_id'])
