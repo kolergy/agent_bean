@@ -3,17 +3,18 @@ import os
 import json
 import torch
 
-from   agent_bean.transformers_model                import TfModel
 from   langchain.chat_models             import ChatOpenAI
 from   langchain.embeddings.openai       import OpenAIEmbeddings
-from   agent_bean.system_info                       import SystemInfo
+from   agent_bean.system_info            import SystemInfo
+from   agent_bean.transformers_model     import TfModel
+
 
 
 class ModelsManager():
     """This class is used to manage the models and their ressources useage"""
-    def __init__(self, setup) -> None:
+    def __init__(self, setup: dict, si: SystemInfo) -> None:
         self.setup             = setup
-        self.system_info       = SystemInfo()
+        self.si                = si
         self.debug             = setup['debug']
         self.active_models     = {}
         self.active_embeddings = {}
@@ -56,7 +57,7 @@ class ModelsManager():
     def get_embeddings(self, model_name:str, text:str) -> torch.tensor:
         """get embeddings using a model"""
         if self.model_need(model_name):
-            return self.embeddings[model_name].get_embeddings(text)
+            return self.active_embeddings[model_name].get_embeddings(text)
         else:
             return None
 
@@ -65,16 +66,16 @@ class ModelsManager():
         """check model memory need va available resources may remove other instantiated models if needed"""
         if self.debug:
             print(f"Checking memory resources for model {model_name}")
-            self.system_info.print_GPU_info()
+            self.si.print_GPU_info()
         if model_name not in self.known_models:
             print(f"ERROR: Model {model_name} not in known_models")
             return False
         else:
             if self.debug:
                 print(f"Model {model_name} in known_models checking memory resources")
-                print(f"      RAM need: {self.known_models[model_name]['ram_need'  ]} Gb, system available RAM: {self.system_info.get_ram_free()  } Gb")
-                print(f"Video RAM need: {self.known_models[model_name]['v_ram_need']} Gb,  GPU available V RAM: {self.system_info.get_v_ram_free()} Gb")
-            if self.known_models[model_name]['ram_need'  ] > self.system_info.get_ram_free()  or self.known_models[model_name]['v_ram_need'] > self.system_info.get_v_ram_free():
+                print(f"      RAM need: {self.known_models[model_name]['ram_need'  ]} Gb, system available RAM: {self.si.get_ram_free()  } Gb")
+                print(f"Video RAM need: {self.known_models[model_name]['v_ram_need']} Gb,  GPU available V RAM: {self.si.get_v_ram_free()} Gb")
+            if self.known_models[model_name]['ram_need'  ] > self.si.get_ram_free()  or self.known_models[model_name]['v_ram_need'] > self.si.get_v_ram_free():
                 return self.free_resources(self.known_models[model_name]['ram_need'  ], self.known_models[model_name]['v_ram_need'])
             else:
                 return True
@@ -84,8 +85,8 @@ class ModelsManager():
         """free resources to meet the required free resources"""
         ram_contrib_ratio     = {}
         v_ram_contrib_ratio   = {}
-        current_free_ram_gb   = self.system_info.get_ram_free()
-        current_free_v_ram_gb = self.system_info.get_v_ram_free()
+        current_free_ram_gb   = self.si.get_ram_free()
+        current_free_v_ram_gb = self.si.get_v_ram_free()
         ram_need_gb           = required_free_ram_gb   - current_free_ram_gb
         v_ram_need_gb         = required_free_v_ram_gb - current_free_v_ram_gb
         if len(self.active_models) > 0:
@@ -109,8 +110,8 @@ class ModelsManager():
 
                 if FLAG_RAM_Ok and FLAG_V_RAM_Ok:
                     self.deinstantiate_model(model_name)
-                    current_free_ram_gb   = self.system_info.get_ram_free()
-                    current_free_v_ram_gb = self.system_info.get_v_ram_free()
+                    current_free_ram_gb   = self.si.get_ram_free()
+                    current_free_v_ram_gb = self.si.get_v_ram_free()
                     if self.debug:
                         print(f"Model {model_name} deinstantiated")
                     if current_free_ram_gb >= required_free_ram_gb and current_free_v_ram_gb >= required_free_v_ram_gb:
@@ -133,26 +134,27 @@ class ModelsManager():
         """Test the models ressources requirements and update the known_models dict accordingly"""
         if self.debug:
             print(f"Testing models memory ressources requirements")
-            self.system_info.print_GPU_info()
+            self.si.print_GPU_info()
         for model_name in self.setup["models_list"].keys():
             if self.setup["models_list"][model_name]["model_id"] not in self.known_models.keys():
+                self.known_models[model_name] = {}
                 self.known_models[model_name]["model_id"] = {}
                 if self.debug:
                     print(f"Model {model_name}: is not yet known Testing model memory ressources requirements")
-                    self.system_info.print_GPU_info()
+                    self.si.print_GPU_info()
                     
                 if self.setup["models_list"][model_name]["model_type"] == "transformers":
-                    ram_b4   = self.system_info.get_ram_free()
-                    v_ram_b4 = self.system_info.get_v_ram_free()
+                    ram_b4   = self.si.get_ram_free()
+                    v_ram_b4 = self.si.get_v_ram_free()
                     self.instantiate_model(model_name)
                     
-                    delta_ram_gb   = max(0, ram_b4   - self.system_info.get_ram_free()  ) # min value is 0
-                    delta_v_ram_gb = max(0, v_ram_b4 - self.system_info.get_v_ram_free()) # to avoid noise on the unused ram
+                    delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
+                    delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
                     self.known_models[model_name]["system_ram_gb"] = delta_ram_gb
                     self.known_models[model_name]["GPU_ram_gb"   ] = delta_v_ram_gb
                     if self.debug:
                         print(f"Model {model_name} instantiated using: {delta_ram_gb} Gb of system RAM and: {delta_v_ram_gb} Gb of V RAM on the GPU")
-                        self.system_info.print_GPU_info()
+                        self.si.print_GPU_info()
 
                     self.deinstantiate_model(model_name)
 
@@ -168,38 +170,38 @@ class ModelsManager():
 
         if self.debug:
             print(f"Models memory ressources requirements test complete")
-            self.system_info.print_GPU_info()
+            self.si.print_GPU_info()
 
 
     def instantiate_model(self, model_name:str) -> None:
         """instantiate the model defined in the set-up by adding it to the active model list and creating the corresponding embeddings"""
-        if self.setup['model']['model_type'] == "openAI":
+        if self.setup['models_list'][model_name]['model_type'] == "openAI":
             api_key                        = os.getenv('OPENAI_API_KEY')
-            self.active_models[model_name] = ChatOpenAI(openai_api_key=api_key, model_name=self.setup['model']['model_id'])
-            self.embeddings[model_name]    = OpenAIEmbeddings(openai_api_key=api_key)
+            self.active_models[model_name] = ChatOpenAI(openai_api_key=api_key, model_name=self.setup['models_list'][model_name]['model_id'])
+            self.active_embeddings[model_name]    = OpenAIEmbeddings(openai_api_key=api_key)
 
-        elif self.setup['model']['model_type'] == "transformers":
+        elif self.setup['models_list'][model_name]['model_type'] == "transformers":
             if self.debug:
                 print(f"GPU state before model instantiation: {torch.cuda.is_available()}")
-                self.system_info.print_GPU_info()
+                self.si.print_GPU_info()
 
-            self.active_models[model_name] = TfModel(self.setup, self.system_info)
-            self.embeddings[model_name]    = self.active_models[model_name].embeddings
+            self.active_models[model_name] = TfModel(self.setup, self.si)
+            self.active_embeddings[model_name]    = self.active_models[model_name].embeddings
             if self.debug:
                 print(f"GPU state after model instantiation: {torch.cuda.is_available()}")
-                self.system_info.print_GPU_info()
+                self.si.print_GPU_info()
     
 
     def deinstantiate_model(self, model_name:str) -> None: 
         """deinstantiate the model provided in the argument end ensure proper deletion of all the model ressources"""
         if self.debug:
             print(f"GPU state before model deinstantiation: {torch.cuda.is_available()}")
-            self.system_info.print_GPU_info()
-        self.embeddings[model_name].__del__()
+            self.si.print_GPU_info()
+        self.active_embeddings[model_name].__del__()
         self.active_models[model_name].free()
         self.active_models[model_name].cuda()
 
-        self.embeddings.pop(model_name)
+        self.active_embeddings.pop(model_name)
         self.active_models.pop(model_name)
 
         if torch.cuda.is_available():
@@ -208,5 +210,5 @@ class ModelsManager():
 
         if self.debug:
             print(f"GPU state after model deinstantiation: {torch.cuda.is_available()}")
-            self.system_info.print_GPU_info()
+            self.si.print_GPU_info()
         

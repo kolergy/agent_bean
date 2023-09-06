@@ -16,7 +16,7 @@ class AgentAction():
         self.actions_list   = [ m for m in dir(self) if m.startswith('__action_') ]
         self.mm             = mm
         print(f"Actions list: {self.actions_list}")
-        self.instantiate_model()
+
 
 
     def perform_action(self, action_type: str, inputs: List[str]) -> str:
@@ -32,9 +32,9 @@ class AgentAction():
     def __action_summarize__(self, inputs: List[str]) -> str:
         """Summarize the input text."""
         # Tokenize the input text
-        input_tokens = self.enc.encode(inputs[0])
+        model_name   = self.setup['actions']['summarize']['model_name']
+        input_tokens = self.mm.get_embeddings(model_name, inputs[0])
         max_tokens   = int(0.7 * self.setup['model']['max_tokens'])
-        model_name   = self.setup['model']['name']
         summaries    = []
         tot_input    = ' '.join(inputs)
         print(f"AAA input_tokens len: {len(input_tokens)} max_tokens: {max_tokens}")
@@ -67,7 +67,7 @@ class AgentAction():
 
     def __action_search__(self, inputs: List[str]) -> str:
         """Search internet for the input text subject."""
-        model_name   = self.setup['model']['name']
+        model_name   = self.setup['actions']['summarize']['model_name']
         resp = []
         prompt        = ''.join(self.setup['prompts_templates']["search"]).format(text=inputs[0])
         search_querry = self.mm.predict(model_name, prompt,

@@ -1,0 +1,17 @@
+{
+    "model1": {
+        "model_id": {},
+        "v_ram_need": 0.0,
+        "ram_need": 0.0
+    },
+    "model2": {
+        "model_id": {},
+        "v_ram_need": 0.0,
+        "ram_need": 0.0
+    },
+    "model3": {
+        "model_id": {},
+        "v_ram_need": 0.0,
+        "ram_need": 0.0
+    }
+}

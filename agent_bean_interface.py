@@ -8,7 +8,7 @@ from agent_bean.agent_bean import AgentBean
 # Load the settings json file and create a AgentBean object
 with open('settings_opai.json') as f:
     setup = json.load(f)
-agent = AgentBean(setup['AgentBean_settings'])
+agent = AgentBean(setup)
 
 # Define the function to be called when the Run button is pressed
 def run_action(action_type, action_input):

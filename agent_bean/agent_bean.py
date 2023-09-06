@@ -13,20 +13,22 @@ and at terms it will be extended to
  
  """
 
-import gc
-import torch
-
 from   dotenv                            import load_dotenv
 from   agent_bean.agent_actions          import AgentAction
+from   agent_bean.models_manager         import ModelsManager
+from   agent_bean.system_info            import SystemInfo
+
 
 class AgentBean:
-  """ LangIf is a langchain interface to collect questions and feed them to a llm """
+  """ AgentBean is a langchain interface to collect questions and feed them to a llm """
 
   def __init__(self, setup: dict) -> None:
     load_dotenv()
     self.setup          = setup
     self.debug          = setup['debug']
-    self.aa             = AgentAction(setup, self.mm)
+    self.si             = SystemInfo()
+    self.mm             = ModelsManager(setup, self.si            )
+    self.aa             = AgentAction(  setup, self.si,  self.mm, )
 
 
   def agent_action(self, action_type: str, inputs: list) -> str:
@@ -40,16 +42,3 @@ class AgentBean:
     return resp[-1]
 
 
-  def __del__(self):
-    """Destroy the agent and free all memory occupied by the agent, including VRAM."""
-    print(f"B4 Agent elimination CLEAN Vram: {self.system_info.get_vram_total():5.2f} GB, available: {self.system_info.get_vram_available():5.2f} GB")
-      
-    del self.aa
-    del self.debug
-    del self.setup
-    gc.collect()
-    # Empty the CUDA cache
-    if torch.cuda.is_available():
-        print("+----Emptying CUDA cache----")
-        torch.cuda.empty_cache()
-    print(f"AFTER CLEAN Vram: {self.system_info.get_vram_total():5.2f} GB, available: {self.system_info.get_vram_available():5.2f} GB")
