@@ -2,12 +2,12 @@
 import os
 import json
 import torch
+import tiktoken
 
 from   langchain.chat_models             import ChatOpenAI
 from   langchain.embeddings.openai       import OpenAIEmbeddings
 from   agent_bean.system_info            import SystemInfo
-from   agent_bean.transformers_model     import TfModel
-
+from   agent_bean.transformers_model     import TfModel, TransformersEmbeddings
 
 
 class ModelsManager():
@@ -49,7 +49,14 @@ class ModelsManager():
     def predict(self, model_name:str, prompt:str, max_tokens:int, temperature:float, top_p:float, frequency_penalty:float, presence_penalty:float, stop:list) -> str:
         """predict using a model"""
         if self.model_need(model_name):
-            return self.active_models[model_name].predict(prompt, max_tokens, temperature, top_p, frequency_penalty, presence_penalty, stop)
+            return self.active_models[model_name].predict(prompt, stop=stop, kwargs=[max_tokens, temperature, top_p, frequency_penalty, presence_penalty])
+        else:
+            return None
+
+    def decode(self, model_name:str, tokens:[float]) -> str:
+        """decode using a model"""
+        if self.model_need(model_name):
+            return self.active_embeddings[model_name].decode(tokens)
         else:
             return None
 
@@ -57,7 +64,8 @@ class ModelsManager():
     def get_embeddings(self, model_name:str, text:str) -> torch.tensor:
         """get embeddings using a model"""
         if self.model_need(model_name):
-            return self.active_embeddings[model_name].get_embeddings(text)
+            return self.active_embeddings[model_name].encode(text)
+            #return self.active_embeddings[model_name].embed_query(text)
         else:
             return None
 
@@ -175,18 +183,20 @@ class ModelsManager():
 
     def instantiate_model(self, model_name:str) -> None:
         """instantiate the model defined in the set-up by adding it to the active model list and creating the corresponding embeddings"""
+        model_id = self.setup['models_list'][model_name]['model_id']
         if self.setup['models_list'][model_name]['model_type'] == "openAI":
-            api_key                        = os.getenv('OPENAI_API_KEY')
-            self.active_models[model_name] = ChatOpenAI(openai_api_key=api_key, model_name=self.setup['models_list'][model_name]['model_id'])
-            self.active_embeddings[model_name]    = OpenAIEmbeddings(openai_api_key=api_key)
+            api_key                            = os.getenv('OPENAI_API_KEY')
+            self.active_models[model_name]     = ChatOpenAI(openai_api_key=api_key, model_name=model_id)
+            #self.active_embeddings[model_name] = OpenAIEmbeddings(openai_api_key=api_key)
+            self.active_embeddings[model_name] = tiktoken.encoding_for_model(model_id)
 
         elif self.setup['models_list'][model_name]['model_type'] == "transformers":
             if self.debug:
                 print(f"GPU state before model instantiation: {torch.cuda.is_available()}")
                 self.si.print_GPU_info()
 
-            self.active_models[model_name] = TfModel(self.setup, self.si)
-            self.active_embeddings[model_name]    = self.active_models[model_name].embeddings
+            self.active_models[model_name]     = TfModel(self.setup, self.si, model_id)
+            self.active_embeddings[model_name] = TransformersEmbeddings(self.active_models[model_name].tokenizer)
             if self.debug:
                 print(f"GPU state after model instantiation: {torch.cuda.is_available()}")
                 self.si.print_GPU_info()

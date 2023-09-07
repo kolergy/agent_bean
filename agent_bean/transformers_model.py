@@ -2,7 +2,7 @@
 import torch
 import transformers
 
-from   typing       import List, Optional
+from   typing                  import List, Optional
 from   agent_bean.system_info  import SystemInfo
 
 
@@ -15,8 +15,8 @@ class TransformersEmbeddings:
         """Return the embeddings for the text"""
         return torch.tensor(self.tokenizer(text)['input_ids'])
 
-    def embed_documents(self, texts: List[str], chunk_size: Optional[int] = 0) -> List[List[float]]:
-        """Return the embeddings for the query"""
+    """def embed_documents(self, texts: List[str], chunk_size: Optional[int] = 0) -> List[List[float]]:
+        \"""Return the embeddings for the query\"""
         #print(f"Embed DOC!")
         #print([self.tokenizer(text)['input_ids'] for text in texts])
         if chunk_size:
@@ -24,12 +24,18 @@ class TransformersEmbeddings:
             return [self.tokenizer(text)['input_ids'] for text in texts]
         else:
             return [self.tokenizer(text)['input_ids'] for text in texts]
-
-    def embed_query(self, text: str) -> List[float]:
+    """
+    #def embed_query(self, text: str) -> List[float]:
+    def encode(self, text: str) -> List[float]:
         """Return the embeddings for the query"""
         tok = self.tokenizer(text)
         #print(f"tok: {tok}")
         return self.tokenizer(text)['input_ids']
+    
+    def decode(self, tokens: List[float]) -> str:
+        """Return the text for the tokens"""
+        #print(f"tokens: {tokens}")
+        return self.tokenizer.decode(tokens)
     
     def __del__(self):
         """delete the tokenizer"""
@@ -38,13 +44,13 @@ class TransformersEmbeddings:
 
 class TfModel:
     """This class wraps the HuggingFace transformers pipeline class to allow to build a pipeline from the setting data"""
-    def __init__(self, setup: dict, system_info:SystemInfo) -> None:
+    def __init__(self, setup: dict, system_info:SystemInfo, model_name: str) -> None:
         self.setup             = setup
         self.system_info       = system_info
-
+        self.model_name        = model_name
         self.compute_dtype     = torch.float16
         self.GPU_brand         = self.system_info.get_gpu_brand()
-
+ 
         self.pipeline          = None
         self.quant_type_4bit   = None
         self.model_bits        = None
@@ -56,15 +62,16 @@ class TfModel:
 
     def instantiate_pipeline(self) -> None:
         """instantiate the pipeline defined in the set-up """
-        if self.setup['model']['model_type'] == "transformers":
+        model_name = self.model_name
+        if self.setup['models_list'][model_name]['model_type'] == "transformers":
             # Instantiate the Transformers model here
             # You will need to fill in the details based on how you want to use the Transformers library
-            model_id = self.setup['model']['model_id']
+            model_id = self.setup['models_list'][model_name]['model_id']
             device   = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
             print(f"device: {device}, brand: {self.GPU_brand}")
             # check if the number of bits for quantization is set in setum model
-            if 'model_bits' in self.setup['model']:
-                self.model_bits = self.setup['model']['model_bits']
+            if 'model_bits' in self.setup['models_list'][model_name]:
+                self.model_bits = self.setup['models_list'][model_name]['model_bits']
                         
             if self.GPU_brand == 'NVIDIA':
                 self.compute_dtype    = torch.bfloat16
@@ -73,8 +80,8 @@ class TfModel:
 
             if self.model_bits == 4:
                 # check if 4bit_quant_type in setum model
-                if '4bit_quant_type' in self.setup['model']:
-                    self.quant_type_4bit = self.setup['model']['4bit_quant_type']
+                if '4bit_quant_type' in self.setup['models_list'][model_name]:
+                    self.quant_type_4bit = self.setup['models_list'][model_name]['4bit_quant_type']
                 # set quantization configuration to load large model with less GPU memory
                 # this requires the `bitsandbytes` library
                 bnb_config = transformers.BitsAndBytesConfig(

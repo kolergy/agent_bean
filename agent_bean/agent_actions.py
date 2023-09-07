@@ -34,7 +34,7 @@ class AgentAction():
         # Tokenize the input text
         model_name   = self.setup['actions']['summarize']['model_name']
         input_tokens = self.mm.get_embeddings(model_name, inputs[0])
-        max_tokens   = int(0.7 * self.setup['model']['max_tokens'])
+        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
         summaries    = []
         tot_input    = ' '.join(inputs)
         print(f"AAA input_tokens len: {len(input_tokens)} max_tokens: {max_tokens}")
@@ -43,8 +43,8 @@ class AgentAction():
         # Split the tokenized input into chunks and summarize each chunk
         for i in range(0, len(input_tokens), max_tokens):
             chunk      = input_tokens[i:i+max_tokens]
-            chunk_text = self.enc.decode(chunk)
-            prompt     = ''.join(self.setup['prompts_templates']["summarize"]).format(text=chunk_text)
+            chunk_text = self.mm.decode(model_name, chunk)
+            prompt     = ''.join(self.setup['actions']["summarize"]).format(text=chunk_text)
             self.system_info.print_GPU_info()
             print(f"BBB--- CHUNK LEN: {len(chunk)}, chunk_text len: {len(chunk_text)}, prompt len: {len(prompt)}")
             #print(f"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB chunk_text:\n{chunk_text}\nBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
@@ -69,7 +69,7 @@ class AgentAction():
         """Search internet for the input text subject."""
         model_name   = self.setup['actions']['summarize']['model_name']
         resp = []
-        prompt        = ''.join(self.setup['prompts_templates']["search"]).format(text=inputs[0])
+        prompt        = ''.join(self.setup['actions']["search"]).format(text=inputs[0])
         search_querry = self.mm.predict(model_name, prompt,
                                        max_tokens       = 1000,
                                        temperature      =    0.01,
