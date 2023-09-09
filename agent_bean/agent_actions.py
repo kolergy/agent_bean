@@ -36,18 +36,14 @@ class AgentAction():
         input_tokens = self.mm.get_embeddings(model_name, inputs[0])
         max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
         summaries    = []
-        tot_input    = ' '.join(inputs)
-        print(f"AAA input_tokens len: {len(input_tokens)} max_tokens: {max_tokens}")
-        #print(f"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA tot_input:\n{tot_input}\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             
         # Split the tokenized input into chunks and summarize each chunk
         for i in range(0, len(input_tokens), max_tokens):
             chunk      = input_tokens[i:i+max_tokens]
-            chunk_text = self.mm.decode(model_name, chunk)
-            prompt     = ''.join(self.setup['actions']["summarize"]).format(text=chunk_text)
-            self.system_info.print_GPU_info()
-            print(f"BBB--- CHUNK LEN: {len(chunk)}, chunk_text len: {len(chunk_text)}, prompt len: {len(prompt)}")
-            #print(f"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB chunk_text:\n{chunk_text}\nBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+            chunk_text = str(self.mm.decode(model_name, chunk))
+            prompt     = ''.join(self.setup['actions']['summarize']['prompt_template']).format(text=chunk_text)
+            #self.system_info.print_GPU_info()
+
             self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
                                      'temperature':       0.01,
                                      'top_p':             1,
@@ -56,51 +52,75 @@ class AgentAction():
                                      'stop':              ["\n"]})
             summary = self.mm.predict(model_name, prompt)
             summaries.append(summary[-1])
-            #print(f"summary response type: {type(summary[-1])}, len: {len(summary)}")
-        #print(f"summarized response type: {type(summaries)}")
+
         # Concatenate the summaries to form the final summary
         res = ' '.join(summaries)
-        #print(f"summarized response type: {type(res)}, len: {len(res)}")
-        #print(f"summarized response: {res}")
+
         return res
 
 
     def __action_search__(self, inputs: List[str]) -> str:
         """Search internet for the input text subject."""
-        model_name   = self.setup['actions']['summarize']['model_name']
-        resp = []
-        prompt        = ''.join(self.setup['actions']["search"]).format(text=inputs[0])
-        search_querry = self.mm.predict(model_name, prompt,
-                                       max_tokens       = 1000,
-                                       temperature      =    0.01,
-                                       top_p            =    1,
-                                       frequency_penalty=    0,
-                                       presence_penalty =    0.6,
-                                       stop             = ["\n"])
+        model_name    = self.setup['actions']['search']['model_name']
+        max_tokens    = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        resp          = []
+        prompt        = ''.join(self.setup['actions']['search']['prompt_template']).format(text=inputs)
+        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
+                                     'temperature':       0.01,
+                                     'top_p':             1,
+                                     'frequency_penalty': 0,
+                                     'presence_penalty':  0.6,
+                                     'stop':              ["\n"]})
+        search_querry = self.mm.predict(model_name, prompt)
+        search_resp   = str(self.search.run(search_querry[-1]))
         resp.append(search_querry[-1])
-        search_resp = str(self.search.run(search_querry[-1]))
         resp.append(search_resp)
         return ' '.join(resp)
 
+
     def __action_split__(self, inputs: List[str]) -> List[str]:
         """Split a complex task into a set of simple tasks."""
-        # Here you can implement the logic to split the complex task
-        # For the sake of this example, let's assume the input is a string with tasks separated by commas
-        tasks = inputs[0].split(',')
+        model_name   = self.setup['actions']['split']['model_name']
+        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        prompt       = ''.join(self.setup['actions']['split']['prompt_template']).format(text=inputs)
+        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
+                                     'temperature':       0.01,
+                                     'top_p':             1,
+                                     'frequency_penalty': 0,
+                                     'presence_penalty':  0.6,
+                                     'stop':              ["\n"]})
+        resp         = self.mm.predict(model_name, prompt)
+        tasks        = resp[0].split(',')
         return tasks
 
     def __action_code__(self, inputs: List[str]) -> str:
         """Generate code based on the input text."""
-        # Here you can implement the logic to generate code based on the input text
-        # For the sake of this example, let's assume the input is a string describing the code to be generated
-        code = inputs[0]  # replace this with your code generation logic
+        model_name   = self.setup['actions']['code']['model_name']
+        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        prompt       = ''.join(self.setup['actions']['code']['prompt_template']).format(text=inputs)
+        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
+                                     'temperature':       0.4,
+                                     'top_p':             1,
+                                     'frequency_penalty': 0,
+                                     'presence_penalty':  0.6,
+                                     'stop':              ["\n"]})
+        resp         = self.mm.predict(model_name, prompt)
+        code         = resp
         return code
 
     def __action_code_quality__(self, inputs: List[str]) -> str:
         """Check the quality of the input code."""
-        # Here you can implement the logic to check the quality of the input code
-        # For the sake of this example, let's assume the input is a string containing the code to be checked
-        code_quality = inputs[0]  # replace this with your code quality checking logic
+        model_name   = self.setup['actions']['code_quality']['model_name']
+        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        prompt       = ''.join(self.setup['actions']['code_quality']['prompt_template']).format(text=inputs)
+        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
+                                     'temperature':       0.5,
+                                     'top_p':             1,
+                                     'frequency_penalty': 0,
+                                     'presence_penalty':  0.6,
+                                     'stop':              ["\n"]})
+        resp         = self.mm.predict(model_name, prompt)
+        code_quality = resp
         return code_quality
 
     def __del__(self):
