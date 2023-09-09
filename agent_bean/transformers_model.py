@@ -26,13 +26,13 @@ class TransformersEmbeddings:
             return [self.tokenizer(text)['input_ids'] for text in texts]
     """
     #def embed_query(self, text: str) -> List[float]:
-    def encode(self, text: str) -> List[float]:
+    def encode(self, text: str) -> List[int]:
         """Return the embeddings for the query"""
         tok = self.tokenizer(text)
         #print(f"tok: {tok}")
         return self.tokenizer(text)['input_ids']
     
-    def decode(self, tokens: List[float]) -> str:
+    def decode(self, tokens: List[int]) -> str:
         """Return the text for the tokens"""
         #print(f"tokens: {tokens}")
         return self.tokenizer.decode(tokens)
@@ -45,18 +45,28 @@ class TransformersEmbeddings:
 class TfModel:
     """This class wraps the HuggingFace transformers pipeline class to allow to build a pipeline from the setting data"""
     def __init__(self, setup: dict, system_info:SystemInfo, model_name: str) -> None:
-        self.setup             = setup
-        self.system_info       = system_info
-        self.model_name        = model_name
-        self.compute_dtype     = torch.float16
-        self.GPU_brand         = self.system_info.get_gpu_brand()
+        self.setup                            = setup
+        self.system_info                      = system_info
+        self.model_name                       = model_name
+        self.compute_dtype                    = torch.float16
+        self.GPU_brand:str                    = self.system_info.get_gpu_brand()
  
-        self.pipeline          = None
-        self.quant_type_4bit   = None
-        self.model_bits        = None
-        self.model             = None
-        self.tokenizer         = None
-        self.stopping_criteria = None
+        self.pipeline                         = None
+        self.quant_type_4bit:bool             = None
+        self.model_bits:int                   = None
+        self.model                            = None
+        self.tokenizer                        = None
+        self.stopping_criteria                = None
+        self.model_id:str                     = None     
+        self.temperature:float                = 0.1     # 'randomness' of outputs, 0.0 is the min and 1.0 the max
+        self.top_p:float                      = 1
+        self.top_k:float                      = 0
+        self.frequency_penalty:float          = 0.6
+        self.presence_penalty:float           = 0.0
+        self.repetition_penalty:float         = 1.1     # without this output begins repeating
+        self.stop:List[str]                   = ["\n"]
+        self.max_new_tokens:int               = 512     # max number of tokens to generate in the output
+
         #print(f"GPU brand: {self.GPU_brand}")
         self.instantiate_pipeline()
 
@@ -66,9 +76,9 @@ class TfModel:
         if self.setup['models_list'][model_name]['model_type'] == "transformers":
             # Instantiate the Transformers model here
             # You will need to fill in the details based on how you want to use the Transformers library
-            model_id = self.setup['models_list'][model_name]['model_id']
-            device   = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
-            print(f"device: {device}, brand: {self.GPU_brand}")
+            self.model_id = self.setup['models_list'][model_name]['model_id']
+            self.device   = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
+            print(f"device: {self.device}, brand: {self.GPU_brand}")
             # check if the number of bits for quantization is set in setum model
             if 'model_bits' in self.setup['models_list'][model_name]:
                 self.model_bits = self.setup['models_list'][model_name]['model_bits']
@@ -109,7 +119,7 @@ class TfModel:
 
             if bnb_config:
                 self.model = transformers.AutoModelForCausalLM.from_pretrained(
-                    model_id,
+                    self.model_id,
                     #trust_remote_code   = True,
                     quantization_config = bnb_config,
                     torch_dtype         = self.compute_dtype,
@@ -117,14 +127,14 @@ class TfModel:
                 )
             else:
                 self.model = transformers.AutoModelForCausalLM.from_pretrained(
-                    model_id,
+                    self.model_id,
                     #trust_remote_code   = True,
                     torch_dtype         = self.compute_dtype,
                     device_map          = 'auto',
                 )
 
             self.tokenizer = transformers.AutoTokenizer.from_pretrained(
-                model_id,
+                self.model_id,
             )
 
             self.embeddings = TransformersEmbeddings(self.tokenizer)
@@ -132,7 +142,7 @@ class TfModel:
             # set stopping criteria
             stop_list         = ['\nHuman:', '\n```\n']
             stop_token_ids    = [self.tokenizer(x)['input_ids'] for x in stop_list     ]
-            stop_token_ids_LT = [torch.LongTensor(x).to(device) for x in stop_token_ids]  # convert to LongTensor for compatibility with model
+            stop_token_ids_LT = [torch.LongTensor(x).to(self.device) for x in stop_token_ids]  # convert to LongTensor for compatibility with model
 
             class StopOnTokens(transformers.StoppingCriteria):
                 def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
@@ -146,32 +156,26 @@ class TfModel:
             self.pipeline          = transformers.pipeline(
                     model              = self.model, 
                     tokenizer          = self.tokenizer,
-                    return_full_text   = True,                    # langchain expects the full text
+                    return_full_text   = True,                      # langchain expects the full text
                     task               ='text-generation',
-                    stopping_criteria  = self.stopping_criteria,  # without this model rambles during chat
+                    stopping_criteria  = self.stopping_criteria,    # without this model rambles during chat
                     do_sample          = True,
-                    temperature        = 0.1,                     # 'randomness' of outputs, 0.0 is the min and 1.0 the max
-                    max_new_tokens     = 512,                     # max number of tokens to generate in the output
-                    repetition_penalty = 1.1,                      # without this output begins repeating
+                    temperature        = self.temperature,           # 'randomness' of outputs, 0.0 is the min and 1.0 the max
+                    max_new_tokens     = self.max_new_tokens,        # max number of tokens to generate in the output
+                    repetition_penalty = self.repetition_penalty,    # without this output begins repeating
                 )
             
-    def predict(self, prompt: str,
-                      max_tokens: int          = 1000,
-                      temperature: float       =    0.01,
-                      top_p: float             =    1,
-                      top_k: float             =    0,
-                      frequency_penalty :float =    0,
-                      presence_penalty :float  =    0.6,
-                      stop: str                = ["\n"]) -> str:
+    def predict(self, prompt: str) -> List[str]:
         """predict the next token based on the prompt"""
+
         print(f"### PREDICT ### prompt length: {len(prompt)}")
-        if temperature <= 0.0: temperature = 0.01 # temp need to be strictly positive
+        if self.temperature <= 0.0: self.temperature = 0.01 # temp need to be strictly positive
         pre_prms  = {'return_tensors':"pt"                }
-        fwd_prms  = {'max_new_tokens'  : max_tokens      ,
-                     'temperature'     : temperature     ,
-                     'top_p'           : top_p           ,
-                     'top_k'           : top_k           ,
-                     'do_sample'       : True            , }
+        fwd_prms  = {'max_new_tokens'  : self.max_new_tokens,
+                     'temperature'     : self.temperature   ,
+                     'top_p'           : self.top_p         ,
+                     'top_k'           : self.top_k         ,
+                     'do_sample'       : self.do_sample     , }
         post_prms = {'clean_up_tokenization_spaces':True,  }
         res_raw   = self.pipeline.run_single(prompt, 
                                        preprocess_params  = pre_prms, 
@@ -179,31 +183,11 @@ class TfModel:
                                        postprocess_params = post_prms)
         print(f"### R E S ###: {len(res_raw)}")
         res       = res_raw[0]['generated_text'].split('#~!|MODEL OUTPUT|!~#:')
-        del res_raw
-        del pre_prms
-        del fwd_prms
-        del post_prms
-        del prompt
-
         if len(res) > 1:
             return [res[1]]
         else:
             return ['']
     
-    def __del__(self):
-        """delete the model"""
-        del self.model
-        del self.tokenizer
-        del self.pipeline
-        del self.embeddings
-        del self.stopping_criteria
-        del self.compute_dtype
-        del self.GPU_brand
-        del self.quant_type_4bit
-        del self.model_bits
-        del self.system_info
-        if torch.cuda.is_available():
-            print("-t--Emptying CUDA cache----")
-            torch.cuda.empty_cache()
+
 
 
