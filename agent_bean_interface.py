@@ -32,7 +32,7 @@ def get_system_info():
 
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
-    action_type          = gr.components.Dropdown(choices = ["summarize", "search"], label = "Action Type" ) 
+    action_type          = gr.components.Dropdown(choices = agent.aa.get_available_actions(), label = "Action Type" ) 
     action_input         = gr.components.Textbox( lines   = 5,                       label = "Action Input")
     run_button           = gr.Button(             label   = "Run"          )
     text_output          = gr.components.Textbox( label   = "Output Text"  )
