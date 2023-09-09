@@ -30,7 +30,7 @@ Create an environement:
 ' conda create -n AB311 python=3.11 '
 
 Activate the environement:
-''' conda activate AB311 '''
+` conda activate AB311 `
 
 Run the agent bean interface:
 ''' python agent_bean_interface.py '''
