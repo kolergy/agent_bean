@@ -28,6 +28,10 @@ class AgentAction():
             #return([f"AgentAction ERROR: Action {action_name} not implemented (yet?)"])
             raise NotImplementedError(f"AgentAction ERROR: Action {action_name} not implemented (yet?)")
 
+    def get_available_actions(self) -> List[str]:
+        """Return the list of available actions."""
+        return self.actions_list
+
 
     def __action_summarize__(self, inputs: List[str]) -> str:
         """Summarize the input text."""
