@@ -54,7 +54,7 @@ class ModelsManager():
         """set model parameters"""
         if self.model_need(model_name):
             for p in params.keys():
-                print(f" model type: {type(self.active_models[model_name])}, param: {p}, value: {params[p]}")
+                #print(f" model type: {type(self.active_models[model_name])}, param: {p}, value: {params[p]}")
                 #print(f" openAI type: {type(ChatOpenAI)}, transformers type: {type(TfModel)}")
                 if isinstance(self.active_models[model_name],ChatOpenAI): 
                     if p in self.openai_params_list:
@@ -100,19 +100,20 @@ class ModelsManager():
 
     def manage_mem_resources(self, model_name:str) -> bool:
         """check model memory need va available resources may remove other instantiated models if needed"""
+        k_model_id = TfModel.keyify_model_id(self.setup['models_list'][model_name]['model_id'])
         if self.debug:
-            print(f"Checking memory resources for model {model_name}")
+            print(f"Checking memory resources for model {k_model_id}")
             self.si.print_GPU_info()
-        if model_name not in self.known_models:
-            print(f"ERROR: Model {model_name} not in known_models")
+        if k_model_id not in self.known_models:
+            print(f"ERROR: Model {k_model_id} not in known_models")
             return False
         else:
             if self.debug:
-                print(f"Model {model_name} in known_models checking memory resources")
-                print(f"      RAM need: {self.known_models[model_name]['ram_need'  ]} Gb, system available RAM: {self.si.get_ram_free()  } Gb")
-                print(f"Video RAM need: {self.known_models[model_name]['v_ram_need']} Gb,  GPU available V RAM: {self.si.get_v_ram_free()} Gb")
-            if self.known_models[model_name]['ram_need'  ] > self.si.get_ram_free()  or self.known_models[model_name]['v_ram_need'] > self.si.get_v_ram_free():
-                return self.free_resources(self.known_models[model_name]['ram_need'  ], self.known_models[model_name]['v_ram_need'])
+                print(f"Model {k_model_id} in known_models checking memory resources")
+                print(f"      RAM need: {self.known_models[k_model_id]['system_ram_gb'  ]} Gb, system available RAM: {self.si.get_ram_free()  } Gb")
+                print(f"Video RAM need: {self.known_models[k_model_id]['GPU_ram_gb']} Gb,  GPU available V RAM: {self.si.get_v_ram_free()} Gb")
+            if self.known_models[k_model_id]['system_ram_gb'  ] > self.si.get_ram_free()  or self.known_models[k_model_id]['GPU_ram_gb'] > self.si.get_v_ram_free():
+                return self.free_resources(self.known_models[k_model_id]['system_ram_gb'  ], self.known_models[k_model_id]['GPU_ram_gb'])
             else:
                 return True
             
@@ -128,7 +129,7 @@ class ModelsManager():
         if len(self.active_models) > 0:
             for model_name in self.active_models.keys():
                 if ram_need_gb > 0:
-                    ram_contrib_ratio[model_name] = self.known_models[model_name]['ram_need'  ] / ram_need_gb
+                    ram_contrib_ratio[model_name] = self.known_models[model_name]['system_ram_gb'  ] / ram_need_gb
                     if ram_contrib_ratio[model_name] > 1:
                         FLAG_RAM_Ok = True
                     else:
@@ -136,7 +137,7 @@ class ModelsManager():
                 else:
                     FLAG_RAM_Ok = True
                 if v_ram_need_gb > 0:
-                    v_ram_contrib_ratio[model_name] = self.known_models[model_name]['v_ram_need'] / v_ram_need_gb
+                    v_ram_contrib_ratio[model_name] = self.known_models[model_name]['GPU_ram_gb'] / v_ram_need_gb
                     if v_ram_contrib_ratio[model_name] > 1:
                         FLAG_V_RAM_Ok = True
                     else:
@@ -172,12 +173,13 @@ class ModelsManager():
             print(f"Testing models memory ressources requirements")
             self.si.print_GPU_info()
         for model_name in self.setup["models_list"].keys():
-            print(f"Testing model {model_name}")
-            if self.setup["models_list"][model_name]["model_id"] not in self.known_models.keys():
-                self.known_models[model_name] = {}
-                self.known_models[model_name]["model_id"] = {}
+            k_model_id = TfModel.keyify_model_id(self.setup['models_list'][model_name]['model_id'])
+            print(f"Testing model {model_name}, k_model id: {k_model_id}")
+            if k_model_id not in self.known_models.keys():
+                self.known_models[k_model_id]             = {}
+                #self.known_models[model_name]["model_id"] = self.setup["models_list"][model_name]["model_id"]
                 if self.debug:
-                    print(f"Model {model_name}: is not yet known Testing model memory ressources requirements")
+                    print(f"Model {k_model_id}: is not yet known Testing model memory ressources requirements")
                     self.si.print_GPU_info()
                     
                 if self.setup["models_list"][model_name]["model_type"] == "transformers":
@@ -187,8 +189,8 @@ class ModelsManager():
                     
                     delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
                     delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
-                    self.known_models[model_name]["system_ram_gb"] = delta_ram_gb
-                    self.known_models[model_name]["GPU_ram_gb"   ] = delta_v_ram_gb
+                    self.known_models[k_model_id]["system_ram_gb"] = delta_ram_gb
+                    self.known_models[k_model_id]["GPU_ram_gb"   ] = delta_v_ram_gb
                     if self.debug:
                         print(f"Model {model_name} instantiated using: {delta_ram_gb} Gb of system RAM and: {delta_v_ram_gb} Gb of V RAM on the GPU")
                         self.si.print_GPU_info()
@@ -196,8 +198,8 @@ class ModelsManager():
                     self.deinstantiate_model(model_name)
 
                 elif self.setup["models_list"][model_name]["model_type"] == "openAI":
-                    self.known_models[model_name]["v_ram_need"] = 0.0
-                    self.known_models[model_name]["ram_need"  ] = 0.0
+                    self.known_models[k_model_id]["v_ram_need"] = 0.0
+                    self.known_models[k_model_id]["ram_need"  ] = 0.0
 
                 else:
                     print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")
@@ -212,7 +214,8 @@ class ModelsManager():
 
     def instantiate_model(self, model_name:str) -> None:
         """instantiate the model defined in the set-up by adding it to the active model list and creating the corresponding embeddings"""
-        model_id = self.setup['models_list'][model_name]['model_id']
+        model_id   = self.setup['models_list'][model_name]['model_id']
+        
         if self.setup['models_list'][model_name]['model_type'] == "openAI":
             api_key                            = os.getenv('OPENAI_API_KEY')
             self.active_models[model_name]     = ChatOpenAI(openai_api_key=api_key, model_name=model_id)

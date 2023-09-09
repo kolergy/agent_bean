@@ -10,11 +10,12 @@ from   agent_bean.models_manager                    import ModelsManager
 class AgentAction():
     """This class is used to define the actions that the agent can take."""
     def __init__(self, setup: dict, sys_info: SystemInfo, mm: ModelsManager) -> None:
-        self.setup          = setup
-        self.system_info    = sys_info
-        self.search         = DuckDuckGoSearchResults()
-        self.actions_list   = [ m for m in dir(self) if m.startswith('__action_') ]
-        self.mm             = mm
+        self.setup            = setup
+        self.system_info      = sys_info
+        self.search           = DuckDuckGoSearchResults()
+        self.actions_list     = [ m for m in dir(self) if m.startswith('__action_') ]
+        self.actions_str_list = [ m.replace('__action_', '').replace('__', '') for m in self.actions_list ]
+        self.mm               = mm
         print(f"Actions list: {self.actions_list}")
 
 
@@ -30,7 +31,7 @@ class AgentAction():
 
     def get_available_actions(self) -> List[str]:
         """Return the list of available actions."""
-        return self.actions_list
+        return self.actions_str_list
 
 
     def __action_summarize__(self, inputs: List[str]) -> str:

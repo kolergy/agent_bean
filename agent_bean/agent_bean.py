@@ -38,7 +38,8 @@ class AgentBean:
       print(f"Action: {action_type}, num Inputs: {len(inputs)}")
 
     resp = self.aa.perform_action(action_type, inputs)
+    print(f"ZZZ R E S P O N S E: {resp}")
 
-    return resp[-1]
+    return resp
 
 

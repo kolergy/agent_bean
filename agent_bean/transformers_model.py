@@ -60,6 +60,7 @@ class TfModel:
         self.stopping_criteria                = None
         self.model_id:str                     = None
         self.k_model_id:str                   = None
+        self.do_sample:bool                   = True
         self.temperature:float                = 0.1     # 'randomness' of outputs, 0.0 is the min and 1.0 the max
         self.top_p:float                      = 1
         self.top_k:float                      = 0
@@ -97,7 +98,8 @@ class TfModel:
                 self.model_bits = self.setup['models_list'][model_name]['model_bits']
                         
             if self.GPU_brand == 'NVIDIA':
-                self.compute_dtype    = torch.bfloat16
+                #self.compute_dtype    = torch.bfloat16
+                self.compute_dtype    = torch.float16
             else:
                 self.compute_dtype    = torch.float16
 
@@ -182,6 +184,7 @@ class TfModel:
         """predict the next token based on the prompt"""
 
         print(f"### PREDICT ### prompt length: {len(prompt)}")
+        print(f"### PREDICT ### prompt: {prompt}")
         if self.temperature <= 0.0: self.temperature = 0.01          # temp need to be strictly positive
         pre_prms  = {'return_tensors':"pt"                }
         fwd_prms  = {'max_new_tokens'  : self.max_new_tokens,
@@ -190,12 +193,15 @@ class TfModel:
                      'top_k'           : self.top_k         ,
                      'do_sample'       : self.do_sample     , }
         post_prms = {'clean_up_tokenization_spaces':True,  }
-        res_raw   = self.pipeline.run_single(prompt, 
-                                       preprocess_params  = pre_prms, 
-                                       forward_params     = fwd_prms, 
-                                       postprocess_params = post_prms)
+        #res_raw   = self.pipeline.run_single(prompt, 
+        #                               preprocess_params  = pre_prms, 
+        #                               forward_params     = fwd_prms, 
+        #                               postprocess_params = post_prms)
+        res_raw   = self.pipeline.predict(prompt)
         print(f"### R E S ###: {len(res_raw)}")
+        print(f"\n### R E S  R A W ###: {res_raw}")
         res       = res_raw[0]['generated_text'].split('#~!|MODEL OUTPUT|!~#:')
+        print(f"\n### R E S ###: {res[1]}")
         if len(res) > 1:
             return [res[1]]
         else:
