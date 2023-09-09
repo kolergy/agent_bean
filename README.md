@@ -3,6 +3,7 @@ Agent Bean is a Language Model (LLM) agent that is designed to interact with use
 It is being developped with the help of aider: https://github.com/paul-gauthier/aider
 the aim is to have an agent capable to be run fully localy, it is still possible to usie openAI API
 
+
 ## Curent capabilities
 It is currently capable of the following:
 - **Manage models**: manage the models and ability to instantiate / deinstantiate models, ability to use any transformers models 
