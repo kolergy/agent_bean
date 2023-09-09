@@ -70,6 +70,16 @@ class TfModel:
         #print(f"GPU brand: {self.GPU_brand}")
         self.instantiate_pipeline()
 
+    @staticmethod
+    def clean_model_id(model_id):
+        """Clean the model_id into a string that can be used as a key"""
+        return str(model_id).replace('/', '_')
+
+    @staticmethod
+    def reverse_clean_model_id(cleaned_model_id):
+        """Reverse the cleaning process to get the original model_id"""
+        return cleaned_model_id.replace('_', '/')
+
     def instantiate_pipeline(self) -> None:
         """instantiate the pipeline defined in the set-up """
         model_name = self.model_name
