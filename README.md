@@ -8,7 +8,7 @@ It is currently capable of the following:
 - **Action Execution**: Agent Bean can perform various actions. The actions are defined in the `AgentAction` class and can be easily extended. curently implemented actions:
   -  **summarize**: generate a summary of the provided text
   -  **search**: perform a search on the net
-  -  **split**: split a task into smaller tasks (not yet working well)
+  -  **split**: split a task executable actions (not yet working well)
   -  **code**: generate code (not yet working well)
   -  **code_quality**: analyse the quality of the code (not yet working well)
 
