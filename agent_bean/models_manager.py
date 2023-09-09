@@ -75,7 +75,7 @@ class ModelsManager():
         if self.model_need(model_name):
             res =  self.active_models[model_name].predict(prompt)
             print(f"predict result: {res}") 
-            return res
+            return [res]
         
         else:
             return None
@@ -128,8 +128,9 @@ class ModelsManager():
         v_ram_need_gb         = required_free_v_ram_gb - current_free_v_ram_gb
         if len(self.active_models) > 0:
             for model_name in self.active_models.keys():
+                k_model_id = TfModel.keyify_model_id(self.setup['models_list'][model_name]['model_id'])
                 if ram_need_gb > 0:
-                    ram_contrib_ratio[model_name] = self.known_models[model_name]['system_ram_gb'  ] / ram_need_gb
+                    ram_contrib_ratio[model_name] = self.known_models[k_model_id]['system_ram_gb'  ] / ram_need_gb
                     if ram_contrib_ratio[model_name] > 1:
                         FLAG_RAM_Ok = True
                     else:
@@ -137,7 +138,7 @@ class ModelsManager():
                 else:
                     FLAG_RAM_Ok = True
                 if v_ram_need_gb > 0:
-                    v_ram_contrib_ratio[model_name] = self.known_models[model_name]['GPU_ram_gb'] / v_ram_need_gb
+                    v_ram_contrib_ratio[model_name] = self.known_models[k_model_id]['GPU_ram_gb'] / v_ram_need_gb
                     if v_ram_contrib_ratio[model_name] > 1:
                         FLAG_V_RAM_Ok = True
                     else:
@@ -198,8 +199,8 @@ class ModelsManager():
                     self.deinstantiate_model(model_name)
 
                 elif self.setup["models_list"][model_name]["model_type"] == "openAI":
-                    self.known_models[k_model_id]["v_ram_need"] = 0.0
-                    self.known_models[k_model_id]["ram_need"  ] = 0.0
+                    self.known_models[k_model_id]["system_ram_gb"] = 0.0
+                    self.known_models[k_model_id]["GPU_ram_gb"  ] = 0.0
 
                 else:
                     print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")

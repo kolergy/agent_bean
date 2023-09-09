@@ -1,19 +1,4 @@
 {
-    "model1": {
-        "model_id": {},
-        "system_ram_gb": 0.1846466064453125,
-        "GPU_ram_gb": 8.6373291015625
-    },
-    "model2": {
-        "model_id": {},
-        "system_ram_gb": 0.08485031127929688,
-        "GPU_ram_gb": 7.10467529296875
-    },
-    "model3": {
-        "model_id": {},
-        "system_ram_gb": 0,
-        "GPU_ram_gb": 12.61541748046875
-    },
     "TheBloke_-_WizardCoder-Guanaco-15B-V1.0-GPTQ": {
         "system_ram_gb": 0.0070343017578125,
         "GPU_ram_gb": 8.63128662109375
@@ -25,5 +10,17 @@
     "stabilityai_-_StableBeluga-7B": {
         "system_ram_gb": 0,
         "GPU_ram_gb": 12.6097412109375
+    },
+    "gpt-4": {
+        "system_ram_gb": 0.0,
+        "GPU_ram_gb": 0.0
+    },
+    "gpt-3.5-turbo-16k": {
+        "system_ram_gb": 0.0,
+        "GPU_ram_gb": 0.0
+    },
+    "gpt-3.5-turbo-0613": {
+        "system_ram_gb": 0.0,
+        "GPU_ram_gb": 0.0
     }
 }

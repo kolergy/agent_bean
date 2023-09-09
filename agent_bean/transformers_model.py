@@ -203,9 +203,9 @@ class TfModel:
         res       = res_raw[0]['generated_text'].split('#~!|MODEL OUTPUT|!~#:')
         print(f"\n### R E S ###: {res[1]}")
         if len(res) > 1:
-            return [res[1]]
+            return res[1]
         else:
-            return ['']
+            return ''
     
 
     def free(self) -> None:

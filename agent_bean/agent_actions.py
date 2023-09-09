@@ -59,7 +59,7 @@ class AgentAction():
             summaries.append(summary[-1])
 
         # Concatenate the summaries to form the final summary
-        res = ' '.join(summaries)
+        res = ' '.join(summaries)  # Concatenate the summaries to form the final summary
 
         return res
 

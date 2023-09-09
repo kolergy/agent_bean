@@ -5,16 +5,13 @@ import gradio as gr
 
 from agent_bean.agent_bean import AgentBean
 
-settings_files = ['settings_opai.json', 'settings_trans.json']
-settings_file = gr.components.Dropdown(choices = settings_files, label = "Settings File")
+#settings_file = 'settings_opai.json'
+settings_file = 'settings_trans.json'
 
-# Define the function to create the AgentBean object
-def create_agent(settings_file):
-    with open(settings_file) as f:
-        setup = json.load(f)
-    return AgentBean(setup)
-
-agent = create_agent(settings_file)
+# Load the settings json file and create a AgentBean object
+with open(settings_file) as f:
+    setup = json.load(f)
+agent = AgentBean(setup)
 
 # Define the function to be called when the Run button is pressed
 def run_action(action_type, action_input):
