@@ -41,3 +41,9 @@ Install the requirements:
 Run the agent bean interface:
 
 `python agent_bean_interface.py`
+
+
+If you intent to use the openAI models you have to rename the template.env file as follows:
+`cp template.env .env`
+
+Then edit this .env file to insert your openAI API key
