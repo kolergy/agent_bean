@@ -28,12 +28,16 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 Create an environement:
 
-` conda create -n AB311 python=3.11 `
+`conda create -n AB311 python=3.11`
 
 Activate the environement:
 
-` conda activate AB311 `
+`conda activate AB311`
+
+Install the requirements:
+
+`pip install -U -r requirements.txt`
 
 Run the agent bean interface:
 
-` python agent_bean_interface.py `
+`python agent_bean_interface.py`
