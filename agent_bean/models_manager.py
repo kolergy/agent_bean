@@ -13,17 +13,20 @@ from   agent_bean.transformers_model     import TfModel, TransformersEmbeddings
 class ModelsManager():
     """This class is used to manage the models and their ressources useage"""
     def __init__(self, setup: dict, si: SystemInfo) -> None:
-        self.setup             = setup
-        self.si                = si
-        self.debug             = setup['debug']
-        self.active_models     = {}
-        self.active_embeddings = {}
+        self.setup                    = setup
+        self.si                       = si
+        self.debug                    = setup['debug']
+        self.active_models            = {}
+        self.active_embeddings        = {}
+        self.openai_params_list       = ["temperature", "max_tokens"          ]
+        self.transformers_params_list = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p" ]
+
         if os.path.exists(self.setup["known_models_file_name"]):
             with open(self.setup["known_models_file_name"]) as f:
                 self.known_models  = json.load(f)
         else:
             self.known_models      = {}
-        self.test_models_ressources_reqs()
+        self.test_models_resources_reqs()
     
 
     def model_need(self, model_name:str) -> bool:
@@ -37,21 +40,46 @@ class ModelsManager():
                     return True
                 else:
                     print(f"ERROR: Model {model_name} not instantion failed")
-                    return False
+                    raise NotImplementedError(f"ERROR: Model {model_name} not instantion failed")
             else:
                 print(f"ERROR: Model {model_name} not enough resources for instantion")
-                return False
+                raise NotImplementedError(f"ERROR: Model {model_name} not enough resources for instantion")
         else:
             if self.debug:
                 print(f"Model {model_name} already instantiated")
             return True
         
-    def predict(self, model_name:str, prompt:str, max_tokens:int, temperature:float, top_p:float, frequency_penalty:float, presence_penalty:float, stop:list) -> str:
+
+    def set_model_params(self, model_name:str, params:dict) -> None:
+        """set model parameters"""
+        if self.model_need(model_name):
+            for p in params.keys():
+                print(f" model type: {type(self.active_models[model_name])}, param: {p}, value: {params[p]}")
+                #print(f" openAI type: {type(ChatOpenAI)}, transformers type: {type(TfModel)}")
+                if isinstance(self.active_models[model_name],ChatOpenAI): 
+                    if p in self.openai_params_list:
+                        print(f"setting param: {p}, value: {params[p]}")
+                        setattr(self.active_models[model_name], p, params[p])
+                elif isinstance(self.active_models[model_name], TfModel):
+                    if p in self.transformers_params_list:
+                        setattr(self.active_models[model_name], p, params[p])
+                else:
+                    print(f"ERROR: Unknown model type: {type(self.active_models[model_name])}")
+
+        else:
+            print(f"ERROR: can not set params Model {model_name} could not be instantiated")
+
+
+    def predict(self, model_name:str, prompt:str ) -> str:
         """predict using a model"""
         if self.model_need(model_name):
-            return self.active_models[model_name].predict(prompt, stop=stop, kwargs=[max_tokens, temperature, top_p, frequency_penalty, presence_penalty])
+            res =  self.active_models[model_name].predict(prompt)
+            print(f"predict result: {res}") 
+            return res
+        
         else:
             return None
+
 
     def decode(self, model_name:str, tokens:[float]) -> str:
         """decode using a model"""
@@ -138,12 +166,13 @@ class ModelsManager():
             return False
 
 
-    def test_models_ressources_reqs(self) -> None:
+    def test_models_resources_reqs(self) -> None:
         """Test the models ressources requirements and update the known_models dict accordingly"""
         if self.debug:
             print(f"Testing models memory ressources requirements")
             self.si.print_GPU_info()
         for model_name in self.setup["models_list"].keys():
+            print(f"Testing model {model_name}")
             if self.setup["models_list"][model_name]["model_id"] not in self.known_models.keys():
                 self.known_models[model_name] = {}
                 self.known_models[model_name]["model_id"] = {}
@@ -195,7 +224,7 @@ class ModelsManager():
                 print(f"GPU state before model instantiation: {torch.cuda.is_available()}")
                 self.si.print_GPU_info()
 
-            self.active_models[model_name]     = TfModel(self.setup, self.si, model_id)
+            self.active_models[model_name]     = TfModel(self.setup, self.si, model_name)
             self.active_embeddings[model_name] = TransformersEmbeddings(self.active_models[model_name].tokenizer)
             if self.debug:
                 print(f"GPU state after model instantiation: {torch.cuda.is_available()}")
@@ -207,9 +236,9 @@ class ModelsManager():
         if self.debug:
             print(f"GPU state before model deinstantiation: {torch.cuda.is_available()}")
             self.si.print_GPU_info()
-        self.active_embeddings[model_name].__del__()
-        self.active_models[model_name].free()
-        self.active_models[model_name].cuda()
+        self.active_embeddings[model_name].free()
+        self.active_models[    model_name].free()
+
 
         self.active_embeddings.pop(model_name)
         self.active_models.pop(model_name)

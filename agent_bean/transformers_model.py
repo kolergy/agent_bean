@@ -37,10 +37,11 @@ class TransformersEmbeddings:
         #print(f"tokens: {tokens}")
         return self.tokenizer.decode(tokens)
     
-    def __del__(self):
-        """delete the tokenizer"""
-        del self.tokenizer
-        
+    def free(self) -> None:
+        """Free the memory used by the embeddings"""
+        self.tokenizer = None
+    
+       
 
 class TfModel:
     """This class wraps the HuggingFace transformers pipeline class to allow to build a pipeline from the setting data"""
@@ -57,7 +58,8 @@ class TfModel:
         self.model                            = None
         self.tokenizer                        = None
         self.stopping_criteria                = None
-        self.model_id:str                     = None     
+        self.model_id:str                     = None
+        self.k_model_id:str                   = None
         self.temperature:float                = 0.1     # 'randomness' of outputs, 0.0 is the min and 1.0 the max
         self.top_p:float                      = 1
         self.top_k:float                      = 0
@@ -71,14 +73,14 @@ class TfModel:
         self.instantiate_pipeline()
 
     @staticmethod
-    def clean_model_id(model_id):
+    def keyify_model_id(model_id):
         """Clean the model_id into a string that can be used as a key"""
-        return str(model_id).replace('/', '_')
+        return str(model_id).replace('/', '_-_')
 
     @staticmethod
-    def reverse_clean_model_id(cleaned_model_id):
+    def de_keyify_model_id(cleaned_model_id):
         """Reverse the cleaning process to get the original model_id"""
-        return cleaned_model_id.replace('_', '/')
+        return cleaned_model_id.replace('_-_', '/')
 
     def instantiate_pipeline(self) -> None:
         """instantiate the pipeline defined in the set-up """
@@ -86,8 +88,9 @@ class TfModel:
         if self.setup['models_list'][model_name]['model_type'] == "transformers":
             # Instantiate the Transformers model here
             # You will need to fill in the details based on how you want to use the Transformers library
-            self.model_id = self.setup['models_list'][model_name]['model_id']
-            self.device   = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
+            self.model_id   = self.setup['models_list'][model_name]['model_id']
+            self.k_model_id = self.keyify_model_id(self.model_id)
+            self.device     = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
             print(f"device: {self.device}, brand: {self.GPU_brand}")
             # check if the number of bits for quantization is set in setum model
             if 'model_bits' in self.setup['models_list'][model_name]:
@@ -166,9 +169,9 @@ class TfModel:
             self.pipeline          = transformers.pipeline(
                     model              = self.model, 
                     tokenizer          = self.tokenizer,
-                    return_full_text   = True,                      # langchain expects the full text
+                    return_full_text   = True,                       # langchain expects the full text
                     task               ='text-generation',
-                    stopping_criteria  = self.stopping_criteria,    # without this model rambles during chat
+                    stopping_criteria  = self.stopping_criteria,     # without this model rambles during chat
                     do_sample          = True,
                     temperature        = self.temperature,           # 'randomness' of outputs, 0.0 is the min and 1.0 the max
                     max_new_tokens     = self.max_new_tokens,        # max number of tokens to generate in the output
@@ -179,7 +182,7 @@ class TfModel:
         """predict the next token based on the prompt"""
 
         print(f"### PREDICT ### prompt length: {len(prompt)}")
-        if self.temperature <= 0.0: self.temperature = 0.01 # temp need to be strictly positive
+        if self.temperature <= 0.0: self.temperature = 0.01          # temp need to be strictly positive
         pre_prms  = {'return_tensors':"pt"                }
         fwd_prms  = {'max_new_tokens'  : self.max_new_tokens,
                      'temperature'     : self.temperature   ,
@@ -199,5 +202,15 @@ class TfModel:
             return ['']
     
 
-
+    def free(self) -> None:
+        """Free the memory used by the model"""
+        print(f"dir: {dir(self.model)}")
+        print(f"model mem: {self.model.get_memory_footprint()}")
+        self.model.to_empty(device=self.device)
+        #self.model.cuda.empty_cache()
+        self.embeddings.free()
+        self.tokenizer = None
+        self.pipeline  = None
+        self.model     = None
+        self.embeddings= None
 

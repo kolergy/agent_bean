@@ -48,13 +48,13 @@ class AgentAction():
             self.system_info.print_GPU_info()
             print(f"BBB--- CHUNK LEN: {len(chunk)}, chunk_text len: {len(chunk_text)}, prompt len: {len(prompt)}")
             #print(f"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB chunk_text:\n{chunk_text}\nBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-            summary    = self.mm.predict(model_name, prompt,
-                                            max_tokens       = max_tokens,
-                                            temperature      = 0.01,
-                                            top_p            = 1,
-                                            frequency_penalty= 0,
-                                            presence_penalty = 0.6,
-                                            stop             = ["\n"])
+            self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
+                                     'temperature':       0.01,
+                                     'top_p':             1,
+                                     'frequency_penalty': 0,
+                                     'presence_penalty':  0.6,
+                                     'stop':              ["\n"]})
+            summary = self.mm.predict(model_name, prompt)
             summaries.append(summary[-1])
             #print(f"summary response type: {type(summary[-1])}, len: {len(summary)}")
         #print(f"summarized response type: {type(summaries)}")
