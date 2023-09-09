@@ -1,22 +1,70 @@
 {
-    "AgentBean_settings": {
-        "debug": true,
-        "model": {
+    "description":"Agent_Bean settings",
+    "debug": true,
+    "known_models_file_name": "known_models.json",
+    "models_list": {
+        "model1": {
+            "model_type": "transformers",
+            "model_id": "TheBloke/WizardCoder-Guanaco-15B-V1.0-GPTQ",
+            "max_tokens": 4000
+        },
+        "model2": {
+            "model_type": "transformers",
+            "model_id": "TheBloke/vicuna-13B-v1.5-16K-GPTQ",
+            "model_bits": 16,
+            "max_tokens": 16000
+        },
+        "model3": {
             "model_type": "transformers",
             "model_id": "stabilityai/StableBeluga-7B",
             "model_bits": 16,
             "max_tokens": 4000
-        },
-        "vectorstore": {
-            "type": "faiss",
-            "path": "vectors",
-            "chunk_size": 800,
-            "chunk_overlap": 100
-        },
-        "prompts_templates":{
-        "summarize": "You will be given a text enclosed in triple backticks.\nPlease provide a cohesive summary of the following text, focusing on the key points and main ideas, while maintaining clarity and conciseness.\n'''{text}'''\nFULL SUMMARY #~!|MODEL OUTPUT|!~#:\n",
-        "search": "You will be given a text enclosed in triple backticks.\nPlease generate a search querry in adequation to the provided text.\n'''{text}'''\nSEARCH QUERRY #~!|MODEL OUTPUT|!~#:\n"
         }
-
+    },
+    "vectorstore": {
+        "type": "faiss",
+        "path": "vectors",
+        "chunk_size": 800,
+        "chunk_overlap": 100
+    },
+    "actions": {
+        "summarize": {
+            "model_name": "model2",
+            "prompt_template":[
+                "You will be given a text enclosed in triple backticks.\n",
+                "Please provide a brief and cohesive summary of the following text, \n",
+                "focusing on the key points and main ideas, while maintaining clarity and conciseness.\n",
+                "'''{text}'''\nFULL SUMMARY #~!|MODEL OUTPUT|!~#:\n"
+        ]},
+        "search": {
+            "model_name": "model3",
+            "prompt_template":[
+            "You will be given a text enclosed in triple backticks.\n",
+            "Please generate a search querry in adequation to the provided text.\n",
+            "'''{text}'''\nSEARCH QUERRY #~!|MODEL OUTPUT|!~#:\n"
+        ]},
+        "split": {
+            "model_name": "model1",
+            "prompt_template":[
+            "You are an experienced project manager expert at identifying the atomic actions to be done in order to perform a task.\n",
+            "You will be given a text enclosed in triple backticks.\n",
+            "Please generate a set of atomic actions and the associated prompt required to preform the task described in the following textprovided as a list of dictionaries, each containing the 'action_type' key and the 'prompt' key.\n",
+            "'''{text}'''\ntask list #~!|MODEL OUTPUT|!~#:\n"
+        ]},
+        "code": {
+            "model_name": "model2",
+            "prompt_template": [
+            "You are an expert python programmer that produce synthetic, clear and well documented code\n",
+            "You will be given a text enclosed in triple backticks.\n",
+            "Please generate the code required to preform the action described in the following text.\n",
+            "'''{text}'''\ntask list #~!|MODEL OUTPUT|!~#:\n"               
+        ]},
+        "code_quality": {
+            "model_name": "model2",
+            "prompt_template": [
+            "you are an expert python code quality checker, you will be provided code in enclosed in triple backticks \n",
+            "analyze it and ensure that the code repsects the bests standards of codding and is logically sound\n",
+            "'''{text}'''\nanalysis #~!|MODEL OUTPUT|!~#:\n" 
+        ]}
     }
 }

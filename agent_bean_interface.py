@@ -3,21 +3,20 @@ import time
 
 import gradio as gr
 
-from agent_bean import AgentBean
+from agent_bean.agent_bean import AgentBean
+
+#settings_file = 'settings_opai.json'
+settings_file = 'settings_trans.json'
 
 # Load the settings json file and create a AgentBean object
-with open('settings_opai.json') as f:
+with open(settings_file) as f:
     setup = json.load(f)
-agent = AgentBean(setup['AgentBean_settings'])
+agent = AgentBean(setup)
 
 # Define the function to be called when the Run button is pressed
 def run_action(action_type, action_input):
     return agent.agent_action(action_type, [action_input])
 
-# Define the function to be called when the Load Document button is pressed
-def load_document(document_path):
-    agent.load_document([document_path])
-    return "Document loaded successfully."
 
 # Define the function to get system information
 def get_system_info():
@@ -33,16 +32,13 @@ def get_system_info():
 
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
-    action_type          = gr.components.Dropdown(choices = ["summarize", "search"], label = "Action Type" ) 
+    action_type          = gr.components.Dropdown(choices = agent.aa.get_available_actions(), label = "Action Type" ) 
     action_input         = gr.components.Textbox( lines   = 5,                       label = "Action Input")
     run_button           = gr.Button(             label   = "Run"          )
-    document_path        = gr.components.File(    label   = "Document Path")
-    load_document_button = gr.Button(             label   = "Load Document")
-    text                 = gr.components.Textbox( label   = "Output Text"  )
-    system_info          = gr.components.Textbox( label   = "System Info"  )
+    text_output          = gr.components.Textbox( label   = "Output Text"  )
 
-    run_button.click(          run_action   , [action_type, action_input], outputs = text)
-    load_document_button.click(load_document, [document_path]            , outputs = text)
+    run_button.click( run_action   , [action_type, action_input], outputs = text_output)
+
     
 
 
