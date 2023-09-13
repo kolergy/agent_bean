@@ -25,6 +25,9 @@
         "chunk_overlap": 100
     },
     "actions": {
+        "free": {
+            "model_name": "model1",
+            "prompt_template":[""]},
         "summarize": {
             "model_name": "model2",
             "prompt_template":[

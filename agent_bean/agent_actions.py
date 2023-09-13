@@ -33,7 +33,20 @@ class AgentAction():
         """Return the list of available actions."""
         return self.actions_str_list
 
-
+    def __action_free__(self, inputs: List[str]) -> str:
+        """Generate code based on the input text."""
+        model_name   = self.setup['actions']['code']['model_name']
+        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        prompt       = ''.join(self.setup['actions']['code']['prompt_template']).format(text=inputs)
+        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
+                                     'temperature':       0.6,
+                                     'top_p':             1,
+                                     'frequency_penalty': 0,
+                                     'presence_penalty':  0.6,
+                                     'stop':              ["\n"]})
+        resp         = self.mm.predict(model_name, prompt)
+        return resp
+    
     def __action_summarize__(self, inputs: List[str]) -> str:
         """Summarize the input text."""
         # Tokenize the input text

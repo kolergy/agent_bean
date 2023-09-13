@@ -28,6 +28,9 @@
         "chunk_overlap": 100
     },
     "actions": {
+        "free": {
+            "model_name": "model1",
+            "prompt_template":[""]},
         "summarize": {
             "model_name": "model2",
             "prompt_template":[
@@ -48,16 +51,21 @@
             "prompt_template":[
             "You are an experienced project manager expert at identifying the atomic actions to be done in order to perform a task.\n",
             "You will be given a text enclosed in triple backticks.\n",
-            "Please generate a set of atomic actions and the associated prompt required to preform the task described in the following textprovided as a list of dictionaries, each containing the 'action_type' key and the 'prompt' key.\n",
+            "Please generate a set of atomic actions and the associated prompt required to preform the task described in the following text provided as a list of dictionaries, each containing the 'action_type' key and the 'prompt' key.\n",
+            "The task that you will split into actions will be given as a text enclosed in triple backticks as follows:\n",
             "'''{text}'''\ntask list #~!|MODEL OUTPUT|!~#:\n"
         ]},
         "code": {
             "model_name": "model2",
             "prompt_template": [
-            "You are an expert python programmer that produce synthetic, clear and well documented code\n",
-            "You will be given a text enclosed in triple backticks.\n",
-            "Please generate the code required to preform the action described in the following text.\n",
-            "'''{text}'''\ntask list #~!|MODEL OUTPUT|!~#:\n"               
+            "You are an experienced software architect expert at identifying the atomic actions to be done in order to perform a task\n",
+            "our team can do one of those actions: ['search', 'code', 'code_quality' ]..\n",
+            "Split the task that will be provided in a manner to generate simple codding tasks for your team.\n",
+            "describe your thought process in the section 'architect refection:'\n", 
+            "For 'code' action the action must be trivial and be described precisely and in a detailed manner in the prompt as if you were interacting with inexperienced coders.\n",
+            "Please generate a set of atomic actions and the associated detailed prompt required to preform the task described. Provide your answer as a list of dictionaries, each containing the 'action_type' key and the 'prompt' key.\n",
+
+            "'''{text}'''\nTake a deep breath and work this problem step by step #~!|MODEL OUTPUT|!~#:\n"               
         ]},
         "code_quality": {
             "model_name": "model2",
@@ -68,3 +76,4 @@
         ]}
     }
 }
+
