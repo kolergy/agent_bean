@@ -1,7 +1,7 @@
 # Agent Bean
 Agent Bean is a Language Model (LLM) agent that is designed to interact with users and perform various tasks. 
 It is being developped with the help of aider: https://github.com/paul-gauthier/aider
-the aim is to have an agent capable to be run fully localy, it is still possible to usie openAI API
+the aim is to have an agent capable to be run fully localy, it is still possible to use openAI API
 
 
 ## Curent capabilities:
@@ -10,6 +10,7 @@ The agent Bean is currently capable of the following:
 - **Action Execution**: Agent Bean can perform various actions. The actions are defined in the `AgentAction` class and can be easily extended. curently implemented actions:
   -  **summarize**: generate a summary of the provided text
   -  **search**: perform a search on the net
+  -  **free**: freetext query
   -  **split**: split a task executable actions (not yet working well)
   -  **code**: generate code (not yet working well)
   -  **code_quality**: analyse the quality of the code (not yet working well)
