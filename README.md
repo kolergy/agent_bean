@@ -1,5 +1,5 @@
-# Agent Bean
-Agent Bean is a Language Model (LLM) agent that is designed to interact with users and perform various tasks. 
+# AI Agent Bean
+Agent Bean is a Language Model (LLM) agent that is designed to interact with users and perform various tasks starting with a focus on coding. 
 It is being developped with the help of aider: https://github.com/paul-gauthier/aider
 the aim is to have an agent capable to be run fully localy, it is still possible to use openAI API
 
