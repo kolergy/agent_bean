@@ -30,50 +30,62 @@
     "actions": {
         "free": {
             "model_name": "model1",
+            "prompt_system": ["please use touy best skills to perform the actions or demands requested by the usser"],
             "prompt_template":[""]},
         "summarize": {
             "model_name": "model2",
+            "prompt_system": [
+                "you are the finest summarizer in the world, You manage to condense a text to it's quintessence preserving the informations",
+                " and the style of the original text. You provide a summary where no words are wasted and no information is lost." ],
             "prompt_template":[
-                "You will be given a text enclosed in triple backticks.\n",
-                "Please provide a brief and cohesive summary of the following text, \n",
-                "focusing on the key points and main ideas, while maintaining clarity and conciseness.\n",
-                "'''{text}'''\nFULL SUMMARY #~!|MODEL OUTPUT|!~#:\n"
-        ]},
+                "Please provide a summary of the following text enclosed in triple backticks.",
+                "'''{text}''':\n"]
+        },
         "search": {
             "model_name": "model3",
+            "prompt_system": [
+                "you are the finest internet search expert in the world, You know all the tricks to find the most relevant information on the web",
+                " and and you use this knowledge to craft the most relevant search queries to answer to the user demand" ],
             "prompt_template":[
-            "You will be given a text enclosed in triple backticks.\n",
-            "Please generate a search querry in adequation to the provided text.\n",
-            "'''{text}'''\nSEARCH QUERRY #~!|MODEL OUTPUT|!~#:\n"
-        ]},
+                "Please craft a search querry for the following user demand which is provided enclosed in triple backticks.\n",
+                "'''{text}'''\n"]
+        },
         "split": {
             "model_name": "model1",
+            "prompt_system": [
+                "You are an exceptional project manager, you are an expert at identifying the atomic actions to be performed in order to complete a task.",
+                " you mostly split tasks in the following action_categories ['requirements', 'architecture', 'code', 'code_quality', 'search'] if it dose",
+                " not fit within those action_categories you can use the 'split' action_category to further refine the task or if it dose not fit any of the",
+                " previous you can use the 'free' action_category. Your output will always consist of your thought proces description followed by a list of",
+                " json, each json object containing the following keys the 'objective' key where you detail the objective of the task, the 'action' key",
+                " where you put an action from the action_categories list, and the associated 'prompt' key where you put the prompt required to perform this action." ],
             "prompt_template":[
-            "You are an experienced project manager expert at identifying the atomic actions to be done in order to perform a task.\n",
-            "You will be given a text enclosed in triple backticks.\n",
-            "Please generate a set of atomic actions and the associated prompt required to preform the task described in the following text provided as a list of dictionaries, each containing the 'action_type' key and the 'prompt' key.\n",
-            "The task that you will split into actions will be given as a text enclosed in triple backticks as follows:\n",
-            "'''{text}'''\ntask list #~!|MODEL OUTPUT|!~#:\n"
-        ]},
+                "Please generate the list of actions to be performed in order to complete task described within the following text enclosed in triple backticks.",
+                "'''{text}'''\n"]
+        },
         "code": {
             "model_name": "model2",
+            "prompt_system": [
+                "you are an exceptional {code_language} coder, you produce {code_language} code that function as pre requirements and that is safe, easy to read",
+                " and to understand for all coders, you respects the best practices of codding and documentation",
+                " you always start your code by a comment describing your approach and thought process" ],
             "prompt_template": [
-            "You are an experienced software architect expert at identifying the atomic actions to be done in order to perform a task\n",
-            "our team can do one of those actions: ['search', 'code', 'code_quality' ]..\n",
-            "Split the task that will be provided in a manner to generate simple codding tasks for your team.\n",
-            "describe your thought process in the section 'architect refection:'\n", 
-            "For 'code' action the action must be trivial and be described precisely and in a detailed manner in the prompt as if you were interacting with inexperienced coders.\n",
-            "Please generate a set of atomic actions and the associated detailed prompt required to preform the task described. Provide your answer as a list of dictionaries, each containing the 'action_type' key and the 'prompt' key.\n",
-
-            "'''{text}'''\nTake a deep breath and work this problem step by step #~!|MODEL OUTPUT|!~#:\n"               
-        ]},
+                "please generate the code required to satisfy the following demand enclosed in triple backticks.",
+                "'''{text}'''\n"]               
+        },
         "code_quality": {
             "model_name": "model2",
+            "prompt_system": [
+                "you are an exceptional {code_language} quality expert, you analyze the provided code and ensure that it function as per requirements and that is",
+                " safe, easy to read, and adequately documented and that it respects the best practices of codding and documentation. Your output will always",
+                " consist of your thought proces description followed by a list of json, containg one json for each correrctives actions to be performed on the",
+                " code to bring it to the highest standrds of quality each json will contain the following keys the 'objective' key where you detail the objective",
+                " of the task, the 'action' key which will always be 'code_mod', the 'initial_code' where you copy the actual code that needs to be improved and",
+                " the associated 'prompt' key where you put the prompt required to perform this code change." ],
             "prompt_template": [
-            "you are an expert python code quality checker, you will be provided code in enclosed in triple backticks \n",
-            "analyze it and ensure that the code repsects the bests standards of codding and is logically sound\n",
-            "'''{text}'''\nanalysis #~!|MODEL OUTPUT|!~#:\n" 
-        ]}
+                "Please analyse the following code provided within enclosed in triple backticks \n",
+                "'''{text}'''\n"] 
+        }
     }
 }
 
