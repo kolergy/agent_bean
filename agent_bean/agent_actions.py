@@ -29,10 +29,10 @@ class AgentAction():
             #return([f"AgentAction ERROR: Action {action_name} not implemented (yet?)"])
             raise NotImplementedError(f"AgentAction ERROR: Action {action_name} not implemented (yet?)")
 
+
     def get_available_actions(self) -> List[str]:
         """Return the list of available actions."""
         return self.actions_str_list
-
 
 
     def get_special_tokens(self, model_name:str) -> [dict]:
@@ -61,7 +61,7 @@ class AgentAction():
                                      'frequency_penalty': 0,
                                      'presence_penalty':  0.6,
                                      'stop':              ["\n"]})
-        resp         = self.mm.predict(model_name, prompt)
+        resp           = self.mm.predict(model_name, prompt)
         return resp
     
     def __action_summarize__(self, inputs: List[str]) -> str:
