@@ -33,11 +33,28 @@ class AgentAction():
         """Return the list of available actions."""
         return self.actions_str_list
 
+
+
+    def get_special_tokens(self, model_name:str) -> [dict]:
+        """get the special tokens used by the model"""
+        keys = ["model_sys_delim", "model_usr_delim"]
+        out  = {k:self.setup['models_list'][model_name][k] for k in keys  }
+        return out
+
+
     def __action_free__(self, inputs: List[str]) -> str:
         """Generate code based on the input text."""
-        model_name   = self.setup['actions']['code']['model_name']
-        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        prompt       = ''.join(self.setup['actions']['code']['prompt_template']).format(text=inputs)
+        model_name     = self.setup['actions']['code']['model_name']
+        special_tokens = self.get_special_tokens(model_name)
+
+        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        prompt         = special_tokens['model_sys_delim']['start'] \
+                            + ''.join(self.setup['actions']['free']['prompt_template']) \
+                            + special_tokens['model_sys_delim']['end']
+        prompt        += special_tokens['model_usr_delim']['start'] \
+                            + ''.join(self.setup['actions']['free']['prompt_template']).format(text=inputs) \
+                            + special_tokens['model_usr_delim']['end']
+        
         self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
                                      'temperature':       0.6,
                                      'top_p':             1,

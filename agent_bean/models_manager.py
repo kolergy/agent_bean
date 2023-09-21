@@ -30,7 +30,7 @@ class ModelsManager():
     
 
     def model_need(self, model_name:str) -> bool:
-        """check memory resources and instantiate a nneded model if not already instantiated, may remove other instantiated models if needed"""
+        """if model not already instantiated check memory resources and instantiate a nneded model, may remove other instantiated models if needed"""
         if model_name not in self.active_models:
             if self.debug:
                 print(f"Model {model_name} not yet instantiated, instantiating it now")

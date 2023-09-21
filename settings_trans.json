@@ -6,19 +6,26 @@
         "model1": {
             "model_type": "transformers",
             "model_id": "TheBloke/WizardCoder-Guanaco-15B-V1.0-GPTQ",
-            "max_tokens": 4000
+            "model_bits": 16,
+            "max_tokens": 4000,
+            "model_sys_delim": { "start": "<<SYS>>\n", "end": "\n<</SYS>>\n\n" },
+            "model_usr_delim": { "start": "[INST]"   , "end": "[/INST]" }
         },
         "model2": {
             "model_type": "transformers",
             "model_id": "TheBloke/vicuna-13B-v1.5-16K-GPTQ",
             "model_bits": 16,
-            "max_tokens": 16000
+            "max_tokens": 16000,
+            "model_sys_delim": { "start": "<<SYS>>\n", "end": "\n<</SYS>>\n\n" },
+            "model_usr_delim": { "start": "[INST]"   , "end": "[/INST]" }
         },
         "model3": {
             "model_type": "transformers",
             "model_id": "stabilityai/StableBeluga-7B",
             "model_bits": 16,
-            "max_tokens": 4000
+            "max_tokens": 4000,
+            "model_sys_delim": { "start": "<<SYS>>\n", "end": "\n<</SYS>>\n\n" },
+            "model_usr_delim": { "start": "[INST]"   , "end": "[/INST]" }
         }
     },
     "vectorstore": {
