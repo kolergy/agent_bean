@@ -3,8 +3,8 @@ import torch
 
 from   typing                            import List
 from   langchain.tools                   import DuckDuckGoSearchResults
-from   agent_bean.system_info                       import SystemInfo
-from   agent_bean.models_manager                    import ModelsManager
+from   agent_bean.system_info            import SystemInfo
+from   agent_bean.models_manager         import ModelsManager
 
 
 class AgentAction():
@@ -17,7 +17,6 @@ class AgentAction():
         self.actions_str_list = [ m.replace('__action_', '').replace('__', '') for m in self.actions_list ]
         self.mm               = mm
         print(f"Actions list: {self.actions_list}")
-
 
 
     def perform_action(self, action_type: str, inputs: List[str]) -> str:
@@ -64,6 +63,7 @@ class AgentAction():
         resp           = self.mm.predict(model_name, prompt)
         return resp
     
+
     def __action_summarize__(self, inputs: List[str]) -> str:
         """Summarize the input text."""
         # Tokenize the input text
@@ -90,7 +90,6 @@ class AgentAction():
 
         # Concatenate the summaries to form the final summary
         res = ' '.join(summaries)  # Concatenate the summaries to form the final summary
-
         return res
 
 
@@ -128,6 +127,7 @@ class AgentAction():
         tasks        = resp[0].split(',')
         return tasks
 
+
     def __action_code__(self, inputs: List[str]) -> str:
         """Generate code based on the input text."""
         model_name   = self.setup['actions']['code']['model_name']
@@ -142,6 +142,7 @@ class AgentAction():
         resp         = self.mm.predict(model_name, prompt)
         code         = resp
         return code
+
 
     def __action_code_quality__(self, inputs: List[str]) -> str:
         """Check the quality of the input code."""
@@ -158,9 +159,9 @@ class AgentAction():
         code_quality = resp
         return code_quality
 
+
     def __del__(self):
         """Delete the model."""
-        
         del self.model
         del self.enc
         del self.setup
