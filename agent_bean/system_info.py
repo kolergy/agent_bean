@@ -88,10 +88,7 @@ class SystemInfo:
         return self.vram_used_gb
 
     def get_v_ram_free(self) -> float:
-        if torch.cuda.is_available():
-            vram  = torch.cuda.mem_get_info()   if torch.cuda.is_available() else None
-        else:
-            vram = None
+        vram  = torch.cuda.mem_get_info()   if torch.cuda.is_available() else None
         print(f"XXX vram XXX: {vram}")
         self.vram_free_gb = (vram[0]) / (1024 ** 3) if vram else None
         return(self.vram_free_gb)

@@ -22,5 +22,9 @@
     "gpt-3.5-turbo-0613": {
         "system_ram_gb": 0.0,
         "GPU_ram_gb": 0.0
+    },
+    "posicube_-_Llama2-chat-AYT-13B": {
+        "system_ram_gb": 5.159503936767578,
+        "GPU_ram_gb": 18.7811279296875
     }
 }
