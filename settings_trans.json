@@ -13,11 +13,11 @@
         },
         "model2": {
             "model_type": "transformers",
-            "model_id": "TheBloke/vicuna-13B-v1.5-16K-GPTQ",
+            "model_id": "Open-Orca/LlongOrca-13B-16k",
             "model_bits": 16,
             "max_tokens": 16000,
-            "model_sys_delim": { "start": "<s>[INST] <<SYS>>\n", "end": "\n<</SYS>>\n\n" },
-            "model_usr_delim": { "start": ""                   , "end": "[/INST]"        }
+            "model_sys_delim": { "start": "<|im_start|>system\n", "end": "\n<|im_end|>\n"                        },
+            "model_usr_delim": { "start": "<|im_start|>user\n"  , "end": "\n<|im_end|>\n<|im_start|>assistant\n" }
         },
         "model3": {
             "model_type": "transformers",
@@ -81,7 +81,7 @@
                 "'''{text}'''\n"]               
         },
         "code_quality": {
-            "model_name": "model1",
+            "model_name": "model3",
             "prompt_system": [
                 "you are an exceptional {code_language} quality expert, you analyze the provided code and ensure that it function as per requirements and that is",
                 " safe, easy to read, and adequately documented and that it respects the best practices of codding and documentation. Your output will always",
