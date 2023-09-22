@@ -48,7 +48,7 @@ class AgentAction():
 
         max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
         prompt         = special_tokens['model_sys_delim']['start'] \
-                            + ''.join(self.setup['actions']['free']['prompt_template']) \
+                            + ''.join(self.setup['actions']['free']['prompt_system']) \
                             + special_tokens['model_sys_delim']['end']
         prompt        += special_tokens['model_usr_delim']['start'] \
                             + ''.join(self.setup['actions']['free']['prompt_template']).format(text=inputs) \

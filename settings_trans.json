@@ -38,7 +38,7 @@
         "free": {
             "model_name": "model1",
             "prompt_system": ["please use touy best skills to perform the actions or demands requested by the usser"],
-            "prompt_template":[""]},
+            "prompt_template":["{text}"]},
         "summarize": {
             "model_name": "model2",
             "prompt_system": [
