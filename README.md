@@ -32,6 +32,10 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 ## Useage:
 
+Clone this repository:
+
+`git clone https://github.com/kolergy/agent_bean.git`
+
 Create an environement:
 
 `conda create -n AB311 python=3.11`
@@ -52,4 +56,11 @@ Run the agent bean interface:
 If you intent to use the openAI models you have to rename the template.env file as follows:
 `cp template.env .env`
 
-Then edit this .env file to insert your openAI API key
+Then edit this .env file to insert your openAI API key 
+Once edited you need to set the environement with:
+
+`sourrce .env`
+
+To test the code you can run the interface:
+
+`python agent_bean_interface.py`
