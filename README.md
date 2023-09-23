@@ -3,7 +3,9 @@ Agent Bean is AI agent that is designed to interact with users and perform vario
 It has been designed to be able to run local llm models available on the huggingface portal as well as interfacing with the openAI API so you can run the model fully localy if you need and have the available compute or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different tasks.
 
 It has a memory management system that can instantiate / dinstantiate models dependings on the needs of the task (it is still a bit rough and somtimes dose not dealocate all vram correctely)
+
 it is not yet able to interact with files
+
 Some of the code has been developped with the help of aider: https://github.com/paul-gauthier/aider (at the beginning while the code was less than 8k tokens)
 
 
@@ -54,9 +56,11 @@ Run the agent bean interface:
 
 
 If you intent to use the openAI models you have to rename the template.env file as follows:
+
 `cp template.env .env`
 
 Then edit this .env file to insert your openAI API key 
+
 Once edited you need to set the environement with:
 
 `sourrce .env`
