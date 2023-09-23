@@ -1,0 +1,188 @@
+{
+    "description":"Agent_Bean settings",
+    "debug": true,
+    "known_models_file_name": "known_models.json",
+    "models_list": {
+        "model1": {
+            "model_type": "transformers",
+            "model_id": "TheBloke/WizardCoder-Guanaco-15B-V1.0-GPTQ",
+            "model_bits": 16,
+            "max_tokens": 4000,
+            "model_sys_delim": { "start": "### Instruction:\n", "end": "\n"            },
+            "model_usr_delim": { "start": ""                  , "end": "### Response:" }
+        },
+        "model2": {
+            "model_type": "transformers",
+            "model_id": "Open-Orca/LlongOrca-13B-16k",
+            "model_bits": 16,
+            "max_tokens": 16000,
+            "model_sys_delim": { "start": "<|im_start|>system\n", "end": "\n<|im_end|>\n"                        },
+            "model_usr_delim": { "start": "<|im_start|>user\n"  , "end": "\n<|im_end|>\n<|im_start|>assistant\n" }
+        },
+        "model3": {
+            "model_type": "transformers",
+            "model_id": "posicube/Llama2-chat-AYT-13B",
+            "model_bits": 16,
+            "max_tokens": 4000,
+            "model_sys_delim": { "start": "<s>[INST] <<SYS>>\n", "end": "\n<</SYS>>\n\n" },
+            "model_usr_delim": { "start": ""                   , "end": "[/INST]"        }
+        },
+        "model4": {
+            "model_type": "transformers",
+            "model_id": "glaiveai/glaive-coder-7b",
+            "model_bits": 16,
+            "max_tokens": 4000,
+            "model_sys_delim": { "start": "<s>[INST]\n<<SYS>>\n", "end": "\n<</SYS>>\n\n" },
+            "model_usr_delim": { "start": ""                    , "end": "[/INST]"        }
+        },
+        "model10": {
+            "model_type": "openAI",
+            "model_id": "gpt-4",
+            "max_tokens": 8000,
+            "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
+            "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
+        },
+        "model20": {
+            "model_type": "openAI",
+            "model_id": "gpt-3.5-turbo-16k",
+            "max_tokens": 16000,
+            "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
+            "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
+        },
+        "model30": {
+            "model_type": "openAI",
+            "model_id": "gpt-3.5-turbo-0613",
+            "max_tokens": 4000,
+            "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
+            "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
+        } 
+
+    },
+    "vectorstore": {
+        "type": "faiss",
+        "path": "vectors",
+        "chunk_size": 800,
+        "chunk_overlap": 100
+    },
+    "actions": {
+        "free": {
+            "model_name": "model3",
+            "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
+            "prompt_template":["{text}"]
+        },
+        "summarize": {
+            "model_name": "model2",
+            "prompt_system": [
+                "you are the finest summarizer in the world, You manage to condense a text to it's quintessence preserving the informations",
+                " and the style of the original text. You provide a summary where no words are wasted and no information is lost." ],
+            "prompt_template":[
+                "Please provide a summary of the following text enclosed in triple backticks.",
+                "'''{text}''':\n"]
+        },
+        "search": {
+            "model_name": "model3",
+            "prompt_system": [
+                "you are the finest internet search expert in the world, You know all the tricks to find the most relevant information on the web",
+                " and and you use this knowledge to craft the most relevant search queries to answer to the user demand" ],
+            "prompt_template":[
+                "Please craft a search querry for the following user demand which is provided enclosed in triple backticks.\n",
+                "'''{text}'''\n"]
+        },
+        "split": {
+            "model_name": "model3",
+            "prompt_system": [
+                "You are an exceptional project manager, you are an expert at identifying the atomic actions to be performed in order to complete a task.",
+                " you mostly split tasks in the following action_categories ['requirements', 'architecture', 'code', 'code_quality', 'search'] if it dose",
+                " not fit within those action_categories you can use the 'split' action_category to further refine the task or if it dose not fit any of the",
+                " previous you can use the 'free' action_category. Your output will always consist of your thought proces description followed by a list of",
+                " json, each json object containing the following keys the 'objective' key where you detail the objective of the task, the 'action' key",
+                " where you put an action from the action_categories list, and the associated 'prompt' key where you put the prompt required to perform this action." ],
+            "prompt_template":[
+                "Please generate the list of actions to be performed in order to complete task described within the following text enclosed in triple backticks.",
+                "'''{text}'''\n"]
+        },
+        "code": {
+            "model_name": "model1",
+            "prompt_system": [
+                "you are an exceptional {code_language} coder, you produce {code_language} code that function as pre requirements and that is safe, easy to read",
+                " and to understand for all coders, you respects the best practices of codding and documentation",
+                " you always start your code by a comment describing your approach and thought process" ],
+            "prompt_template": [
+                "please generate the code required to satisfy the following demand enclosed in triple backticks.",
+                "'''{text}'''\n"]               
+        },
+        "code_quality": {
+            "model_name": "model3",
+            "prompt_system": [
+                "you are an exceptional {code_language} quality expert, you analyze the provided code and ensure that it function as per requirements and that is",
+                " safe, easy to read, and adequately documented and that it respects the best practices of codding and documentation. Your output will always",
+                " consist of your thought proces description followed by a list of json, containg one json for each correrctives actions to be performed on the",
+                " code to bring it to the highest standrds of quality each json will contain the following keys the 'objective' key where you detail the objective",
+                " of the task, the 'action' key which will always be 'code_mod', the 'initial_code' where you copy the actual code that needs to be improved and",
+                " the associated 'prompt' key where you put the prompt required to perform this code change." ],
+            "prompt_template": [
+                "Please analyse the following code provided within enclosed in triple backticks \n",
+                "'''{text}'''\n"] 
+        },
+        "free_opai": {
+            "model_name": "model1",
+            "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
+            "prompt_template":["{text}"]
+        },
+        "summarize_opai": {
+            "model_name": "model2",
+            "prompt_system": [
+                "you are the finest summarizer in the world, You manage to condense a text to it's quintessence preserving the informations",
+                " and the style of the original text. You provide a summary where no words are wasted and no information is lost." ],
+            "prompt_template":[
+                "Please provide a summary of the following text enclosed in triple backticks.",
+                "'''{text}''':\n"]
+        },
+        "search_opai": {
+            "model_name": "model3",
+            "prompt_system": [
+                "you are the finest internet search expert in the world, You know all the tricks to find the most relevant information on the web",
+                " and and you use this knowledge to craft the most relevant search queries to answer to the user demand" ],
+            "prompt_template":[
+                "Please craft a search querry for the following user demand which is provided enclosed in triple backticks.\n",
+                "'''{text}'''\n"]
+        },
+        "split_opai": {
+            "model_name": "model1",
+            "prompt_system": [
+                "You are an exceptional project manager, you are an expert at identifying the atomic actions to be performed in order to complete a task.",
+                " you mostly split tasks in the following action_categories ['requirements', 'architecture', 'code', 'code_quality', 'search'] if it dose",
+                " not fit within those action_categories you can use the 'split' action_category to further refine the task or if it dose not fit any of the",
+                " previous you can use the 'free' action_category. Your output will always consist of your thought proces description followed by a list of",
+                " json, each json object containing the following keys the 'objective' key where you detail the objective of the task, the 'action' key",
+                " where you put an action from the action_categories list, and the associated 'prompt' key where you put the prompt required to perform this action." ],
+            "prompt_template":[
+                "Please generate the list of actions to be performed in order to complete task described within the following text enclosed in triple backticks.",
+                "'''{text}'''\n"]
+        },
+        "code_opai": {
+            "model_name": "model2",
+            "prompt_system": [
+                "you are an exceptional {code_language} coder, you produce {code_language} code that function as pre requirements and that is safe, easy to read",
+                " and to understand for all coders, you respects the best practices of codding and documentation",
+                " you always start your code by a comment describing your approach and thought process" ],
+            "prompt_template": [
+                "please generate the code required to satisfy the following demand enclosed in triple backticks.",
+                "'''{text}'''\n"]               
+        },
+        "code_quality_opai": {
+            "model_name": "model2",
+            "prompt_system": [
+                "you are an exceptional {code_language} quality expert, you analyze the provided code and ensure that it function as per requirements and that is",
+                " safe, easy to read, and adequately documented and that it respects the best practices of codding and documentation. Your output will always",
+                " consist of your thought proces description followed by a list of json, containg one json for each correrctives actions to be performed on the",
+                " code to bring it to the highest standrds of quality each json will contain the following keys the 'objective' key where you detail the objective",
+                " of the task, the 'action' key which will always be 'code_mod', the 'initial_code' where you copy the actual code that needs to be improved and",
+                " the associated 'prompt' key where you put the prompt required to perform this code change." ],
+            "prompt_template": [
+                "Please analyse the following code provided within enclosed in triple backticks \n",
+                "'''{text}'''\n"] 
+        }
+    }
+}
+
