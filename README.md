@@ -1,7 +1,10 @@
 # AI Agent Bean
-Agent Bean is a Language Model (LLM) agent that is designed to interact with users and perform various tasks starting with a focus on coding. 
-It is being developped with the help of aider: https://github.com/paul-gauthier/aider
-the aim is to have an agent capable to be run fully localy, it is still possible to use openAI API
+Agent Bean is AI agent that is designed to interact with users and perform various tasks. The initial focus is on coding but there are no limitations to other activities. 
+It has been designed to be able to run local llm models available on the huggingface portal as well as interfacing with the openAI API so you can run the model fully localy if you need and have the available compute or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different tasks.
+
+It has a memory management system that can instantiate / dinstantiate models dependings on the needs of the task (it is still a bit rough and somtimes dose not dealocate all vram correctely)
+it is not yet able to interact with files
+Some of the code has been developped with the help of aider: https://github.com/paul-gauthier/aider (at the beginning while the code was less than 8k tokens)
 
 
 ## Curent capabilities:
@@ -11,13 +14,15 @@ The agent Bean is currently capable of the following:
   -  **summarize**: generate a summary of the provided text
   -  **search**: perform a search on the net
   -  **free**: freetext query
-  -  **split**: split a task executable actions (not yet working well)
-  -  **code**: generate code (not yet working well)
+  -  **split**: split a task executable actions 
+  -  **code**: generate code 
   -  **code_quality**: analyse the quality of the code (not yet working well)
 
 The agent is continuously evolving, with new capabilities being added regularly.
 
 ## WIP: Work in Progress:
+- **Ability to perform action on files** to have an actual effect on code
+- **Improve Model managment** Eliminate memory leaks beter estimation of model memory needs
 - **improve transformers loading**: for 8 and 4 bits quantisation
 - **Actions backlog**: a backlog of actions to be executed
 - **Ability to execute code in a sealed container**: to provide direct feedback to the agent
