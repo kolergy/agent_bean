@@ -26,6 +26,14 @@
             "max_tokens": 4000,
             "model_sys_delim": { "start": "<s>[INST] <<SYS>>\n", "end": "\n<</SYS>>\n\n" },
             "model_usr_delim": { "start": ""                   , "end": "[/INST]"        }
+        },
+        "model4": {
+            "model_type": "transformers",
+            "model_id": "glaiveai/glaive-coder-7b",
+            "model_bits": 16,
+            "max_tokens": 4000,
+            "model_sys_delim": { "start": "<s>[INST]\n<<SYS>>\n", "end": "\n<</SYS>>\n\n" },
+            "model_usr_delim": { "start": ""                    , "end": "[/INST]"        }
         }
     },
     "vectorstore": {
@@ -38,7 +46,8 @@
         "free": {
             "model_name": "model3",
             "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
-            "prompt_template":["{text}"]},
+            "prompt_template":["{text}"]
+        },
         "summarize": {
             "model_name": "model2",
             "prompt_system": [

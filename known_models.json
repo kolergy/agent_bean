@@ -26,5 +26,13 @@
     "posicube_-_Llama2-chat-AYT-13B": {
         "system_ram_gb": 5.159503936767578,
         "GPU_ram_gb": 18.7811279296875
+    },
+    "Open-Orca_-_LlongOrca-13B-16k": {
+        "system_ram_gb": 6.599212646484375,
+        "GPU_ram_gb": 18.61566162109375
+    },
+    "glaiveai_-_glaive-coder-7b": {
+        "system_ram_gb": 0,
+        "GPU_ram_gb": 12.63214111328125
     }
 }
