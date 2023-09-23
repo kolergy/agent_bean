@@ -23,6 +23,7 @@ The agent Bean is currently capable of the following:
 The agent is continuously evolving, with new capabilities being added regularly.
 
 ## WIP: Work in Progress:
+- **Make actions more generic** to allow beter variations from congig
 - **Ability to perform action on files** to have an actual effect on code
 - **Improve Model managment** Eliminate memory leaks beter estimation of model memory needs
 - **improve transformers loading**: for 8 and 4 bits quantisation
