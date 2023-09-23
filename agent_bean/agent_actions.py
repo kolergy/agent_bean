@@ -3,8 +3,8 @@ import torch
 
 from   typing                            import List
 from   langchain.tools                   import DuckDuckGoSearchResults
-from   agent_bean.system_info                       import SystemInfo
-from   agent_bean.models_manager                    import ModelsManager
+from   agent_bean.system_info            import SystemInfo
+from   agent_bean.models_manager         import ModelsManager
 
 
 class AgentAction():
@@ -19,7 +19,6 @@ class AgentAction():
         print(f"Actions list: {self.actions_list}")
 
 
-
     def perform_action(self, action_type: str, inputs: List[str]) -> str:
         """Perform the action specified by action_type on the inputs."""
         action_name = f"__action_{action_type}__"
@@ -29,37 +28,64 @@ class AgentAction():
             #return([f"AgentAction ERROR: Action {action_name} not implemented (yet?)"])
             raise NotImplementedError(f"AgentAction ERROR: Action {action_name} not implemented (yet?)")
 
+
     def get_available_actions(self) -> List[str]:
         """Return the list of available actions."""
         return self.actions_str_list
 
+
+    def get_special_tokens(self, model_name:str) -> [dict]:
+        """get the special tokens used by the model"""
+        keys = ["model_sys_delim", "model_usr_delim"]
+        out  = {k:self.setup['models_list'][model_name][k] for k in keys  }
+        return out
+
+
     def __action_free__(self, inputs: List[str]) -> str:
         """Generate code based on the input text."""
-        model_name   = self.setup['actions']['code']['model_name']
-        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        prompt       = ''.join(self.setup['actions']['code']['prompt_template']).format(text=inputs)
+        action_name    = 'free'
+        model_name     = self.setup['actions'][action_name]['model_name']
+        special_tokens = self.get_special_tokens(model_name)
+
+        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        prompt         = special_tokens['model_sys_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
+                            + special_tokens['model_sys_delim']['end']
+        prompt        += special_tokens['model_usr_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
+                            + special_tokens['model_usr_delim']['end']
+        
         self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
                                      'temperature':       0.6,
                                      'top_p':             1,
                                      'frequency_penalty': 0,
                                      'presence_penalty':  0.6,
                                      'stop':              ["\n"]})
-        resp         = self.mm.predict(model_name, prompt)
+        resp           = self.mm.predict(model_name, prompt)
         return resp
     
+
     def __action_summarize__(self, inputs: List[str]) -> str:
         """Summarize the input text."""
         # Tokenize the input text
-        model_name   = self.setup['actions']['summarize']['model_name']
-        input_tokens = self.mm.get_embeddings(model_name, inputs[0])
-        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        summaries    = []
+        action_name    = 'summarize'
+        model_name     = self.setup['actions'][action_name]['model_name']
+        special_tokens = self.get_special_tokens(model_name)
+        input_tokens   = self.mm.get_embeddings(model_name, inputs[0])
+        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        summaries      = []
             
         # Split the tokenized input into chunks and summarize each chunk
         for i in range(0, len(input_tokens), max_tokens):
             chunk      = input_tokens[i:i+max_tokens]
             chunk_text = str(self.mm.decode(model_name, chunk))
-            prompt     = ''.join(self.setup['actions']['summarize']['prompt_template']).format(text=chunk_text)
+            #prompt     = ''.join(self.setup['actions']['summarize']['prompt_template']).format(text=chunk_text)
+            prompt     = special_tokens['model_sys_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
+                            + special_tokens['model_sys_delim']['end']
+            prompt    += special_tokens['model_usr_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=chunk_text) \
+                            + special_tokens['model_usr_delim']['end']
             #self.system_info.print_GPU_info()
 
             self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
@@ -73,16 +99,24 @@ class AgentAction():
 
         # Concatenate the summaries to form the final summary
         res = ' '.join(summaries)  # Concatenate the summaries to form the final summary
-
         return res
 
 
     def __action_search__(self, inputs: List[str]) -> str:
         """Search internet for the input text subject."""
-        model_name    = self.setup['actions']['search']['model_name']
-        max_tokens    = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        resp          = []
-        prompt        = ''.join(self.setup['actions']['search']['prompt_template']).format(text=inputs)
+        action_name    = 'search'
+        model_name     = self.setup['actions'][action_name]['model_name']
+        special_tokens = self.get_special_tokens(model_name)
+        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        resp           = []
+        #prompt        = ''.join(self.setup['actions']['search']['prompt_template']).format(text=inputs)
+        prompt         = special_tokens['model_sys_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
+                            + special_tokens['model_sys_delim']['end']
+        prompt        += special_tokens['model_usr_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
+                            + special_tokens['model_usr_delim']['end']   
+             
         self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
                                      'temperature':       0.01,
                                      'top_p':             1,
@@ -98,9 +132,18 @@ class AgentAction():
 
     def __action_split__(self, inputs: List[str]) -> List[str]:
         """Split a complex task into a set of simple tasks."""
-        model_name   = self.setup['actions']['split']['model_name']
-        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        prompt       = ''.join(self.setup['actions']['split']['prompt_template']).format(text=inputs)
+        action_name    = 'split'
+        model_name     = self.setup['actions'][action_name]['model_name']
+        special_tokens = self.get_special_tokens(model_name)
+        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        #prompt         = ''.join(self.setup['actions']['split']['prompt_template']).format(text=inputs)
+        prompt         = special_tokens['model_sys_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
+                            + special_tokens['model_sys_delim']['end']
+        prompt        += special_tokens['model_usr_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
+                            + special_tokens['model_usr_delim']['end']    
+               
         self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
                                      'temperature':       0.01,
                                      'top_p':             1,
@@ -111,11 +154,21 @@ class AgentAction():
         tasks        = resp[0].split(',')
         return tasks
 
+
     def __action_code__(self, inputs: List[str]) -> str:
         """Generate code based on the input text."""
-        model_name   = self.setup['actions']['code']['model_name']
-        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        prompt       = ''.join(self.setup['actions']['code']['prompt_template']).format(text=inputs)
+        action_name    = 'code'
+        model_name     = self.setup['actions'][action_name]['model_name']
+        special_tokens = self.get_special_tokens(model_name)
+        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        #prompt         = ''.join(self.setup['actions']['code']['prompt_template']).format(text=inputs)
+        prompt         = special_tokens['model_sys_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
+                            + special_tokens['model_sys_delim']['end']
+        prompt        += special_tokens['model_usr_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
+                            + special_tokens['model_usr_delim']['end']   
+        
         self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
                                      'temperature':       0.4,
                                      'top_p':             1,
@@ -126,11 +179,21 @@ class AgentAction():
         code         = resp
         return code
 
+
     def __action_code_quality__(self, inputs: List[str]) -> str:
         """Check the quality of the input code."""
-        model_name   = self.setup['actions']['code_quality']['model_name']
-        max_tokens   = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        prompt       = ''.join(self.setup['actions']['code_quality']['prompt_template']).format(text=inputs)
+        action_name    = 'code_quality'
+        model_name     = self.setup['actions'][action_name]['model_name']
+        special_tokens = self.get_special_tokens(model_name)
+        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
+        #prompt        = ''.join(self.setup['actions']['code_quality']['prompt_template']).format(text=inputs)
+        prompt         = special_tokens['model_sys_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
+                            + special_tokens['model_sys_delim']['end']
+        prompt        += special_tokens['model_usr_delim']['start'] \
+                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
+                            + special_tokens['model_usr_delim']['end']   
+        
         self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
                                      'temperature':       0.5,
                                      'top_p':             1,
@@ -141,9 +204,9 @@ class AgentAction():
         code_quality = resp
         return code_quality
 
+
     def __del__(self):
         """Delete the model."""
-        
         del self.model
         del self.enc
         del self.setup

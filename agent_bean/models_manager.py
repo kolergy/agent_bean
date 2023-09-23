@@ -30,7 +30,7 @@ class ModelsManager():
     
 
     def model_need(self, model_name:str) -> bool:
-        """check memory resources and instantiate a nneded model if not already instantiated, may remove other instantiated models if needed"""
+        """if model not already instantiated check memory resources and instantiate a nneded model, may remove other instantiated models if needed"""
         if model_name not in self.active_models:
             if self.debug:
                 print(f"Model {model_name} not yet instantiated, instantiating it now")
@@ -65,7 +65,6 @@ class ModelsManager():
                         setattr(self.active_models[model_name], p, params[p])
                 else:
                     print(f"ERROR: Unknown model type: {type(self.active_models[model_name])}")
-
         else:
             print(f"ERROR: can not set params Model {model_name} could not be instantiated")
 
@@ -76,7 +75,6 @@ class ModelsManager():
             res =  self.active_models[model_name].predict(prompt)
             print(f"predict result: {res}") 
             return [res]
-        
         else:
             return None
 
@@ -196,7 +194,7 @@ class ModelsManager():
                         print(f"Model {model_name} instantiated using: {delta_ram_gb} Gb of system RAM and: {delta_v_ram_gb} Gb of V RAM on the GPU")
                         self.si.print_GPU_info()
 
-                    self.deinstantiate_model(model_name)
+
 
                 elif self.setup["models_list"][model_name]["model_type"] == "openAI":
                     self.known_models[k_model_id]["system_ram_gb"] = 0.0
@@ -205,8 +203,11 @@ class ModelsManager():
                 else:
                     print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")
 
-        with open(self.setup["known_models_file_name"], 'w') as f:  # store the known models dict to a file to avoid doing it again
-            json.dump(self.known_models, f, indent=4)
+            with open(self.setup["known_models_file_name"], 'w') as f:  # store the known models dict to a file to avoid doing it again
+                        json.dump(self.known_models, f, indent=4)
+                        print(f"Model {k_model_id} added to known_models")
+
+            self.deinstantiate_model(model_name)
 
         if self.debug:
             print(f"Models memory ressources requirements test complete")
@@ -240,12 +241,14 @@ class ModelsManager():
         if self.debug:
             print(f"GPU state before model deinstantiation: {torch.cuda.is_available()}")
             self.si.print_GPU_info()
-        self.active_embeddings[model_name].free()
-        self.active_models[    model_name].free()
 
-
-        self.active_embeddings.pop(model_name)
-        self.active_models.pop(model_name)
+        if model_name in self.active_embeddings:
+            self.active_embeddings[model_name].free()
+            self.active_embeddings.pop(model_name)
+            
+        if model_name in self.active_models:
+            self.active_models[    model_name].free()
+            self.active_models.pop(model_name)
 
         if torch.cuda.is_available():
             print("-m--Emptying CUDA cache----")

@@ -200,10 +200,12 @@ class TfModel:
         res_raw   = self.pipeline.predict(prompt)
         print(f"### R E S ###: {len(res_raw)}")
         print(f"\n### R E S  R A W ###: {res_raw}")
-        res       = res_raw[0]['generated_text'].split('#~!|MODEL OUTPUT|!~#:')
-        print(f"\n### R E S ###: {res[1]}")
+        #res       = res_raw[0]['generated_text'].split('#~!|MODEL OUTPUT|!~#:')
+        res       = res_raw[0]['generated_text'].replace(prompt, '')
+        
+        print(f"\n### R E S ###: {res}")
         if len(res) > 1:
-            return res[1]
+            return res
         else:
             return ''
     
