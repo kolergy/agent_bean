@@ -1,0 +1,22 @@
+{
+    "WizardLM_-_WizardCoder-Python-13B-V1.0": {
+        "system_ram_gb": 0.20158004760742188,
+        "GPU_ram_gb": 13.00384521484375
+    },
+    "bhenrym14_-_airophin-13b-pntk-16k-fp16": {
+        "system_ram_gb": 10.12929916381836,
+        "GPU_ram_gb": 14.8526611328125
+    },
+    "posicube_-_Llama2-chat-AYT-13B": {
+        "system_ram_gb": 0.21014785766601562,
+        "GPU_ram_gb": 13.24713134765625
+    },
+    "glaiveai_-_glaive-coder-7b": {
+        "system_ram_gb": 0.3559455871582031,
+        "GPU_ram_gb": 6.900146484375
+    },
+    "WizardLM_-_WizardCoder-Python-34B-V1.0": {
+        "system_ram_gb": 3.516315460205078,
+        "GPU_ram_gb": 17.38836669921875
+    }
+}

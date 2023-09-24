@@ -232,7 +232,7 @@ class TfModel:
         self.model.to_empty(device=self.device)
         #self.model.cuda.empty_cache()
         self.embeddings.free()
-        self.model.free()
+        #self.model.free()
         self.tokenizer = None
         self.pipeline  = None
         self.model     = None

@@ -29,7 +29,9 @@ The agent is continuously evolving, with new capabilities being added regularly.
 ## WIP: Work in Progress:
 - **Make actions more generic** to allow beter variations from congig
 - **Ability to perform action on files** to have an actual effect on code
-- **Improve Model managment** Eliminate memory leaks beter estimation of model memory needs
+- **Improve Model managment** 
+    - Eliminate memory leaks beter estimation of model memory needs
+    - Model memory setimation depending on model quantisation
 - **improve transformers loading**: for 8 and 4 bits quantisation
 - **Actions backlog**: a backlog of actions to be executed
 - **Ability to execute code in a sealed container**: to provide direct feedback to the agent
