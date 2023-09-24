@@ -186,7 +186,7 @@ class ModelsManager():
                     v_ram_b4 = self.si.get_v_ram_free()
                     self.instantiate_model(model_name)
 
-                    mem_use_Gb     = float(self.active_models[model_name].get_memory_footprint(return_buffers=True))/1024/1024/1024
+                    mem_use_Gb     = float(self.active_models[model_name].model.get_memory_footprint(return_buffers=True))/1024/1024/1024
                     model_ongpu    = False if self.active_models[model_name].device.type == "cpu" else True
                     delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
                     delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
