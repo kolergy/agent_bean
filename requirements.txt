@@ -10,6 +10,7 @@ python-dotenv
 torch
 torchvision
 torchaudio
+acclerate
 bitsandbytes
 git+https://github.com/huggingface/transformers
 psutil

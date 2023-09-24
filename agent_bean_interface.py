@@ -5,8 +5,8 @@ import gradio as gr
 
 from agent_bean.agent_bean import AgentBean
 
-settings_file = 'settings_opai.json'
-#settings_file = 'settings_trans.json'
+#settings_file = 'settings_opai.json'
+settings_file = 'settings_trans.json'
 
 # Load the settings json file and create a AgentBean object
 with open(settings_file) as f:

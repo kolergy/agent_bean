@@ -107,6 +107,8 @@ class TfModel:
                 # check if 4bit_quant_type in setum model
                 if '4bit_quant_type' in self.setup['models_list'][model_name]:
                     self.quant_type_4bit = self.setup['models_list'][model_name]['4bit_quant_type']
+                else:
+                    self.quant_type_4bit = 'nf4'
                 # set quantization configuration to load large model with less GPU memory
                 # this requires the `bitsandbytes` library
                 bnb_config = transformers.BitsAndBytesConfig(

@@ -34,5 +34,9 @@
     "glaiveai_-_glaive-coder-7b": {
         "system_ram_gb": 0,
         "GPU_ram_gb": 12.63214111328125
+    },
+    "WizardLM_-_WizardCoder-Python-34B-V1.0": {
+        "system_ram_gb": 2.283489227294922,
+        "GPU_ram_gb": 17.50836181640625
     }
 }
