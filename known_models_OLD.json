@@ -38,5 +38,9 @@
     "WizardLM_-_WizardCoder-Python-34B-V1.0": {
         "system_ram_gb": 2.283489227294922,
         "GPU_ram_gb": 17.50836181640625
+    },
+    "bhenrym14_-_airophin-13b-pntk-16k-fp16": {
+        "system_ram_gb": 0.11887741088867188,
+        "GPU_ram_gb": 18.5167236328125
     }
 }

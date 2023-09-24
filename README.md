@@ -22,7 +22,7 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 ## Current limitations:
 - It is not yet able to interact with files
-- Load on 4 or 8 bit loading works for some models (and not fot others I do not yet understand why)
+- Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models!? (they use a different proces for loading that needs to be implemented)
 - Imprecise memory estimation for models
 - display of system status ram / vram not working
 

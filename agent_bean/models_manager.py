@@ -185,20 +185,20 @@ class ModelsManager():
                     ram_b4   = self.si.get_ram_free()
                     v_ram_b4 = self.si.get_v_ram_free()
                     self.instantiate_model(model_name)
-                    
+
+                    mem_use_Gb     = float(self.active_models[model_name].get_memory_footprint(return_buffers=True))/1024/1024/1024
+                    model_ongpu    = False if self.active_models[model_name].device.type == "cpu" else True
                     delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
                     delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
                     self.known_models[k_model_id]["system_ram_gb"] = delta_ram_gb
                     self.known_models[k_model_id]["GPU_ram_gb"   ] = delta_v_ram_gb
                     if self.debug:
-                        print(f"Model {model_name} instantiated using: {delta_ram_gb} Gb of system RAM and: {delta_v_ram_gb} Gb of V RAM on the GPU")
+                        print(f"Model {model_name} instantiated using: {delta_ram_gb:6.2} Gb of system RAM and: {delta_v_ram_gb:6.2} Gb of V RAM on the GPU, model on GPU:{model_ongpu} , memory use: {mem_use_Gb:6.2} Gb")
                         self.si.print_GPU_info()
-
-
 
                 elif self.setup["models_list"][model_name]["model_type"] == "openAI":
                     self.known_models[k_model_id]["system_ram_gb"] = 0.0
-                    self.known_models[k_model_id]["GPU_ram_gb"  ] = 0.0
+                    self.known_models[k_model_id]["GPU_ram_gb"   ] = 0.0
 
                 else:
                     print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")

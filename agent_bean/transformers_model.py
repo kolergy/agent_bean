@@ -69,6 +69,8 @@ class TfModel:
         self.repetition_penalty:float         = 1.1     # without this output begins repeating
         self.stop:List[str]                   = ["\n"]
         self.max_new_tokens:int               = 512     # max number of tokens to generate in the output
+        self.GPTQ_endings                     = ['GPTQ', 'gptq']
+        self.GGUF_endings                     = ['GGUF', 'gguf']
 
         #print(f"GPU brand: {self.GPU_brand}")
         self.instantiate_pipeline()
@@ -86,6 +88,7 @@ class TfModel:
     def instantiate_pipeline(self) -> None:
         """instantiate the pipeline defined in the set-up """
         model_name = self.model_name
+                
         if self.setup['models_list'][model_name]['model_type'] == "transformers":
             # Instantiate the Transformers model here
             # You will need to fill in the details based on how you want to use the Transformers library
@@ -93,13 +96,23 @@ class TfModel:
             self.k_model_id = self.keyify_model_id(self.model_id)
             self.device     = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
             print(f"device: {self.device}, brand: {self.GPU_brand}")
+
+            for s in self.GPTQ_endings:
+                if self.model_id.endswith(s):
+                    #quantizer       = GPTQQuantizer(bits=4, dataset="c4", block_name_to_quantize = "model.decoder.layers", model_seqlen = 2048)
+                    #quantized_model = quantizer.quantize_model(model, tokenizer)
+                    raise ValueError("GPTQ models are not yet supported by Agent Bean")
+            for s in self.GGUF_endings:
+                if self.model_id.endswith(s):
+                    raise ValueError("GGUF models are not yet supported by Agent Bean")
+
             # check if the number of bits for quantization is set in setum model
             if 'model_bits' in self.setup['models_list'][model_name]:
                 self.model_bits = self.setup['models_list'][model_name]['model_bits']
                         
             if self.GPU_brand == 'NVIDIA':
-                #self.compute_dtype    = torch.bfloat16
-                self.compute_dtype    = torch.float16
+                self.compute_dtype    = torch.bfloat16
+                #self.compute_dtype    = torch.float16
             else:
                 self.compute_dtype    = torch.float16
 
@@ -219,6 +232,7 @@ class TfModel:
         self.model.to_empty(device=self.device)
         #self.model.cuda.empty_cache()
         self.embeddings.free()
+        self.model.free()
         self.tokenizer = None
         self.pipeline  = None
         self.model     = None
