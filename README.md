@@ -4,8 +4,6 @@ It has been designed to be able to run local llm models available on the hugging
 
 It has a memory management system that can instantiate / dinstantiate models dependings on the needs of the task (it is still a bit rough and somtimes dose not dealocate all vram correctely)
 
-it is not yet able to interact with files
-
 Some of the code has been developped with the help of aider: https://github.com/paul-gauthier/aider (at the beginning while the code was less than 8k tokens)
 
 
@@ -21,6 +19,12 @@ The agent Bean is currently capable of the following:
   -  **code_quality**: analyse the quality of the code (not yet working well)
 
 The agent is continuously evolving, with new capabilities being added regularly.
+
+## Current limitations:
+- It is not yet able to interact with files
+- Load on 4 or 8 bit loading works for some models (and not fot others I do not yet understand why)
+- Imprecise memory estimation for models
+- display of system status ram / vram not working
 
 ## WIP: Work in Progress:
 - **Make actions more generic** to allow beter variations from congig
