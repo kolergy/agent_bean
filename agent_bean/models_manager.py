@@ -193,7 +193,7 @@ class ModelsManager():
                     self.known_models[k_model_id]["system_ram_gb"] = delta_ram_gb
                     self.known_models[k_model_id]["GPU_ram_gb"   ] = delta_v_ram_gb
                     if self.debug:
-                        print(f"Model {model_name} instantiated using: {delta_ram_gb:6.2} Gb of system RAM and: {delta_v_ram_gb:6.2} Gb of V RAM on the GPU, model on GPU:{model_ongpu} , memory use: {mem_use_Gb:6.2} Gb")
+                        #print(f"Model {model_name} instantiated using: {delta_ram_gb:6.2} Gb of system RAM and: {delta_v_ram_gb:6.2} Gb of V RAM on the GPU, model on GPU:{model_ongpu} , memory use: {mem_use_Gb:6.2} Gb")
                         self.si.print_GPU_info()
 
                 elif self.setup["models_list"][model_name]["model_type"] == "openAI":
@@ -238,8 +238,9 @@ class ModelsManager():
 
     def deinstantiate_model(self, model_name:str) -> None: 
         """deinstantiate the model provided in the argument end ensure proper deletion of all the model ressources"""
+        print(f"Deinstantiating model {model_name}")
         if self.debug:
-            print(f"GPU state before model deinstantiation: {torch.cuda.is_available()}")
+            print(f"GPU state before and after model deinstantiation: {torch.cuda.is_available()}")
             self.si.print_GPU_info()
 
         if model_name in self.active_embeddings:
@@ -251,10 +252,9 @@ class ModelsManager():
             self.active_models.pop(model_name)
 
         if torch.cuda.is_available():
-            print("-m--Emptying CUDA cache----")
+            #print("-m--Emptying CUDA cache----")
             torch.cuda.empty_cache()
 
         if self.debug:
-            print(f"GPU state after model deinstantiation: {torch.cuda.is_available()}")
             self.si.print_GPU_info()
         

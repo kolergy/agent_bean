@@ -218,7 +218,7 @@ class TfModel:
         #res       = res_raw[0]['generated_text'].split('#~!|MODEL OUTPUT|!~#:')
         res       = res_raw[0]['generated_text'].replace(prompt, '')
         
-        print(f"\n### R E S ###: {res}")
+        #print(f"\n### R E S ###: {res}")
         if len(res) > 1:
             return res
         else:
@@ -227,14 +227,13 @@ class TfModel:
 
     def free(self) -> None:
         """Free the memory used by the model"""
-        print(f"dir: {dir(self.model)}")
-        print(f"model mem: {self.model.get_memory_footprint()}")
+        print(f"Free the model {self.model_name}, using: {self.model.get_memory_footprint()/1024**3} Gb")
         self.model.to_empty(device=self.device)
         #self.model.cuda.empty_cache()
         self.embeddings.free()
-        #self.model.free()
+        self.embeddings= None
         self.tokenizer = None
         self.pipeline  = None
         self.model     = None
-        self.embeddings= None
+
 

@@ -6,7 +6,7 @@
         "model1": {
             "model_type": "transformers",
             "model_id": "WizardLM/WizardCoder-Python-13B-V1.0",
-            "model_bits": 8,
+            "model_bits": 4,
             "max_tokens": 4000,
             "model_sys_delim": { "start": "### Instruction:\n", "end": "\n"            },
             "model_usr_delim": { "start": ""                  , "end": "### Response:" }
@@ -14,7 +14,7 @@
         "model2": {
             "model_type": "transformers",
             "model_id": "bhenrym14/airophin-13b-pntk-16k-fp16",
-            "model_bits": 8,
+            "model_bits": 4,
             "max_tokens": 16000,
             "model_sys_delim": { "start": "<|im_start|>system\n", "end": "\n<|im_end|>\n"                        },
             "model_usr_delim": { "start": "<|im_start|>user\n"  , "end": "\n<|im_end|>\n<|im_start|>assistant\n" }
@@ -22,7 +22,7 @@
         "model3": {
             "model_type": "transformers",
             "model_id": "posicube/Llama2-chat-AYT-13B",
-            "model_bits": 8,
+            "model_bits": 4,
             "max_tokens": 4000,
             "model_sys_delim": { "start": "<s>[INST] <<SYS>>\n", "end": "\n<</SYS>>\n\n" },
             "model_usr_delim": { "start": ""                   , "end": "[/INST]"        }
@@ -30,7 +30,7 @@
         "model4": {
             "model_type": "transformers",
             "model_id": "glaiveai/glaive-coder-7b",
-            "model_bits": 8,
+            "model_bits": 4,
             "max_tokens": 4000,
             "model_sys_delim": { "start": "<s>[INST]\n<<SYS>>\n", "end": "\n<</SYS>>\n\n" },
             "model_usr_delim": { "start": ""                    , "end": "[/INST]"        }

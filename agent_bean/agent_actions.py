@@ -124,7 +124,10 @@ class AgentAction():
                                      'presence_penalty':  0.6,
                                      'stop':              ["\n"]})
         search_querry = self.mm.predict(model_name, prompt)
-        search_resp   = str(self.search.run(search_querry[-1]))
+        if len(search_querry[-1]) > 0:
+            search_resp   = str(self.search.run(search_querry[-1]))
+        else:  # If the model did not generate a search querry, use the input text as the search querry
+            search_resp   = str(self.search.run(inputs[0]))
         resp.append(search_querry[-1])
         resp.append(search_resp)
         return ' '.join(resp)
@@ -207,11 +210,13 @@ class AgentAction():
 
     def __del__(self):
         """Delete the model."""
-        del self.model
-        del self.enc
-        del self.setup
-        del self.actions_list
-        del self.search
-        if torch.cuda.is_available():
-            print("-a--Emptying CUDA cache----")
-            torch.cuda.empty_cache()
+        print("---- Deleting AgentAction ----")
+        if self is not None:
+            if hasattr(self, 'model'):        del self.model
+            if hasattr(self, 'enc'):          del self.enc
+            if hasattr(self, 'setup'):        del self.setup
+            if hasattr(self, 'actions_list'): del self.actions_list
+            if hasattr(self, 'search'):       del self.search
+        if torch.cuda is not None:
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()

@@ -82,15 +82,17 @@ class SystemInfo:
 
     def get_v_ram_used(self) -> float:
         if torch.cuda.is_available():
-            self.vram_used_gb = torch.cuda.mem_get_info()[1]/(1024 ** 3) if torch.cuda.is_available() else None
+            self.vram_used_gb = self.vram_total_gb - torch.cuda.mem_get_info()[0]/(1024 ** 3) if torch.cuda.is_available() else None
         else:
             self.vram_used_gb = None
+        #print(f"UUU vram UUU: {self.vram_used_gb}")
         return self.vram_used_gb
 
     def get_v_ram_free(self) -> float:
         vram  = torch.cuda.mem_get_info()   if torch.cuda.is_available() else None
-        print(f"XXX vram XXX: {vram}")
+        #print(f"XXX vram XXX: {vram}")
         self.vram_free_gb = (vram[0]) / (1024 ** 3) if vram else None
+        #print(f"FFF vram FFF: {self.vram_free_gb}")
         return(self.vram_free_gb)
 
     def get_GPU_current_device(self) -> int:
