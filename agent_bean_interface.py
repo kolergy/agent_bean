@@ -15,7 +15,7 @@ agent = AgentBean(setup)
 
 # Define the function to be called when the Run button is pressed
 def run_action(action_type, action_input):
-    return agent.agent_action(action_type, [action_input])
+    return agent.agent_action(action_type, [action_input])[0]
 
 
 # Define the function to get system information
