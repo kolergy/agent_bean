@@ -1,9 +1,9 @@
 import json
 import time
 
-import gradio as gr
+import gradio                as gr
 
-from agent_bean.agent_bean import AgentBean
+from   agent_bean.agent_bean import AgentBean
 
 #settings_file = 'settings_opai.json'
 settings_file = 'settings_trans.json'
@@ -12,6 +12,7 @@ settings_file = 'settings_trans.json'
 with open(settings_file) as f:
     setup = json.load(f)
 agent = AgentBean(setup)
+
 
 # Define the function to be called when the Run button is pressed
 def run_action(action_type, action_input):
@@ -30,6 +31,7 @@ def get_system_info():
     vram_available = agent.system_info.get_vram_available()
     return f"CPU Brand: {cpu_brand}\nCPU Cores: {cpu_cores}\nRAM Total: {ram_total} GB\nRAM Used: {ram_used} GB\nGPU Brand: {gpu_brand}\nVRAM Total: {vram_total} GB\nVRAM Used: {vram_used} GB\nVRAM Available: {vram_available} GB"
 
+
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
     action_type          = gr.components.Dropdown(choices = agent.aa.get_available_actions(), label = "Action Type" ) 
@@ -38,9 +40,6 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     text_output          = gr.components.Textbox( label   = "Output Text"  )
 
     run_button.click( run_action   , [action_type, action_input], outputs = text_output)
-
-    
-
 
 # Launch the interface
 iface.launch(share=True)
