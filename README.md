@@ -25,12 +25,10 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - Imprecise memory estimation for models
 - display of system status ram / vram not working
 
-
-you need at least 16GB of video RAM to run 15B models in 4bits to be able to have correct coding and splitting result
-
-With 6GB V RAM you can run the 7B models in 4Bits however up to now their perfo is limited to perform proper codding and the model might not be able to generate theJSON for the splitting
-
-You may use a computer with less V RAM for testing purpose with 3B or 1.5B models but do not expect usefull results.
+Using local generation with transformers models:
+- you need at least 16GB of video RAM to run 15B models in 4bits to be able to have correct coding and splitting result
+- With 6GB V RAM you can run the 7B models in 4Bits however up to now their perfo is limited to perform proper codding and the model might not be able to generate theJSON for the splitting
+- You may use a computer with less V RAM for testing purpose with 3B or 1.5B models but do not expect usefull results.
 
 
 ## WIP: Work in Progress:
