@@ -6,7 +6,6 @@ It has a memory management system that can instantiate / dinstantiate models dep
 
 Some of the code has been developped with the help of aider: https://github.com/paul-gauthier/aider (at the beginning while the code was less than 8k tokens)
 
-
 ## Curent capabilities:
 The agent Bean is currently capable of the following:
 - **Manage models**: manage the models and ability to instantiate / deinstantiate models, ability to use any transformers models 
@@ -25,6 +24,14 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models!? (they use a different proces for loading that needs to be implemented)
 - Imprecise memory estimation for models
 - display of system status ram / vram not working
+
+
+you need at least 16GB of video RAM to run 15B models in 4bits to be able to have correct coding and splitting result
+
+With 6GB V RAM you can run the 7B models in 4Bits however up to now their perfo is limited to perform proper codding and the model might not be able to generate theJSON for the splitting
+
+You may use a computer with less V RAM for testing purpose with 3B or 1.5B models but do not expect usefull results.
+
 
 ## WIP: Work in Progress:
 - **Make actions more generic** to allow beter variations from congig
