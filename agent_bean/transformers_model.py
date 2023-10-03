@@ -28,7 +28,7 @@ class TransformersEmbeddings:
     #def embed_query(self, text: str) -> List[float]:
     def encode(self, text: str) -> List[int]:
         """Return the embeddings for the query"""
-        tok = self.tokenizer(text)
+        #tok = self.tokenizer(text)
         #print(f"tok: {tok}")
         return self.tokenizer(text)['input_ids']
     
@@ -61,6 +61,8 @@ class TfModel:
         self.stopping_criteria                = None
         self.model_id:str                     = None
         self.k_model_id:str                   = None
+        self.device                           = None
+
         self.do_sample:bool                   = True
         self.temperature:float                = 0.1     # 'randomness' of outputs, 0.0 is the min and 1.0 the max
         self.top_p:float                      = 1
@@ -233,7 +235,6 @@ class TfModel:
         #self.model.cuda.empty_cache()
         self.embeddings.free()
         self.embeddings= None
-        print(f"TF Model free refcounts: {sys.getrefcount(self.model)}")
         self.setup                            = None
         self.system_info                      = None
         self.model_name                       = None
@@ -243,7 +244,6 @@ class TfModel:
         self.pipeline                         = None
         self.quant_type_4bit                  = None
         self.model_bits                       = None
-        self.model                            = None
         self.tokenizer                        = None
         self.stopping_criteria                = None
         self.model_id                         = None
@@ -251,5 +251,10 @@ class TfModel:
         self.stop                             = None
         self.GPTQ_endings                     = None
         self.GGUF_endings                     = None
+        print(f"TF Model free refcounts: {sys.getrefcount(self.model)}")
+        self.model                            = None
+        self.device                           = None
+
+
 
 

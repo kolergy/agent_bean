@@ -19,14 +19,14 @@ class ModelsManager():
         self.debug                    = setup['debug']
         self.active_models            = {}
         self.active_embeddings        = {}
+        self.known_models             = {}
         self.openai_params_list       = ["temperature", "max_tokens"          ]
         self.transformers_params_list = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p" ]
 
         if os.path.exists(self.setup["known_models_file_name"]):
             with open(self.setup["known_models_file_name"]) as f:
                 self.known_models  = json.load(f)
-        else:
-            self.known_models      = {}
+        
         self.test_models_resources_reqs()
     
 
@@ -245,14 +245,18 @@ class ModelsManager():
             self.si.print_GPU_info()
 
         if model_name in self.active_embeddings:
+            print(self.active_embeddings)
             self.active_embeddings[model_name].free()
             print(f"Embeddings {model_name} ref count: {sys.getrefcount(self.active_embeddings[model_name])}")
-            self.active_embeddings.pop(model_name)
+            del self.active_embeddings[model_name]
+            #self.active_embeddings.pop(model_name)
             
         if model_name in self.active_models:
+            print(self.active_models)
             self.active_models[    model_name].free()
             print(f"Model {model_name} ref count: {sys.getrefcount(self.active_models[model_name])}")
-            self.active_models.pop(model_name)
+            del self.active_models[model_name]
+            #self.active_models.pop(model_name)
 
         if torch.cuda.is_available():
             #print("-m--Emptying CUDA cache----")
