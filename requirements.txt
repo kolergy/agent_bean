@@ -10,7 +10,6 @@ python-dotenv
 torch
 torchvision
 torchaudio
-acclerate
 bitsandbytes
 git+https://github.com/huggingface/transformers
 psutil
@@ -22,3 +21,6 @@ gradio
 neo4j
 pylint
 docker
+gradio
+
+

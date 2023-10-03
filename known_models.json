@@ -18,5 +18,17 @@
     "WizardLM_-_WizardCoder-Python-34B-V1.0": {
         "system_ram_gb": 3.516315460205078,
         "GPU_ram_gb": 17.38836669921875
+    },
+    "gpt-4": {
+        "system_ram_gb": 0.0,
+        "GPU_ram_gb": 0.0
+    },
+    "gpt-3.5-turbo-16k": {
+        "system_ram_gb": 0.0,
+        "GPU_ram_gb": 0.0
+    },
+    "gpt-3.5-turbo": {
+        "system_ram_gb": 0.0,
+        "GPU_ram_gb": 0.0
     }
 }

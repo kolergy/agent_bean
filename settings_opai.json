@@ -19,7 +19,7 @@
         },
         "model3": {
             "model_type": "openAI",
-            "model_id": "gpt-3.5-turbo-0613",
+            "model_id": "gpt-3.5-turbo",
             "max_tokens": 4000,
             "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
             "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }

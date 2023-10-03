@@ -39,7 +39,7 @@ v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM 
 
 # Define the function to be called when the Run button is pressed
 def run_action(action_type, action_input):
-    """ Run the action """
+    """ Run the action: dend data to a llm """
     output = ''.join(agent.agent_action(action_type, [action_input]))
     #print(f"LEN OUTPUT: {len(output)}")
     return output
