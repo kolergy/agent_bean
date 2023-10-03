@@ -1,5 +1,6 @@
 import json
 import time
+import torch
 
 import pandas                as     pd
 import gradio                as     gr
@@ -34,8 +35,11 @@ time_s         = [0.0                       ]
 start_time     = time.time()
 
 ram_label      = f"CPU: {cpu_brand}, {cpu_cores} Cores, RAM Total: {ram_total_Gb:6.2f} Gb, RAM Used: {agent.si.get_ram_used():6.2f} Gb, RAM Free: {agent.si.get_ram_free():6.2f} Gb"
-v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM Used: {agent.si.get_v_ram_used():6.2f} Gb, VRAM Free: {agent.si.get_v_ram_free():6.2f} Gb"
-
+#v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM Used: {agent.si.get_v_ram_used():6.2f} Gb, VRAM Free: {agent.si.get_v_ram_free():6.2f} Gb"
+if torch.cuda.is_available():
+    v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM Used: {agent.si.get_v_ram_used():6.2f} Gb, VRAM Free: {agent.si.get_v_ram_free():6.2f} Gb"
+else:
+    v_ram_label    = f"GPU: !!!!!  NOT AVAILABLE  !!!!!"
 
 # Define the function to be called when the Run button is pressed
 def run_action(action_type, action_input):
@@ -95,4 +99,4 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     dep_v_ram            = iface.load(update_v_ram, None, v_ram_plt, every=1)
 
 # Launch the interface
-iface.queue().launch(share=True)
+iface.queue().launch(share=False)

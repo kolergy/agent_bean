@@ -175,7 +175,8 @@ class TfModel:
             # set stopping criteria
             stop_list         = ['\nHuman:', '\n```\n']
             stop_token_ids    = [self.tokenizer(x)['input_ids'] for x in stop_list     ]
-            stop_token_ids_LT = [torch.LongTensor(x).to(self.device) for x in stop_token_ids]  # convert to LongTensor for compatibility with model
+            #stop_token_ids_LT = [torch.LongTensor(x).to(self.device) for x in stop_token_ids]  # convert to LongTensor for compatibility with model
+            stop_token_ids_LT = [torch.LongTensor(x) for x in stop_token_ids]  # convert to LongTensor for compatibility with model
 
             class StopOnTokens(transformers.StoppingCriteria):
                 def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
@@ -186,17 +187,17 @@ class TfModel:
 
             self.stopping_criteria = transformers.StoppingCriteriaList([StopOnTokens()])
 
-            self.pipeline          = transformers.pipeline(
-                    model              = self.model, 
-                    tokenizer          = self.tokenizer,
-                    return_full_text   = True,                       # langchain expects the full text
-                    task               ='text-generation',
-                    stopping_criteria  = self.stopping_criteria,     # without this model rambles during chat
-                    do_sample          = True,
-                    temperature        = self.temperature,           # 'randomness' of outputs, 0.0 is the min and 1.0 the max
-                    max_new_tokens     = self.max_new_tokens,        # max number of tokens to generate in the output
-                    repetition_penalty = self.repetition_penalty,    # without this output begins repeating
-                )
+            #self.pipeline          = transformers.pipeline(
+            #        model              = self.model, 
+            #        tokenizer          = self.tokenizer,
+            #        return_full_text   = True,                       # langchain expects the full text
+            #        task               ='text-generation',
+            #        stopping_criteria  = self.stopping_criteria,     # without this model rambles during chat
+            #        do_sample          = True,
+            #        temperature        = self.temperature,           # 'randomness' of outputs, 0.0 is the min and 1.0 the max
+            #        max_new_tokens     = self.max_new_tokens,        # max number of tokens to generate in the output
+            #        repetition_penalty = self.repetition_penalty,    # without this output begins repeating
+            #    )
             
     def predict(self, prompt: str) -> List[str]:
         """predict the next token based on the prompt"""
@@ -215,11 +216,18 @@ class TfModel:
         #                               preprocess_params  = pre_prms, 
         #                               forward_params     = fwd_prms, 
         #                               postprocess_params = post_prms)
-        res_raw   = self.pipeline.predict(prompt)
+        #res_raw   = self.pipeline.predict(prompt)
+        input_ids = self.tokenizer.encode(prompt, return_tensors="pt")
+        res_raw_t = self.model.generate( input_ids,
+                                         max_length   = self.max_new_tokens,
+                                         #pad_token_id = self.tokenizer.eos_token_id, 
+                                         )
+        res_raw   = self.tokenizer.decode(res_raw_t[0], skip_special_tokens=True)
+        prompt_dec = self.tokenizer.decode(input_ids[0], skip_special_tokens=True)
         print(f"### R E S ###: {len(res_raw)}")
         print(f"\n### R E S  R A W ###: {res_raw}")
         #res       = res_raw[0]['generated_text'].split('#~!|MODEL OUTPUT|!~#:')
-        res       = res_raw[0]['generated_text'].replace(prompt, '')
+        res       = res_raw.replace(prompt_dec, '')
         
         #print(f"\n### R E S ###: {res}")
         if len(res) > 1:
@@ -228,32 +236,61 @@ class TfModel:
             return ''
     
 
+    def __del__(self):
+        """Delete the transformers model."""
+        print("---- Deleting Transformers model ----")
+        if self is not None:
+            if hasattr(self, 'embeddings'):   
+                self.embeddings.free()
+                del self.embeddings
+            if hasattr(self, 'setup'):            del self.setup
+            if hasattr(self, 'system_info'):      del self.system_info
+            if hasattr(self, 'model_name'):       del self.model_name
+            if hasattr(self, 'compute_dtype'):    del self.compute_dtype
+            if hasattr(self, 'GPU_brand'):        del self.GPU_brand
+            if hasattr(self, 'quant_type_4bit'):  del self.quant_type_4bit
+            if hasattr(self, 'model_bits'):       del self.model_bits
+            if hasattr(self, 'tokenizer'):        del self.tokenizer
+            if hasattr(self, 'stopping_criteria'):del self.stopping_criteria
+            if hasattr(self, 'model_id'):         del self.model_id
+            if hasattr(self, 'stop'):             del self.stop
+            if hasattr(self, 'GPTQ_endings'):     del self.GPTQ_endings
+            if hasattr(self, 'GGUF_endings'):     del self.GGUF_endings
+            if hasattr(self, 'model'):            
+                print(f"TF Model __del__ refcounts: {sys.getrefcount(self.model)}")
+                del self.model
+            if hasattr(self, 'device'):           del self.device
+
+        if torch.cuda is not None:
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+
+
     def free(self) -> None:
         """Free the memory used by the model"""
         print(f"Free the model {self.model_name}, using: {self.model.get_memory_footprint()/1024**3} Gb")
-        self.model.to_empty(device=self.device)
-        #self.model.cuda.empty_cache()
+        #self.model.to_empty(device=self.device)
         self.embeddings.free()
-        self.embeddings= None
-        self.setup                            = None
-        self.system_info                      = None
-        self.model_name                       = None
-        self.compute_dtype                    = None
-        self.GPU_brand                        = None
+        del self.embeddings
+        del self.setup
+        del self.system_info
+        del self.model_name
+        del self.compute_dtype
+        del self.GPU_brand
  
-        self.pipeline                         = None
-        self.quant_type_4bit                  = None
-        self.model_bits                       = None
-        self.tokenizer                        = None
-        self.stopping_criteria                = None
-        self.model_id                         = None
-        self.k_model_id                       = None
-        self.stop                             = None
-        self.GPTQ_endings                     = None
-        self.GGUF_endings                     = None
+        del self.pipeline
+        del self.quant_type_4bit
+        del self.model_bits
+        del self.tokenizer
+        del self.stopping_criteria
+        del self.model_id
+        del self.k_model_id
+        del self.stop
+        del self.GPTQ_endings
+        del self.GGUF_endings
         print(f"TF Model free refcounts: {sys.getrefcount(self.model)}")
-        self.model                            = None
-        self.device                           = None
+        del self.model
+        del self.device
 
 
 

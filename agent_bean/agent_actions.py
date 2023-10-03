@@ -62,6 +62,12 @@ class AgentAction():
                                      'presence_penalty':  0.6,
                                      'stop':              ["\n"]})
         resp           = self.mm.predict(model_name, prompt)
+        del action_name
+        del model_name
+        del special_tokens
+        del max_tokens
+        del prompt
+
         return resp
     
 
@@ -209,7 +215,7 @@ class AgentAction():
 
 
     def __del__(self):
-        """Delete the model."""
+        """Delete the agent action."""
         print("---- Deleting AgentAction ----")
         if self is not None:
             if hasattr(self, 'mm'):               del self.mm
