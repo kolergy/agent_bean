@@ -42,6 +42,14 @@
             "max_tokens": 4000,
             "model_sys_delim": { "start": ""                  , "end": "\n\n"                     },
             "model_usr_delim": { "start": "### Instruction:\n", "end": "\n\n### Response:"        }
+        },
+        "model6": {
+            "model_type": "transformers",
+            "model_id": "Open-Orca/Mistral-7B-OpenOrca",
+            "model_bits": 4,
+            "max_tokens": 8000,
+            "model_sys_delim": { "start": "<|im_start|> system\n", "end": "\n<|im_end|>\n"        },
+            "model_usr_delim": { "start": "<|im_start|>user\n"   , "end": "<|im_end|>\n"          }
         }
     },
     "vectorstore": {
@@ -52,12 +60,12 @@
     },
     "actions": {
         "free": {
-            "model_name": "model3",
+            "model_name": "model6",
             "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
             "prompt_template":["{text}"]
         },
         "summarize": {
-            "model_name": "model2",
+            "model_name": "model6",
             "prompt_system": [
                 "you are the finest summarizer in the world, You manage to condense a text to it's quintessence preserving the informations",
                 " and the style of the original text. You provide a summary where no words are wasted and no information is lost." ],
@@ -88,7 +96,7 @@
                 "'''{text}'''\n"]
         },
         "code": {
-            "model_name": "model1",
+            "model_name": "model5",
             "prompt_system": [
                 "you are an exceptional {code_language} coder, you produce {code_language} code that function as pre requirements and that is safe, easy to read",
                 " and to understand for all coders, you respects the best practices of codding and documentation",

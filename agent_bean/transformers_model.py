@@ -1,4 +1,4 @@
-
+import sys
 import torch
 import transformers
 
@@ -51,7 +51,8 @@ class TfModel:
         self.model_name                       = model_name
         self.compute_dtype                    = torch.float16
         self.GPU_brand:str                    = self.system_info.get_gpu_brand()
- 
+
+        self.embeddings                       = None
         self.pipeline                         = None
         self.quant_type_4bit:bool             = None
         self.model_bits:int                   = None
@@ -232,8 +233,23 @@ class TfModel:
         #self.model.cuda.empty_cache()
         self.embeddings.free()
         self.embeddings= None
-        self.tokenizer = None
-        self.pipeline  = None
-        self.model     = None
+        print(f"TF Model free refcounts: {sys.getrefcount(self.model)}")
+        self.setup                            = None
+        self.system_info                      = None
+        self.model_name                       = None
+        self.compute_dtype                    = None
+        self.GPU_brand                        = None
+ 
+        self.pipeline                         = None
+        self.quant_type_4bit                  = None
+        self.model_bits                       = None
+        self.model                            = None
+        self.tokenizer                        = None
+        self.stopping_criteria                = None
+        self.model_id                         = None
+        self.k_model_id                       = None
+        self.stop                             = None
+        self.GPTQ_endings                     = None
+        self.GGUF_endings                     = None
 
 

@@ -212,11 +212,12 @@ class AgentAction():
         """Delete the model."""
         print("---- Deleting AgentAction ----")
         if self is not None:
-            if hasattr(self, 'model'):        del self.model
-            if hasattr(self, 'enc'):          del self.enc
-            if hasattr(self, 'setup'):        del self.setup
-            if hasattr(self, 'actions_list'): del self.actions_list
-            if hasattr(self, 'search'):       del self.search
+            if hasattr(self, 'mm'):               del self.mm
+            if hasattr(self, 'setup'):            del self.setup
+            if hasattr(self, 'system_info'):      del self.system_info
+            if hasattr(self, 'actions_str_list'): del self.actions_str_list
+            if hasattr(self, 'actions_list'):     del self.actions_list
+            if hasattr(self, 'search'):           del self.search
         if torch.cuda is not None:
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()

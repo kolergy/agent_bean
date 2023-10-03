@@ -1,5 +1,6 @@
 
 import os
+import sys
 import json
 import torch
 import tiktoken
@@ -245,10 +246,12 @@ class ModelsManager():
 
         if model_name in self.active_embeddings:
             self.active_embeddings[model_name].free()
+            print(f"Embeddings {model_name} ref count: {sys.getrefcount(self.active_embeddings[model_name])}")
             self.active_embeddings.pop(model_name)
             
         if model_name in self.active_models:
             self.active_models[    model_name].free()
+            print(f"Model {model_name} ref count: {sys.getrefcount(self.active_models[model_name])}")
             self.active_models.pop(model_name)
 
         if torch.cuda.is_available():
