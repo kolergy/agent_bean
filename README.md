@@ -2,7 +2,7 @@
 Agent Bean is AI agent that is designed to interact with users and perform various tasks. The initial focus is on coding but there are no limitations to other activities. 
 It has been designed to be able to run local llm models available on the huggingface portal as well as interfacing with the openAI API so you can run the model fully localy if you need and have the available compute or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different tasks.
 
-It has a memory management system that can instantiate / dinstantiate models dependings on the needs of the task (it is still a bit rough and somtimes dose not dealocate all vram correctely)
+It has a memory management system that can instantiate / dinstantiate models dependings on the needs of the task (it is still a bit rough )
 
 Some of the code has been developped with the help of aider: https://github.com/paul-gauthier/aider (at the beginning while the code was less than 8k tokens)
 
@@ -36,7 +36,7 @@ Using local generation with transformers models:
 - **Ability to perform action on files** to have an actual effect on code
 - **Improve Model managment** 
     - Eliminate memory leaks beter estimation of model memory needs
-    - Model memory setimation depending on model quantisation
+    - Model memory estimation depending on model quantisation
 - **improve transformers loading**: for 8 and 4 bits quantisation
 - **Actions backlog**: a backlog of actions to be executed
 - **Ability to execute code in a sealed container**: to provide direct feedback to the agent

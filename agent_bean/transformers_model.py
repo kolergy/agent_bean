@@ -1,4 +1,5 @@
 import sys
+import gc
 import torch
 import transformers
 
@@ -261,9 +262,11 @@ class TfModel:
                 del self.model
             if hasattr(self, 'device'):           del self.device
 
+        gc.collect()
         if torch.cuda is not None:
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
+            
 
 
     def free(self) -> None:
@@ -292,6 +295,6 @@ class TfModel:
         del self.model
         del self.device
 
-
+        gc.collect()
 
 

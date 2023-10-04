@@ -1,6 +1,7 @@
 
 import os
 import sys
+import gc
 import json
 import torch
 import tiktoken
@@ -257,7 +258,8 @@ class ModelsManager():
             print(f"Model {model_name} ref count: {sys.getrefcount(self.active_models[model_name])}")
             del self.active_models[model_name]
             #self.active_models.pop(model_name)
-
+            
+        gc.collect()
         if torch.cuda.is_available():
             #print("-m--Emptying CUDA cache----")
             torch.cuda.empty_cache()
