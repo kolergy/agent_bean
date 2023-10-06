@@ -83,7 +83,7 @@
                 "'''{text}'''\n"]
         },
         "split": {
-            "model_name": "model3",
+            "model_name": "model4",
             "prompt_system": [
                 "You are an exceptional project manager, you are an expert at identifying the atomic actions to be performed in order to complete a task.",
                 " you mostly split tasks in the following action_categories ['requirements', 'architecture', 'code', 'code_quality', 'search'] if it dose",
@@ -106,7 +106,7 @@
                 "'''{text}'''\n"]               
         },
         "code_quality": {
-            "model_name": "model3",
+            "model_name": "model2",
             "prompt_system": [
                 "you are an exceptional {code_language} quality expert, you analyze the provided code and ensure that it function as per requirements and that is",
                 " safe, easy to read, and adequately documented and that it respects the best practices of codding and documentation. Your output will always",

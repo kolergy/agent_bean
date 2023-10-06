@@ -99,7 +99,7 @@ class ModelsManager():
 
 
     def manage_mem_resources(self, model_name:str) -> bool:
-        """check model memory need va available resources may remove other instantiated models if needed"""
+        """check model memory need vs available resources, may remove other instantiated models if needed"""
         k_model_id = TfModel.keyify_model_id(self.setup['models_list'][model_name]['model_id'])
         if self.debug:
             print(f"Checking memory resources for model {k_model_id}")
@@ -113,7 +113,41 @@ class ModelsManager():
                 print(f"      RAM need: {self.known_models[k_model_id]['system_ram_gb'  ]} Gb, system available RAM: {self.si.get_ram_free()  } Gb")
                 print(f"Video RAM need: {self.known_models[k_model_id]['GPU_ram_gb']} Gb,  GPU available V RAM: {self.si.get_v_ram_free()} Gb")
             if self.known_models[k_model_id]['system_ram_gb'  ] > self.si.get_ram_free()  or self.known_models[k_model_id]['GPU_ram_gb'] > self.si.get_v_ram_free():
-                return self.free_resources(self.known_models[k_model_id]['system_ram_gb'  ], self.known_models[k_model_id]['GPU_ram_gb'])
+                reaming_ram_gb   = self.si.get_ram_total(  ) - self.known_models[k_model_id]['system_ram_gb']
+                reaming_v_ram_gb = self.si.get_v_ram_total() - self.known_models[k_model_id]['GPU_ram_gb'   ]
+                models_ram_use_gb   = []
+                models_v_ram_use_gb = []
+                models_value        = []
+                models_names        = list(self.active_models.keys())  # avoid -> RuntimeError: dictionary changed size during iteration
+                n                   = len(models_names)
+                models_value        = [1]*n
+                for m in models_names:
+                    k_m_id = TfModel.keyify_model_id(self.setup['models_list'][m]['model_id'])
+                    models_ram_use_gb.append(  self.known_models[k_m_id]['system_ram_gb'] )
+                    models_v_ram_use_gb.append(self.known_models[k_m_id]['GPU_ram_gb'   ] )
+
+                print(f"TEST KNAPSACK: \ninputs: reaming_ram_gb: {reaming_ram_gb},\nmodels_ram_use_gb: {models_ram_use_gb}, \nmodels_value: {models_value}, \nmodels_names: {models_names}, n: {n}")
+                print(f"\ninputs: reaming_v_ram_gb: {reaming_v_ram_gb},\n models_v_ram_use_gb: {models_v_ram_use_gb}")
+
+                value_ram  , keep_models_ram   = self.__models_knap_sack__(reaming_ram_gb  , models_ram_use_gb  , models_value, models_names, n) 
+                value_v_ram, keep_models_v_ram = self.__models_knap_sack__(reaming_v_ram_gb, models_v_ram_use_gb, models_value, models_names, n)
+
+                print(f"keep_models_ram: {keep_models_ram}")
+                print(f"keep_models_v_ram: {keep_models_v_ram}")
+
+                for m in models_names:
+                    #if m not in keep_models_ram or m not in keep_models_v_ram:
+                        self.deinstantiate_model(m)
+                        if self.debug:
+                            print(f"manage_mem_resources: Model {m} deinstantiated")
+
+                if self.known_models[k_model_id]['system_ram_gb'  ] > self.si.get_ram_free()  or self.known_models[k_model_id]['GPU_ram_gb'] > self.si.get_v_ram_free():
+                    print(f"ERROR: manage_mem_resources failed to free enough resources to instantiate model {k_model_id}")
+                    print(f"      RAM need: {self.known_models[k_model_id]['system_ram_gb'  ]} Gb, system available RAM: {self.si.get_ram_free()  } Gb")
+                    print(f"Video RAM need: {self.known_models[k_model_id]['GPU_ram_gb']} Gb,  GPU available V RAM: {self.si.get_v_ram_free()} Gb")
+                    return False
+                else:
+                    return True
             else:
                 return True
             
@@ -127,6 +161,7 @@ class ModelsManager():
         ram_need_gb           = required_free_ram_gb   - current_free_ram_gb
         v_ram_need_gb         = required_free_v_ram_gb - current_free_v_ram_gb
         if len(self.active_models) > 0:
+            print(f"Freeing resources List of active models: {self.active_models.keys()}")
             for model_name in self.active_models.keys():
                 k_model_id = TfModel.keyify_model_id(self.setup['models_list'][model_name]['model_id'])
                 if ram_need_gb > 0:
@@ -166,6 +201,30 @@ class ModelsManager():
             if self.debug:
                 print(f"No active model -> model to deinstantiate")
             return False
+
+
+
+    def __models_knap_sack__(self, avail_mem_gb:float, models_mem_gb:[float],  models_value:[float], models_names:[str], n) -> (float, [str]):
+        """Knapsack algorithm to find the list of best models to keep in memory """
+        if n == 0 or avail_mem_gb == 0:   # Base Case
+            return 0, []
+    
+        # If weight of the nth item is more than Knapsack of capacity avail_mem_gb,
+        # then this item cannot be included in the optimal solution
+        if (models_mem_gb[n-1] > avail_mem_gb):
+            return self.__models_knap_sack__(avail_mem_gb, models_mem_gb, models_value, models_names, n-1)
+    
+        # return the maximum of two cases: (1) nth item included
+        v1, keep_models_1 = self.__models_knap_sack__(avail_mem_gb-models_mem_gb[n-1], models_mem_gb, models_value, models_names, n-1)
+        v1               += models_value[n-1]
+        keep_models_1     = [models_names[n-1]] + keep_models_1
+        
+        # (2) not included
+        v2, keep_models_2 = self.__models_knap_sack__(avail_mem_gb, models_mem_gb, models_value, models_names, n-1)
+        
+        return (v1, keep_models_1) if v1 >= v2 else (v2, keep_models_2)
+        
+
 
 
     def test_models_resources_reqs(self) -> None:
@@ -258,7 +317,7 @@ class ModelsManager():
             print(f"Model {model_name} ref count: {sys.getrefcount(self.active_models[model_name])}")
             del self.active_models[model_name]
             #self.active_models.pop(model_name)
-            
+
         gc.collect()
         if torch.cuda.is_available():
             #print("-m--Emptying CUDA cache----")
