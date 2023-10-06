@@ -27,16 +27,14 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 Using local generation with transformers models:
 - you need at least 16GB of video RAM to run 15B models in 4bits to be able to have correct coding and splitting result
-- With 6GB V RAM you can run the 7B models in 4Bits however up to now their perfo is limited to perform proper codding and the model might not be able to generate theJSON for the splitting
+- With 8GB V RAM you can run the 7B models in 4Bits however up to now their perfo is limited to perform proper codding and the model might not be able to generate theJSON for the splitting
 - You may use a computer with less V RAM for testing purpose with 3B or 1.5B models but do not expect usefull results.
 
 
 ## WIP: Work in Progress:
 - **Make actions more generic** to allow beter variations from congig
 - **Ability to perform action on files** to have an actual effect on code
-- **Improve Model managment** 
-    - Eliminate memory leaks beter estimation of model memory needs
-    - Model memory estimation depending on model quantisation
+- **Improve Model managment** Model memory estimation depending on model quantisation
 - **improve transformers loading**: for 8 and 4 bits quantisation
 - **Actions backlog**: a backlog of actions to be executed
 - **Ability to execute code in a sealed container**: to provide direct feedback to the agent
@@ -44,6 +42,8 @@ Using local generation with transformers models:
 - **Document Loading**: Agent Bean can load a set of documents into a vectorstore for later use.
 - **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup.
 
+## Recent improvments:
+- **Improve Model managment** Removed memory leak and improved model managment
 ## Useage:
 
 Clone this repository:
