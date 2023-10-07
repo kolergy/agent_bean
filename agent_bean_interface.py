@@ -1,6 +1,5 @@
 import json
 import time
-import torch
 
 import pandas                as     pd
 import gradio                as     gr
@@ -35,15 +34,12 @@ time_s         = [0.0                       ]
 start_time     = time.time()
 
 ram_label      = f"CPU: {cpu_brand}, {cpu_cores} Cores, RAM Total: {ram_total_Gb:6.2f} Gb, RAM Used: {agent.si.get_ram_used():6.2f} Gb, RAM Free: {agent.si.get_ram_free():6.2f} Gb"
-#v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM Used: {agent.si.get_v_ram_used():6.2f} Gb, VRAM Free: {agent.si.get_v_ram_free():6.2f} Gb"
-if torch.cuda.is_available():
-    v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM Used: {agent.si.get_v_ram_used():6.2f} Gb, VRAM Free: {agent.si.get_v_ram_free():6.2f} Gb"
-else:
-    v_ram_label    = f"GPU: !!!!!  NOT AVAILABLE  !!!!!"
+v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM Used: {agent.si.get_v_ram_used():6.2f} Gb, VRAM Free: {agent.si.get_v_ram_free():6.2f} Gb"
+
 
 # Define the function to be called when the Run button is pressed
 def run_action(action_type, action_input):
-    """ Run the action: dend data to a llm """
+    """ Run the action: using the configured llm agent"""
     output = ''.join(agent.agent_action(action_type, [action_input]))
     #print(f"LEN OUTPUT: {len(output)}")
     return output
@@ -57,7 +53,7 @@ def update_ram():
     time_s.append(       time.time() - start_time  )
 
     df         = pd.DataFrame({'time_s': time_s, 'ram_used_Gb': ram_used_Gb, 'v_ram_used_Gb': v_ram_used_Gb})
-    update_ram = gr.LinePlot(
+    update_ram = gr.LinePlot.update(
                         value  = df, 
                         title  = ram_label, 
                         x      = 'time_s', 
@@ -72,7 +68,7 @@ def update_v_ram():
     """ Update the v_ram plot """
     #print(f"update_v_ram() called, elapsed: {time.time() - start_time:6.2f} s. v_ram_used_Gb: {agent.si.get_v_ram_used():6.2f} Gb. v_ram_total_Gb: {agent.si.get_v_ram_total():6.2f} Gb. v_ram_free_Gb: {agent.si.get_v_ram_free():6.2f} Gb.")
     df         = pd.DataFrame({'time_s': time_s, 'ram_used_Gb': ram_used_Gb, 'v_ram_used_Gb': v_ram_used_Gb})  
-    update_v_ram = gr.LinePlot(
+    update_v_ram = gr.LinePlot.update(
                         value  = df, 
                         title  = v_ram_label, 
                         x      = 'time_s', 
