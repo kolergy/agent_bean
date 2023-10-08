@@ -7,8 +7,8 @@ import gradio                as     gr
 from   agent_bean.agent_bean import AgentBean
 
 
-#settings_file  = 'settings_opai.json'
-settings_file  = 'settings_trans.json'
+settings_file  = 'settings_opai.json'
+#settings_file  = 'settings_trans.json'
 
 ram_total_Gb   = 0.0
 v_ram_total_Gb = 0.0
@@ -41,7 +41,7 @@ v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM 
 def run_action(action_name, action_input):
     """ Run the action: using the configured llm agent"""
     output = ''.join(agent.agent_action(action_name, [action_input]))
-    #print(f"LEN OUTPUT: {len(output)}")
+    print(f"Action Completed LEN OUTPUT: {len(output)}")
     return output
 
 

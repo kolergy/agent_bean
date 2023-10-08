@@ -34,29 +34,44 @@
     "actions": {
         "free": {
             "model_name": "model1",
+            "action_type": "generate",
+            "temperature": 0.9,
             "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
-            "prompt_template":["{text}"]
+            "prompt_template":["{text}"],
+            "llm_returns": "text"
         },
         "summarize": {
             "model_name": "model2",
+            "action_type": "generate",
+            "chunkable_action": true,
+            "temperature": 0.1,
             "prompt_system": [
                 "you are the finest summarizer in the world, You manage to condense a text to it's quintessence preserving the informations",
                 " and the style of the original text. You provide a summary where no words are wasted and no information is lost." ],
             "prompt_template":[
                 "Please provide a summary of the following text enclosed in triple backticks.",
-                "'''{text}''':\n"]
+                "'''{text}''':\n"],
+            "llm_returns": "text"
         },
         "search": {
             "model_name": "model3",
+            "action_type": "generate",
+            "action_post_function": "search",
+            "temperature": 0.7,
             "prompt_system": [
                 "you are the finest internet search expert in the world, You know all the tricks to find the most relevant information on the web",
                 " and and you use this knowledge to craft the most relevant search queries to answer to the user demand" ],
             "prompt_template":[
-                "Please craft a search querry for the following user demand which is provided enclosed in triple backticks.\n",
-                "'''{text}'''\n"]
+                "Please craft a search querry that will allow you to get relevant information to answer the following demand which is provided",
+                " enclosed in triple backticks.\n",
+                "'''{text}'''\n"],
+            "llm_returns": "text"
         },
         "split": {
             "model_name": "model1",
+            "action_type": "generate",
+            "temperature": 0.01,
+            "presence_penalty":  0.6,
             "prompt_system": [
                 "You are an exceptional project manager, you are an expert at identifying the atomic actions to be performed in order to complete a task.",
                 " you mostly split tasks in the following action_categories ['requirements', 'architecture', 'code', 'code_quality', 'search'] if it dose",
@@ -66,20 +81,26 @@
                 " where you put an action from the action_categories list, and the associated 'prompt' key where you put the prompt required to perform this action." ],
             "prompt_template":[
                 "Please generate the list of actions to be performed in order to complete task described within the following text enclosed in triple backticks.",
-                "'''{text}'''\n"]
+                "'''{text}'''\n"],
+            "llm_returns": "actions_json"
         },
         "code": {
             "model_name": "model2",
+            "action_type": "generate",
+            "temperature": 0.4,
             "prompt_system": [
                 "you are an exceptional {code_language} coder, you produce {code_language} code that function as pre requirements and that is safe, easy to read",
                 " and to understand for all coders, you respects the best practices of codding and documentation",
                 " you always start your code by a comment describing your approach and thought process" ],
             "prompt_template": [
                 "please generate the code required to satisfy the following demand enclosed in triple backticks.",
-                "'''{text}'''\n"]               
+                "'''{text}'''\n"],
+            "llm_returns": "code_text"               
         },
         "code_quality": {
             "model_name": "model2",
+            "action_type": "generate",
+            "temperature": 0.1,
             "prompt_system": [
                 "you are an exceptional {code_language} quality expert, you analyze the provided code and ensure that it function as per requirements and that is",
                 " safe, easy to read, and adequately documented and that it respects the best practices of codding and documentation. Your output will always",
@@ -89,7 +110,8 @@
                 " the associated 'prompt' key where you put the prompt required to perform this code change." ],
             "prompt_template": [
                 "Please analyse the following code provided within enclosed in triple backticks \n",
-                "'''{text}'''\n"] 
+                "'''{text}'''\n"],
+            "llm_returns": "actions_json"
         }
     }
 }
