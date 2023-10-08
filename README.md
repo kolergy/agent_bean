@@ -9,7 +9,9 @@ Some of the code has been developped with the help of aider: https://github.com/
 ## Curent capabilities:
 The agent Bean is currently capable of the following:
 - **Manage models**: manage the models and ability to instantiate / deinstantiate models, ability to use any transformers models 
-- **Action Execution**: Agent Bean can perform various actions. The actions are defined in the `AgentAction` class and can be easily extended. curently implemented actions:
+- **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently 
+
+implemented actions:
   -  **summarize**: generate a summary of the provided text
   -  **search**: perform a search on the net
   -  **free**: freetext query
@@ -32,10 +34,9 @@ Using local generation with transformers models:
 
 
 ## WIP: Work in Progress:
-- **Make actions more generic** to allow beter variations from congig
-- **Ability to perform action on files** to have an actual effect on code
 - **Improve Model managment** Model memory estimation depending on model quantisation
-- **improve transformers loading**: for 8 and 4 bits quantisation
+- **Ability to perform action on files** to have an actual effect on code
+- **improve transformers loading**: for 8 and 4 bits quantisation with GPTQ and GGML models
 - **Actions backlog**: a backlog of actions to be executed
 - **Ability to execute code in a sealed container**: to provide direct feedback to the agent
 - **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. It can add new elements to the context, clear the context, and manage the context length to ensure it stays within a specified token limit.
@@ -43,7 +44,9 @@ Using local generation with transformers models:
 - **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup.
 
 ## Recent improvments:
+- **Make actions more generic** to allow beter variations from congig
 - **Improve Model managment** Removed memory leak and improved model managment
+
 ## Useage:
 
 Clone this repository:

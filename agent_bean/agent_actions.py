@@ -1,7 +1,7 @@
 
 import torch
 
-from   typing                            import List
+from   typing                            import List, Dict
 from   langchain.tools                   import DuckDuckGoSearchResults
 from   agent_bean.system_info            import SystemInfo
 from   agent_bean.models_manager         import ModelsManager
@@ -10,220 +10,141 @@ from   agent_bean.models_manager         import ModelsManager
 class AgentAction():
     """This class is used to define the actions that the agent can take."""
     def __init__(self, setup: dict, sys_info: SystemInfo, mm: ModelsManager) -> None:
-        self.setup            = setup
-        self.system_info      = sys_info
-        self.search           = DuckDuckGoSearchResults()
-        self.actions_list     = [ m for m in dir(self) if m.startswith('__action_') ]
-        self.actions_str_list = [ m.replace('__action_', '').replace('__', '') for m in self.actions_list ]
-        self.mm               = mm
-        print(f"Actions list: {self.actions_list}")
+        self.setup              = setup
+        self.system_info        = sys_info
+        self.search             = DuckDuckGoSearchResults()
+        self.actions_list       = [ m for m in dir(self) if m.startswith('__action_') ]
+        self.actions_str_list   = [ m.replace('__action_', '').replace('__', '') for m in self.actions_list ]
+        self.functions_list     = [ m for m in dir(self) if m.startswith('__function_') ]
+        self.functions_str_list = [ m.replace('__function_', '').replace('__', '') for m in self.functions_list ]
+        self.mm                 = mm
+        print(f"      Actions list: {self.get_available_actions()}")
+        print(f"Actions types list: {self.actions_list}")
+        print(f"    Functions list: {self.functions_list}")
 
 
-    def perform_action(self, action_type: str, inputs: List[str]) -> str:
-        """Perform the action specified by action_type on the inputs."""
-        action_name = f"__action_{action_type}__"
-        if action_name in self.actions_list:
-            return(getattr(self, action_name)(inputs))
+    def perform_action(self, action_name: str, inputs: List[str]) -> str:
+        """Perform the action type specified using the params in the settings file and the input. this function returns the response."""
+        action_params:Dict      = self.setup["actions"][action_name].copy()
+        action_params["inputs"] = inputs
+        action_type:str         = action_params["action_type"]
+        action_f_name:str       = f"__action_{action_type}__"
+        
+        if action_f_name in self.actions_list:
+            return(getattr(self, action_f_name)(action_params))
         else:
-            #return([f"AgentAction ERROR: Action {action_name} not implemented (yet?)"])
-            raise NotImplementedError(f"AgentAction ERROR: Action {action_name} not implemented (yet?)")
+            raise NotImplementedError(f"AgentAction ERROR: Action {action_f_name} not implemented (yet?)")
+
+
+    def perform_function(self, function_name: str, input:str) -> str:
+        """Perform the function specified using the input. this function returns the output string."""
+        function_f_name:str = f"__function_{function_name}__"
+        if function_f_name in self.functions_list:
+            return(getattr(self, function_f_name)(input))
+        else:
+            raise NotImplementedError(f"AgentAction ERROR: Action Function {function_f_name} not implemented (yet?)")
 
 
     def get_available_actions(self) -> List[str]:
         """Return the list of available actions."""
-        return self.actions_str_list
+        return self.setup["actions"].keys()
+        
 
+    def get_available_actions_types(self) -> List[str]:
+        """Return the list of available actions."""
+        return self.actions_str_list
+        
+
+    def get_available_functions(self) -> List[str]:
+        """Return the list of available functions."""
+        return self.functions_str_list
+    
 
     def get_special_tokens(self, model_name:str) -> [dict]:
         """get the special tokens used by the model"""
         keys = ["model_sys_delim", "model_usr_delim"]
         out  = {k:self.setup['models_list'][model_name][k] for k in keys  }
         return out
-
-
-    def __action_free__(self, inputs: List[str]) -> str:
-        """Generate code based on the input text."""
-        action_name    = 'free'
-        model_name     = self.setup['actions'][action_name]['model_name']
-        special_tokens = self.get_special_tokens(model_name)
-
-        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        prompt         = special_tokens['model_sys_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
-                            + special_tokens['model_sys_delim']['end']
-        prompt        += special_tokens['model_usr_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
-                            + special_tokens['model_usr_delim']['end']
         
-        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
-                                     'temperature':       0.6,
-                                     'top_p':             1,
-                                     'frequency_penalty': 0,
-                                     'presence_penalty':  0.6,
-                                     'stop':              ["\n"]})
-        resp           = self.mm.predict(model_name, prompt)
-        del action_name
-        del model_name
-        del special_tokens
-        del max_tokens
-        del prompt
 
-        return resp
-    
+    def __function_search__(self, input:str) -> str:
+        """search for the input text using duckduckgo"""
+        return self.search.run(input)
 
-    def __action_summarize__(self, inputs: List[str]) -> str:
-        """Summarize the input text."""
-        # Tokenize the input text
-        action_name    = 'summarize'
-        model_name     = self.setup['actions'][action_name]['model_name']
-        special_tokens = self.get_special_tokens(model_name)
-        input_tokens   = self.mm.get_embeddings(model_name, inputs[0])
-        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        summaries      = []
+
+    def __action_generate__(self, action_params) -> str:
+        """use a llm agent to generate text based on input prompt"""
+        ##action_name    = kwargs['action_name']
+        model_name           = action_params['model_name' ]
+        inputs               = action_params['inputs'     ].copy()
+        action_pre_function  = action_params.get('action_pre_function' , None)
+        action_post_function = action_params.get('action_post_function', None)
+
+        if action_pre_function is not None and len(inputs) > 0:
+            function_res:str    = self.perform_function(action_pre_function, inputs.pop(0))
+            inputs.insert(0, function_res)
             
-        # Split the tokenized input into chunks and summarize each chunk
-        for i in range(0, len(input_tokens), max_tokens):
-            chunk      = input_tokens[i:i+max_tokens]
-            chunk_text = str(self.mm.decode(model_name, chunk))
-            #prompt     = ''.join(self.setup['actions']['summarize']['prompt_template']).format(text=chunk_text)
-            prompt     = special_tokens['model_sys_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
-                            + special_tokens['model_sys_delim']['end']
-            prompt    += special_tokens['model_usr_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=chunk_text) \
-                            + special_tokens['model_usr_delim']['end']
-            #self.system_info.print_GPU_info()
+        special_tokens   = self.get_special_tokens(model_name)
+        max_tokens       = int(action_params.get('max_token_ratio', 0.7) * self.setup['models_list'][model_name]['max_tokens'])
+        input_tokens     = self.mm.get_embeddings(model_name, inputs[0])
+        resps            = []
+        chunkable_action = action_params.get('chunkable_action', False)
+        if len(input_tokens) > max_tokens and not chunkable_action:
+            raise ValueError(f"AgentAction ERROR: input text too long for model {model_name}")
+        
+        while True:
+            token_index    = min(len(input_tokens), max_tokens)
+            chunk          = input_tokens[0:token_index].copy()       # Copy the chunk of tokens to avoid modifying the input tokens
+            input_tokens   = input_tokens[token_index: ]              # Remove the chunk from the input tokens
+            chunk_text     = str(self.mm.decode(model_name, chunk))
+
+            prompt         = special_tokens['model_sys_delim']['start'] \
+                                + ''.join(action_params['prompt_system']) \
+                                + special_tokens['model_sys_delim']['end']
+            prompt        += special_tokens['model_usr_delim']['start'] \
+                                + ''.join(action_params['prompt_template']).format(text=chunk_text) \
+                                + special_tokens['model_usr_delim']['end']
 
             self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
-                                     'temperature':       0.01,
-                                     'top_p':             1,
-                                     'frequency_penalty': 0,
-                                     'presence_penalty':  0.6,
-                                     'stop':              ["\n"]})
-            summary = self.mm.predict(model_name, prompt)
-            summaries.append(summary[-1])
+                                        'temperature':       action_params.get('temperature'      , 1.0   ),
+                                        'top_p':             action_params.get('top_p'            , 1.0   ),
+                                        'frequency_penalty': action_params.get('frequency_penalty', 0.5   ),
+                                        'presence_penalty':  action_params.get('presence_penalty' , 0.1   ),
+                                        'stop':              action_params.get('stop'             , ["\n"])})
+            resp           = self.mm.predict(model_name, prompt).copy()
 
-        # Concatenate the summaries to form the final summary
-        res = ' '.join(summaries)  # Concatenate the summaries to form the final summary
-        return res
+            if chunkable_action:              # If the action is chunkable, 
+                resps.append(resp[-1])        # we need to keep adding chunks to the response  
+                if len(input_tokens) == 0:
+                    break                     # until we reach the end of the input tokens
 
+            else:                             # If the action is not chunkable, no need to loop
+                break
 
-    def __action_search__(self, inputs: List[str]) -> str:
-        """Search internet for the input text subject."""
-        action_name    = 'search'
-        model_name     = self.setup['actions'][action_name]['model_name']
-        special_tokens = self.get_special_tokens(model_name)
-        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        resp           = []
-        #prompt        = ''.join(self.setup['actions']['search']['prompt_template']).format(text=inputs)
-        prompt         = special_tokens['model_sys_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
-                            + special_tokens['model_sys_delim']['end']
-        prompt        += special_tokens['model_usr_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
-                            + special_tokens['model_usr_delim']['end']   
-             
-        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
-                                     'temperature':       0.01,
-                                     'top_p':             1,
-                                     'frequency_penalty': 0,
-                                     'presence_penalty':  0.6,
-                                     'stop':              ["\n"]})
-        search_querry = self.mm.predict(model_name, prompt)
-        if len(search_querry[-1]) > 0:
-            search_resp   = str(self.search.run(search_querry[-1]))
-        else:  # If the model did not generate a search querry, use the input text as the search querry
-            search_resp   = str(self.search.run(inputs[0]))
-        resp.append(search_querry[-1])
-        resp.append(search_resp)
-        return ' '.join(resp)
+        if chunkable_action:
+            resp = ' '.join(resps)  # Concatenate the chunks to form the final response
+
+        if action_post_function is not None:
+            resp = self.perform_function(action_post_function, resp[-1])
+
+        output_type = action_params.get('output_type', 'text')
+        if output_type == 'text':
+            return resp
+
+        if output_type == 'code_text':
+            # TODO 1. remove the text before the code
+            
+            # TODO 2. remove the code delimiters tokens
+            pass
+
+        if output_type == 'actions_json':
+            # TODO 1. remove the text before the json
+
+            # TODO 2. remove the json delimiters tokens 
+
+            # TODO 3. convert the json to a dictionary as a list of actions and append to the backlog
+            pass
+
+        return resp
 
 
-    def __action_split__(self, inputs: List[str]) -> List[str]:
-        """Split a complex task into a set of simple tasks."""
-        action_name    = 'split'
-        model_name     = self.setup['actions'][action_name]['model_name']
-        special_tokens = self.get_special_tokens(model_name)
-        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        #prompt         = ''.join(self.setup['actions']['split']['prompt_template']).format(text=inputs)
-        prompt         = special_tokens['model_sys_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
-                            + special_tokens['model_sys_delim']['end']
-        prompt        += special_tokens['model_usr_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
-                            + special_tokens['model_usr_delim']['end']    
-               
-        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
-                                     'temperature':       0.01,
-                                     'top_p':             1,
-                                     'frequency_penalty': 0,
-                                     'presence_penalty':  0.6,
-                                     'stop':              ["\n"]})
-        resp         = self.mm.predict(model_name, prompt)
-        tasks        = resp[0].split(',')
-        return tasks
-
-
-    def __action_code__(self, inputs: List[str]) -> str:
-        """Generate code based on the input text."""
-        action_name    = 'code'
-        model_name     = self.setup['actions'][action_name]['model_name']
-        special_tokens = self.get_special_tokens(model_name)
-        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        #prompt         = ''.join(self.setup['actions']['code']['prompt_template']).format(text=inputs)
-        prompt         = special_tokens['model_sys_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
-                            + special_tokens['model_sys_delim']['end']
-        prompt        += special_tokens['model_usr_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
-                            + special_tokens['model_usr_delim']['end']   
-        
-        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
-                                     'temperature':       0.4,
-                                     'top_p':             1,
-                                     'frequency_penalty': 0,
-                                     'presence_penalty':  0.6,
-                                     'stop':              ["\n"]})
-        resp         = self.mm.predict(model_name, prompt)
-        code         = resp
-        return code
-
-
-    def __action_code_quality__(self, inputs: List[str]) -> str:
-        """Check the quality of the input code."""
-        action_name    = 'code_quality'
-        model_name     = self.setup['actions'][action_name]['model_name']
-        special_tokens = self.get_special_tokens(model_name)
-        max_tokens     = int(0.7 * self.setup['models_list'][model_name]['max_tokens'])
-        #prompt        = ''.join(self.setup['actions']['code_quality']['prompt_template']).format(text=inputs)
-        prompt         = special_tokens['model_sys_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_system']) \
-                            + special_tokens['model_sys_delim']['end']
-        prompt        += special_tokens['model_usr_delim']['start'] \
-                            + ''.join(self.setup['actions'][action_name]['prompt_template']).format(text=inputs) \
-                            + special_tokens['model_usr_delim']['end']   
-        
-        self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
-                                     'temperature':       0.5,
-                                     'top_p':             1,
-                                     'frequency_penalty': 0,
-                                     'presence_penalty':  0.6,
-                                     'stop':              ["\n"]})
-        resp         = self.mm.predict(model_name, prompt)
-        code_quality = resp
-        return code_quality
-
-
-    def __del__(self):
-        """Delete the agent action."""
-        print("---- Deleting AgentAction ----")
-        if self is not None:
-            if hasattr(self, 'mm'):               del self.mm
-            if hasattr(self, 'setup'):            del self.setup
-            if hasattr(self, 'system_info'):      del self.system_info
-            if hasattr(self, 'actions_str_list'): del self.actions_str_list
-            if hasattr(self, 'actions_list'):     del self.actions_list
-            if hasattr(self, 'search'):           del self.search
-        if torch.cuda is not None:
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()

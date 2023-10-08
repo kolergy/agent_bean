@@ -31,13 +31,13 @@ class AgentBean:
     self.aa             = AgentAction(  setup, self.si,  self.mm, )
 
 
-  def agent_action(self, action_type: str, inputs: list) -> str:
+  def agent_action(self, action_name: str, inputs: list) -> str:
     """prepare the prompt for a given action and call the model"""
 
     if self.debug:
-      print(f"Action: {action_type}, num Inputs: {len(inputs)}")
+      print(f"Action: {action_name}, num Inputs: {len(inputs)}")
 
-    resp = self.aa.perform_action(action_type, inputs)
+    resp = self.aa.perform_action(action_name, inputs)
     print(f"ZZZ R E S P O N S E: {resp}")
 
     return resp
