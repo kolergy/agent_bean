@@ -1,7 +1,7 @@
 
 import torch
 
-from   typing                            import List
+from   typing                            import List, Dict
 from   langchain.tools                   import DuckDuckGoSearchResults
 from   agent_bean.system_info            import SystemInfo
 from   agent_bean.models_manager         import ModelsManager
@@ -39,6 +39,12 @@ class AgentAction():
         keys = ["model_sys_delim", "model_usr_delim"]
         out  = {k:self.setup['models_list'][model_name][k] for k in keys  }
         return out
+
+    def __action__generate__(self, action_data: Dict) -> str:
+        """use a llm agent to generate text based on input prompt"""
+        action_name    = 'generate'
+        model_name     = self.setup['actions'][action_name]['model_name']
+        special_tokens = self.get_
 
 
     def __action_free__(self, inputs: List[str]) -> str:
