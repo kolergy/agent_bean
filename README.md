@@ -9,7 +9,9 @@ Some of the code has been developped with the help of aider: https://github.com/
 ## Curent capabilities:
 The agent Bean is currently capable of the following:
 - **Manage models**: manage the models and ability to instantiate / deinstantiate models, ability to use any transformers models 
-- **Action Execution**: Agent Bean can perform various actions. The actions are defined in the `AgentAction` class and can be easily extended. curently implemented actions:
+- **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently 
+
+implemented actions:
   -  **summarize**: generate a summary of the provided text
   -  **search**: perform a search on the net
   -  **free**: freetext query
