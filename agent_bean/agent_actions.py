@@ -79,6 +79,7 @@ class AgentAction():
         inputs               = action_params['inputs'     ].copy()
         action_pre_function  = action_params.get('action_pre_function' , None)
         action_post_function = action_params.get('action_post_function', None)
+        code_language        = action_params.get('code_language', 'python')
 
         if action_pre_function is not None and len(inputs) > 0:
             function_res:str    = self.perform_function(action_pre_function, inputs.pop(0))
@@ -98,19 +99,20 @@ class AgentAction():
             input_tokens   = input_tokens[token_index: ]              # Remove the chunk from the input tokens
             chunk_text     = str(self.mm.decode(model_name, chunk))
 
-            prompt         = special_tokens['model_sys_delim']['start'] \
-                                + ''.join(action_params['prompt_system']) \
-                                + special_tokens['model_sys_delim']['end']
-            prompt        += special_tokens['model_usr_delim']['start'] \
-                                + ''.join(action_params['prompt_template']).format(text=chunk_text) \
-                                + special_tokens['model_usr_delim']['end']
+            prompt         = special_tokens['model_sys_delim']['start'] 
+            prompt        += ''.join(action_params['prompt_system']).format(code_language=code_language) 
+            prompt        += special_tokens['model_sys_delim']['end']
+            prompt        += special_tokens['model_usr_delim']['start'] 
+            prompt        += ''.join(action_params['prompt_template']).format(text=chunk_text, code_language=code_language) 
+            prompt        += special_tokens['model_usr_delim']['end']
 
             self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
-                                        'temperature':       action_params.get('temperature'      , 1.0   ),
-                                        'top_p':             action_params.get('top_p'            , 1.0   ),
-                                        'frequency_penalty': action_params.get('frequency_penalty', 0.5   ),
-                                        'presence_penalty':  action_params.get('presence_penalty' , 0.1   ),
-                                        'stop':              action_params.get('stop'             , ["\n"])})
+                                        'temperature':       action_params.get('temperature'      ,   1.0  ),
+                                        'top_p':             action_params.get('top_p'            ,   1.0  ),
+                                        'frequency_penalty': action_params.get('frequency_penalty',   0.5  ),
+                                        'presence_penalty':  action_params.get('presence_penalty' ,   0.1  ),
+                                        'max_new_tokens':    action_params.get('max_new_tokens'   , 512    ),
+                                        'stop':              action_params.get('stop'             , ["\n"] )})
             resp           = self.mm.predict(model_name, prompt).copy()
 
             if chunkable_action:              # If the action is chunkable, 

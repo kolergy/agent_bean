@@ -18,6 +18,7 @@ implemented actions:
   -  **split**: split a task executable actions 
   -  **code**: generate code 
   -  **code_quality**: analyse the quality of the code (not yet working well)
+  -  **requirements**: generate requirements
 
 The agent is continuously evolving, with new capabilities being added regularly.
 
@@ -44,6 +45,7 @@ Using local generation with transformers models:
 - **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup.
 
 ## Recent improvments:
+- **added requirements**: generate requirements
 - **Make actions more generic** to allow beter variations from congig
 - **Improve Model managment** Removed memory leak and improved model managment
 

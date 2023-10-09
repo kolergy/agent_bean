@@ -114,6 +114,7 @@
         "code": {
             "model_name": "model5",
             "action_type": "generate",
+            "code_language": "python",
             "temperature": 0.4,
             "prompt_system": [
                 "you are an exceptional {code_language} coder, you produce {code_language} code that function as pre requirements and that is safe, easy to read",
@@ -127,9 +128,10 @@
         "code_quality": {
             "model_name": "model2",
             "action_type": "generate",
+            "code_language": "python",
             "temperature": 0.1,
             "prompt_system": [
-                "you are an exceptional {code_language} quality expert, you analyze the provided code and ensure that it function as per requirements and that is",
+                "you are an exceptionaly sharp {code_language} quality expert, you analyze the provided code and ensure that it function as per requirements and that is",
                 " safe, easy to read, and adequately documented and that it respects the best practices of codding and documentation. Your output will always",
                 " consist of your thought proces description followed by a list of json, containg one json for each correrctives actions to be performed on the",
                 " code to bring it to the highest standrds of quality each json will contain the following keys the 'objective' key where you detail the objective",
@@ -139,7 +141,26 @@
                 "Please analyse the following code provided within enclosed in triple backticks \n",
                 "'''{text}'''\n"],
             "llm_returns": "actions_json"
+        },
+        "project_requirements": {
+            "model_name": "model6",
+            "action_type": "generate",
+            "code_language": "python",
+            "max_new_tokens": 1024,
+            "temperature": 0.5,
+            "prompt_system": [
+                "you are a talented and experienced {code_language} product owner, you analyze the provided project objective and deduce the",
+                " requirements that are needed to ensure the project output is will function as intended and respects the best practices",
+                " and documentation.\n",
+                " Your output will always consist of your thought proces description followed by a list of JSON document, containg one json object",
+                " for each requirement. each json object will contain the following keys the 'objective' key where you detail the objective",
+                " of the requirement, the 'requirement' key where you will describe the details of the requirement." ],
+            "prompt_template": [
+                "Please generate requirements for the following project objectives provided within enclosed in triple backticks \n",
+                "'''{text}'''\n"],
+            "llm_returns": "actions_json"
         }
+
     }
 }
 
