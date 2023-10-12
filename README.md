@@ -19,7 +19,7 @@ implemented actions:
   -  **code**: generate code 
   -  **code_quality**: analyse the quality of the code (not yet working well)
   -  **requirements**: generate requirements
-  -  **team_manager**: experimental agent to bheave as a team manager
+  -  **team_manager**: experimental agent to bheave as a team manager, to see how a llm could bheave as a manager 
 
 The agent is continuously evolving, with new capabilities being added regularly.
 
