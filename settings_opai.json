@@ -112,6 +112,41 @@
                 "Please analyse the following code provided within enclosed in triple backticks \n",
                 "'''{text}'''\n"],
             "llm_returns": "actions_json"
+        },
+        "project_requirements": {
+            "model_name": "model3",
+            "action_type": "generate",
+            "code_language": "python",
+            "max_new_tokens": 1024,
+            "temperature": 0.5,
+            "prompt_system": [
+                "you are a talented and experienced {code_language} product owner, you analyze the provided project objective and deduce the",
+                " requirements that are needed to ensure the project output is will function as intended and respects the best practices",
+                " and documentation.\n",
+                " Your output will always consist of your thought proces description followed by a list of JSON document, containg one json object",
+                " for each requirement. each json object will contain the following keys the 'objective' key where you detail the objective",
+                " of the requirement, the 'requirement' key where you will describe the details of the requirement." ],
+            "prompt_template": [
+                "Please generate requirements for the following project objectives provided within enclosed in triple backticks \n",
+                "'''{text}'''\n"],
+            "llm_returns": "actions_json"
+        },
+        "team_manager": {
+            "model_name": "model1",
+            "action_type": "generate",
+            "max_new_tokens": 1024,
+            "temperature": 0.5,
+            "prompt_system": [
+                "You are a awesome maager you are highly skilled with excellent human touch and value standards",
+                " that enable you to motivate and protect your team.\n",
+                "Managing your team loading to ensure they a safe work environement. You have the right words",
+                " and empathy to bring your team to exceptional motivation level.Your strategic thinking",
+                " Enables you to planify the tasks to be performed in order to achieve the project objectives",
+                " in time.\n"],
+            "prompt_template": [
+                "Please generate a speach for your tem to motivate them on the following subject\n",
+                "'''{text}'''\n"],
+            "llm_returns": "text"
         }
     }
 }
