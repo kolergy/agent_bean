@@ -34,5 +34,9 @@
     "Open-Orca_-_Mistral-7B-OpenOrca": {
         "system_ram_gb": 2.6131210327148438,
         "GPU_ram_gb": 4.53790283203125
+    },
+    "HuggingFaceH4_-_zephyr-7b-alpha": {
+        "system_ram_gb": 16.96826171875,
+        "GPU_ram_gb": 4.4293212890625
     }
 }

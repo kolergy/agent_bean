@@ -32,7 +32,7 @@
             "model_id": "glaiveai/glaive-coder-7b",
             "model_bits": 4,
             "max_tokens": 4000,
-            "model_sys_delim": { "start": "<s>[INST]\n<<SYS>>\n", "end": "\n<</SYS>>\n\n" },
+            "model_sys_deteam_managerlim": { "start": "<s>[INST]\n<<SYS>>\n", "end": "\n<</SYS>>\n\n" },
             "model_usr_delim": { "start": ""                    , "end": "[/INST]"        }
         },
         "model5": {
@@ -50,6 +50,14 @@
             "max_tokens": 8000,
             "model_sys_delim": { "start": "<|im_start|> system\n", "end": "\n<|im_end|>\n"        },
             "model_usr_delim": { "start": "<|im_start|>user\n"   , "end": "<|im_end|>\n"          }
+        },
+        "model7": {
+            "model_type": "transformers",
+            "model_id": "HuggingFaceH4/zephyr-7b-alpha",
+            "model_bits": 8,
+            "max_tokens": 8000,
+            "model_sys_delim": { "start": "<|system|>\n", "end": "</s>\n"        },
+            "model_usr_delim": { "start": "<|user|>\n"  , "end": "</s>\n"        }
         }
     },
     "vectorstore": {
@@ -159,6 +167,24 @@
                 "Please generate requirements for the following project objectives provided within enclosed in triple backticks \n",
                 "'''{text}'''\n"],
             "llm_returns": "actions_json"
+        },
+        "team_manager": {
+            "model_name": "model7",
+            "action_type": "generate",
+            "max_new_tokens": 1024,
+            "temperature": 0.6,
+            "prompt_system": [
+                "You are a awesome maager you are highly skilled with excellent human touch and value standards",
+                " that enable you to motivate and protect your team you are able to recognise their work and",
+                " uplift their spirit in any conditions.\n",
+                "Managing your team's loading to ensure they a safe work environement. You have the right words",
+                " and empathy to bring your team to exceptional motivation level even in adversity.\n",
+                "Your strategic thinking enables you to planify the tasks to be performed in order to achieve",
+                " the project objectives in time.\n"],
+            "prompt_template": [
+                "Please generate a speach for your tem to motivate them on the following subject\n",
+                "'''{text}'''\n"],
+            "llm_returns": "text"
         }
 
     }
