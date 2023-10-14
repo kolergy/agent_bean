@@ -10,7 +10,8 @@ from   agent_bean.models_manager         import ModelsManager
 class AgentAction():
     """This class is used to define the actions that the agent can take."""
     def __init__(self, setup: dict, sys_info: SystemInfo, mm: ModelsManager) -> None:
-        self.setup              = setup
+
+        self.setup_update(setup)
         self.system_info        = sys_info
         self.search             = DuckDuckGoSearchResults()
         self.actions_list       = [ m for m in dir(self) if m.startswith('__action_') ]
@@ -21,6 +22,12 @@ class AgentAction():
         print(f"      Actions list: {self.get_available_actions()}")
         print(f"Actions types list: {self.actions_list}")
         print(f"    Functions list: {self.functions_list}")
+
+
+    def setup_update(self, setup: dict) -> None:
+        """update the setup """
+        self.setup = setup
+
 
 
     def perform_action(self, action_name: str, inputs: List[str]) -> str:

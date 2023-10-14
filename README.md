@@ -24,6 +24,7 @@ implemented actions:
 The agent is continuously evolving, with new capabilities being added regularly.
 
 ## Current limitations:
+- when modifying the settings fileit needs to be re uploaded for the changes to take effects
 - It is not yet able to interact with files
 - Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models!? (they use a different proces for loading that needs to be implemented)
 - Imprecise memory estimation for models
@@ -46,6 +47,7 @@ Using local generation with transformers models:
 - **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup.
 
 ## Recent improvments:
+- **Added settings file selection and loading**: to be able to easyly change the settings file
 - **added a team_manager agent**: not totaly related to the rest but it is an experiment 
 - **added requirements**: generate requirements
 - **Make actions more generic** to allow beter variations from congig

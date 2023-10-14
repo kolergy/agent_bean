@@ -37,6 +37,20 @@ ram_label      = f"CPU: {cpu_brand}, {cpu_cores} Cores, RAM Total: {ram_total_Gb
 v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM Used: {agent.si.get_v_ram_used():6.2f} Gb, VRAM Free: {agent.si.get_v_ram_free():6.2f} Gb"
 
 
+# Define the function to be called when the setup button is pressed
+def set_action(setup_file):
+    """ Run the action: using the configured llm agent"""
+    type_f = type(setup_file)
+    print(f"type_f: {type_f}")
+    if type_f == list:             # How can someone decide to return a list or an object?
+        setup_file = setup_file[0]
+    print(f"file: {setup_file.name}")
+    with open(setup_file.name) as f: setup = json.load(f)
+    agent.setup_update(setup)
+    
+
+
+
 # Define the function to be called when the Run button is pressed
 def run_action(action_name, action_input):
     """ Run the action: using the configured llm agent"""
@@ -82,13 +96,17 @@ def update_v_ram():
 
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
-    action_name          = gr.components.Dropdown(choices = agent.aa.get_available_actions(), label = "Action Name"   ) 
-    action_input         = gr.components.Textbox( lines   = 5                               , label = "Action Input"  )
-    run_button           = gr.Button(                                                         label = "Run"           )
-    text_output          = gr.components.Textbox( lines   = 20,  autoscroll = True          , label = "Output Text"   )
+    gr.Markdown("# Agent Bean Interface")
+    setup_file           = gr.components.File(file_count=1, file_types=["json"], value=settings_file, label = "Setup File"     )
+    set_button           = gr.Button(             variant = 'secondary'                             , value = "Load Setup file")
+    action_name          = gr.components.Dropdown(choices = agent.aa.get_available_actions()        , label = "Action Name"    ) 
+    action_input         = gr.components.Textbox( lines   = 5                                       , label = "Action Input"   )
+    run_button           = gr.Button(             variant = 'primary'                               , value = "Run Agent"      )
+    text_output          = gr.components.Textbox( lines   = 20,  autoscroll = True                  , label = "Output Text"    )
     ram_plt              = gr.components.LinePlot(show_label=False)
     v_ram_plt            = gr.components.LinePlot(show_label=False)
 
+    set_button.click( set_action, setup_file)
     run_button.click( run_action, [action_name, action_input], outputs = text_output)
 
     dep_ram              = iface.load(update_ram  , None, ram_plt  , every=1)

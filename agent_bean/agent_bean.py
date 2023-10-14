@@ -31,6 +31,14 @@ class AgentBean:
     self.aa             = AgentAction(  setup, self.si,  self.mm, )
 
 
+  def setup_update(self, setup: dict) -> None:
+    """update the setup and propagate it to the other components"""
+    self.setup = setup
+    self.debug = setup['debug']
+    self.mm.setup_update(setup)
+    self.aa.setup_update(setup)
+
+
   def agent_action(self, action_name: str, inputs: list) -> str:
     """prepare the prompt for a given action and call the model"""
 

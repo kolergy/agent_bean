@@ -15,6 +15,8 @@ from   agent_bean.transformers_model     import TfModel, TransformersEmbeddings
 class ModelsManager():
     """This class is used to manage the models and their ressources useage"""
     def __init__(self, setup: dict, si: SystemInfo) -> None:
+
+        self.setup_update(setup)
         self.setup                    = setup
         self.si                       = si
         self.debug                    = setup['debug']
@@ -24,12 +26,22 @@ class ModelsManager():
         self.openai_params_list       = ["temperature", "max_tokens"          ]
         self.transformers_params_list = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p" ]
 
+        self.test_models_resources_reqs()
+    
+
+    def setup_update(self, setup: dict) -> None:
+        """update the setup and deinstantiate models and embeddings if needed"""
+        self.setup = setup
+        self.debug = setup['debug']
         if os.path.exists(self.setup["known_models_file_name"]):
             with open(self.setup["known_models_file_name"]) as f:
                 self.known_models  = json.load(f)
-        
-        self.test_models_resources_reqs()
-    
+        if 'reload_models' in self.setup.keys():
+            if self.setup['reload_models']:
+                if len(self.active_models) > 0:
+                    for m in self.active_models.keys():
+                        self.deinstantiate_model(m)
+
 
     def model_need(self, model_name:str) -> bool:
         """if model not already instantiated check memory resources and instantiate a nneded model, may remove other instantiated models if needed"""
@@ -41,11 +53,11 @@ class ModelsManager():
                 if model_name in self.active_models:
                     return True
                 else:
-                    print(f"ERROR: Model {model_name} not instantion failed")
-                    raise NotImplementedError(f"ERROR: Model {model_name} not instantion failed")
+                    print(f"ERROR: Model {model_name} instantion failed")
+                    raise  RuntimeError(f"ERROR: Model {model_name} instantion failed")
             else:
                 print(f"ERROR: Model {model_name} not enough resources for instantion")
-                raise NotImplementedError(f"ERROR: Model {model_name} not enough resources for instantion")
+                raise RuntimeError(f"ERROR: Model {model_name} not enough resources for instantion")
         else:
             if self.debug:
                 print(f"Model {model_name} already instantiated")
@@ -105,8 +117,11 @@ class ModelsManager():
             print(f"Checking memory resources for model {k_model_id}")
             self.si.print_GPU_info()
         if k_model_id not in self.known_models:
-            print(f"ERROR: Model {k_model_id} not in known_models")
-            return False
+            print(f"WARNING: Model {k_model_id} not in known_models list, running blind de instanciating everything just in case") 
+            keys = list(self.active_models.keys())  # avoid -> RuntimeError: dictionary changed size during iteration
+            for m in keys:
+                self.deinstantiate_model(m)
+            return True
         else:
             if self.debug:
                 print(f"Model {k_model_id} in known_models checking memory resources")

@@ -1,6 +1,7 @@
 {
     "description":"Agent_Bean settings",
     "debug": true,
+    "reload_models": false,
     "known_models_file_name": "known_models.json",
     "models_list": {
         "model1": {
@@ -54,6 +55,14 @@
         "model7": {
             "model_type": "transformers",
             "model_id": "HuggingFaceH4/zephyr-7b-alpha",
+            "model_bits": 8,
+            "max_tokens": 8000,
+            "model_sys_delim": { "start": "<|system|>\n", "end": "</s>\n"        },
+            "model_usr_delim": { "start": "<|user|>\n"  , "end": "</s>\n"        }
+        },
+        "model8": {
+            "model_type": "transformers",
+            "model_id": "ehartford/dolphin-2.1-mistral-7b",
             "model_bits": 8,
             "max_tokens": 8000,
             "model_sys_delim": { "start": "<|system|>\n", "end": "</s>\n"        },
@@ -151,22 +160,29 @@
             "llm_returns": "actions_json"
         },
         "project_requirements": {
-            "model_name": "model6",
+            "model_name": "model8",
             "action_type": "generate",
             "code_language": "python",
-            "max_new_tokens": 1024,
+            "max_new_tokens": 2048,
             "temperature": 0.5,
             "prompt_system": [
-                "you are a talented and experienced {code_language} product owner, you analyze the provided project objective and deduce the",
-                " requirements that are needed to ensure the project output is will function as intended and respects the best practices",
-                " and documentation.\n",
-                " Your output will always consist of your thought proces description followed by a list of JSON document, containg one json object",
-                " for each requirement. each json object will contain the following keys the 'objective' key where you detail the objective",
-                " of the requirement, the 'requirement' key where you will describe the details of the requirement." ],
+                "you are a talented and experienced {code_language} product owner, a large number of projects have been sucessfull thanks to you ability to",
+                " define the right requirements for them. You ewperience enables you to analyze partial project informations and deduce the",
+                " requirements that are needed to ensure the project output will function as intended and respects the best practices of {code_language}",
+                " coding and documentation, one of your talents is to focus on the requirements that will bring the best code usefulness for the user",
+                " and the best code quality bringing huge value to the project. Your other talent is to avoid un necessary requirements."],
             "prompt_template": [
-                "Please generate requirements for the following project objectives provided within enclosed in triple backticks \n",
+                "Please generate requirements for the following the text delimited by triple backtick\n",
+                "Start by describing your in depth analysys on the text to identify the requirement neededs",
+                " you ensure requirements are described and well separated not mixing two or more requirements ionto one,single concept per requirements",
+                "You will provide the your final set of requirements as a JSON, containg",
+                " the following keys for each requirement: \n",
+                "   'objective': where you detail the objective of the requirement,\n",
+                "   'benefits': where you detail how this requirement benefits the project,\n",
+                "   'requirement': where you describe the details of the requirement,\n",
+                "   'validation_criteria' where you define the criteria to be able to validate this requirement.",
                 "'''{text}'''\n"],
-            "llm_returns": "actions_json"
+            "llm_returns": "requirements_json"
         },
         "team_manager": {
             "model_name": "model7",
