@@ -1,6 +1,6 @@
 # AI Agent Bean
 Agent Bean is AI agent that is designed to interact with users and perform various tasks. The initial focus is on coding but there are no limitations to other activities. 
-It has been designed to be able to run local llm models available on the huggingface portal as well as interfacing with the openAI API so you can run the model fully localy if you need and have the available compute or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different tasks.
+It has been designed to be able to run local llm models like Llama2 and Mistral that are available on the huggingface portal as well as interfacing with the openAI API to be able to run GPT3.4 or GPT4 so you can run the model fully localy if you need and have the available compute or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different actions.
 
 It has a memory management system that can instantiate / dinstantiate models dependings on the needs of the task (it is still a bit rough )
 
@@ -12,23 +12,23 @@ The agent Bean is currently capable of the following:
 - **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently 
 
 implemented actions:
+  -  **free**: freetext query
   -  **summarize**: generate a summary of the provided text
   -  **search**: perform a search on the net
-  -  **free**: freetext query
   -  **split**: split a task executable actions 
   -  **code**: generate code 
   -  **code_quality**: analyse the quality of the code (not yet working well)
-  -  **requirements**: generate requirements
-  -  **team_manager**: experimental agent to bheave as a team manager, to see how a llm could bheave as a manager 
+  -  **project_requirements**: generate requirements
+  -  **team_manager**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
 
 The agent is continuously evolving, with new capabilities being added regularly.
 
 ## Current limitations:
-- when modifying the settings fileit needs to be re uploaded for the changes to take effects
+- When modifying the settings file, it needs to be re uploaded for the changes to take effects
 - It is not yet able to interact with files
 - Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models!? (they use a different proces for loading that needs to be implemented)
 - Imprecise memory estimation for models
-- display of system status ram / vram not working
+- Tested only on linux up to now but should work on windows and Mac as well (not tested)
 
 Using local generation with transformers models:
 - you need at least 16GB of video RAM to run 15B models in 4bits to be able to have correct coding and splitting result
@@ -45,6 +45,10 @@ Using local generation with transformers models:
 - **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. It can add new elements to the context, clear the context, and manage the context length to ensure it stays within a specified token limit.
 - **Document Loading**: Agent Bean can load a set of documents into a vectorstore for later use.
 - **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup.
+- **Improve code quality action**: code quality checker is not yet working well
+- **Task looping** ability to loop on repetitive tasks
+- **Classifier action** to classify inputs
+- **implement LLAVA model** to interact with images/charts 
 
 ## Recent improvments:
 - **Added settings file selection and loading**: to be able to easyly change the settings file
