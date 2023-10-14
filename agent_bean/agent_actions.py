@@ -5,7 +5,7 @@ from   typing                            import List, Dict
 from   langchain.tools                   import DuckDuckGoSearchResults
 from   agent_bean.system_info            import SystemInfo
 from   agent_bean.models_manager         import ModelsManager
-
+from   agent_bean.file_loader            import FileLoader
 
 class AgentAction():
     """This class is used to define the actions that the agent can take."""
@@ -78,6 +78,9 @@ class AgentAction():
         """search for the input text using duckduckgo"""
         return self.search.run(input)
 
+    def __function_load_file__(self, input:str) -> str:
+        """load the file specified in the input"""
+        return FileLoader.load_file(input)
 
     def __action_generate__(self, action_params) -> str:
         """use a llm agent to generate text based on input prompt"""

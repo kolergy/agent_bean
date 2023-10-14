@@ -36,7 +36,7 @@ Using local generation with transformers models:
 - You may use a computer with less V RAM for testing purpose with 3B or 1.5B models but do not expect usefull results.
 
 
-## WIP: Work in Progress:
+## Back log and WIP: Work in Progress:
 - **Improve Model managment** Model memory estimation depending on model quantisation
 - **Ability to perform action on files** to have an actual effect on code
 - **improve transformers loading**: for 8 and 4 bits quantisation with GPTQ and GGML models
@@ -45,12 +45,13 @@ Using local generation with transformers models:
 - **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. It can add new elements to the context, clear the context, and manage the context length to ensure it stays within a specified token limit.
 - **Document Loading**: Agent Bean can load a set of documents into a vectorstore for later use.
 - **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup.
-- **Improve code quality action**: code quality checker is not yet working well
+- **Improve code quality verification action**: code quality checker is not yet working well
 - **Task looping** ability to loop on repetitive tasks
 - **Classifier action** to classify inputs
-- **implement LLAVA model** to interact with images/charts 
+- **Implement LLAVA model** to interact with images/charts 
 
 ## Recent improvments:
+- **Added File loader**: to be able to load text, json, or PDF files
 - **Added settings file selection and loading**: to be able to easyly change the settings file
 - **added a team_manager agent**: not totaly related to the rest but it is an experiment 
 - **added requirements**: generate requirements

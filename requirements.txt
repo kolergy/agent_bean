@@ -20,5 +20,7 @@ neo4j
 pylint
 docker
 gradio
+chardet
+PyPDF2
 
 

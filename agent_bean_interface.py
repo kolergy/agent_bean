@@ -1,10 +1,10 @@
-import json
 import time
 
-import pandas                as     pd
-import gradio                as     gr
+import pandas                 as     pd
+import gradio                 as     gr
 
-from   agent_bean.agent_bean import AgentBean
+from   agent_bean.agent_bean  import AgentBean
+from   agent_bean.file_loader import FileLoader
 
 
 settings_file  = 'settings_opai.json'
@@ -19,8 +19,13 @@ time_s         = [0.0]
 start_time     = time.time()
 
 # Load the settings json file and create a AgentBean object
-with open(settings_file) as f: setup = json.load(f)
-agent = AgentBean(setup)
+res = FileLoader.load_json_file(settings_file)
+if res['json_content'] is not None:
+    setup = res['json_content']
+    agent = AgentBean(setup)
+else:
+    print(f"ERROR: Could not load the settings file: {settings_file}")
+    exit(1)
 
 cpu_brand      = agent.si.get_cpu_brand(   )
 cpu_cores      = agent.si.get_cpu_cores(   )
