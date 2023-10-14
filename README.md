@@ -1,6 +1,6 @@
 # AI Agent Bean
 Agent Bean is AI agent that is designed to interact with users and perform various tasks. The initial focus is on coding but there are no limitations to other activities. 
-It has been designed to be able to run local llm models like Llama2 and Mistral that are available on the huggingface portal as well as interfacing with the openAI API to be able to run GPT3.4 or GPT4 so you can run the model fully localy if you need and have the available compute or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different actions.
+It has been designed to be able to run local llm models like Llama2 and Mistral that are available on the huggingface portal as well as interfacing with the openAI API to be able to run GPT3.4 or GPT4. So you can run the model fully localy if you have the a GPU with enough VRAM or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different actions.
 
 It has a memory management system that can instantiate / dinstantiate models dependings on the needs of the task (it is still a bit rough )
 
@@ -8,31 +8,38 @@ Some of the code has been developped with the help of aider: https://github.com/
 
 ## Curent capabilities:
 The agent Bean is currently capable of the following:
-- **Manage models**: manage the models and ability to instantiate / deinstantiate models, ability to use any transformers models 
-- **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently 
+- **Manage models**: 
+   - Manage the models and ability to instantiate / deinstantiate models, 
+   - Ability to use any transformers models, WizardCoder, Llama2, Mistral, dolphin-2.1-mistral-7b
+   - Ability to use OpenAI: GPT-4, gpt-3.5-turbo, gpt-3.5-turbo-16k 
+- **Agents**: have access to the following functions: 
+   - **Load**: files from the following format: text, json, PDF 
+   - **Search**: the net for informations. 
+- **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently implemented actions:
+   - **free**: freetext query
+   - **summarize**: generate a summary of the provided text
+   - **search**: perform a search on the net
+   - **split**: split a task executable actions 
+   - **code**: generate code 
+   - **code_quality**: analyse the quality of the code (not yet working well)
+   - **project_requirements**: generate requirements
+   - **team_manager**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
 
-implemented actions:
-  -  **free**: freetext query
-  -  **summarize**: generate a summary of the provided text
-  -  **search**: perform a search on the net
-  -  **split**: split a task executable actions 
-  -  **code**: generate code 
-  -  **code_quality**: analyse the quality of the code (not yet working well)
-  -  **project_requirements**: generate requirements
-  -  **team_manager**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
 
 The agent is continuously evolving, with new capabilities being added regularly.
 
+
 ## Current limitations:
-- When modifying the settings file, it needs to be re uploaded for the changes to take effects
-- It is not yet able to interact with files
+- When modifying the settings fil whlie the model is running, it needs to be re-uploaded for the changes to take effects
+- It is not yet able to write to files
 - Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models!? (they use a different proces for loading that needs to be implemented)
 - Imprecise memory estimation for models
 - Tested only on linux up to now but should work on windows and Mac as well (not tested)
 
-Using local generation with transformers models:
-- you need at least 16GB of video RAM to run 15B models in 4bits to be able to have correct coding and splitting result
-- With 8GB V RAM you can run the 7B models in 4Bits however up to now their perfo is limited to perform proper codding and the model might not be able to generate theJSON for the splitting
+
+## Using local generation with transformers models:
+- You need at least 16GB of video RAM to run 15B models in 4bits to be able to have correct coding and splitting result
+- With 8GB V RAM you can run the 7B models in 4Bits there you need to select the realy best ones like 'dolphin-2.1-mistral-7b' as codding is demanding
 - You may use a computer with less V RAM for testing purpose with 3B or 1.5B models but do not expect usefull results.
 
 
@@ -50,6 +57,7 @@ Using local generation with transformers models:
 - **Classifier action** to classify inputs
 - **Implement LLAVA model** to interact with images/charts 
 
+
 ## Recent improvments:
 - **Added File loader**: to be able to load text, json, or PDF files
 - **Added settings file selection and loading**: to be able to easyly change the settings file
@@ -57,6 +65,7 @@ Using local generation with transformers models:
 - **added requirements**: generate requirements
 - **Make actions more generic** to allow beter variations from congig
 - **Improve Model managment** Removed memory leak and improved model managment
+
 
 ## Useage:
 
@@ -75,11 +84,6 @@ Activate the environement:
 Install the requirements:
 
 `pip install -U -r requirements.txt`
-
-Run the agent bean interface:
-
-`python agent_bean_interface.py`
-
 
 If you intent to use the openAI models you have to rename the template.env file as follows:
 
