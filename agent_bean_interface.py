@@ -7,8 +7,8 @@ from   agent_bean.agent_bean  import AgentBean
 from   agent_bean.file_loader import FileLoader
 
 
-settings_file  = 'settings_opai.json'
-#settings_file  = 'settings_trans.json'
+#settings_file  = 'settings_opai.json'
+settings_file  = 'settings_trans.json'
 
 ram_total_Gb   = 0.0
 v_ram_total_Gb = 0.0
