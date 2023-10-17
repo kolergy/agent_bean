@@ -7,8 +7,8 @@ from   agent_bean.agent_bean  import AgentBean
 from   agent_bean.file_loader import FileLoader
 
 
-#settings_file  = 'settings_opai.json'
-settings_file  = 'settings_trans.json'
+settings_file  = 'settings_opai.json'
+#settings_file  = 'settings_trans.json'
 
 ram_total_Gb   = 0.0
 v_ram_total_Gb = 0.0
@@ -25,7 +25,7 @@ if res['json_content'] is not None:
     agent = AgentBean(setup)
 else:
     print(f"ERROR: Could not load the settings file: {settings_file}")
-    exit(1)
+    
 
 cpu_brand      = agent.si.get_cpu_brand(   )
 cpu_cores      = agent.si.get_cpu_cores(   )
@@ -48,11 +48,15 @@ def set_action(setup_file):
     type_f = type(setup_file)
     print(f"type_f: {type_f}")
     if type_f == list:             # How can someone decide to return a list or an object?
-        setup_file = setup_file[0]
+        settings_file = setup_file[0]
     print(f"file: {setup_file.name}")
-    with open(setup_file.name) as f: setup = json.load(f)
-    agent.setup_update(setup)
-    
+    res = FileLoader.load_json_file(settings_file)
+    if res['json_content'] is not None:
+        setup = res['json_content'] 
+        agent.setup_update(setup)
+    else:
+        print(f"ERROR: Could not load the settings file: {settings_file}")
+        
 
 
 

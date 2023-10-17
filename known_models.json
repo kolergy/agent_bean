@@ -1,34 +1,14 @@
 {
-    "WizardLM_-_WizardCoder-Python-13B-V1.0": {
-        "system_ram_gb": 0.27989959716796875,
-        "GPU_ram_gb": 6.878662109375
+    "gpt-4": {
+        "system_ram_gb": 0.0,
+        "GPU_ram_gb": 0.0
     },
-    "bhenrym14_-_airophin-13b-pntk-16k-fp16": {
-        "system_ram_gb": 0,
-        "GPU_ram_gb": 7.15625
+    "gpt-3.5-turbo-16k": {
+        "system_ram_gb": 0.0,
+        "GPU_ram_gb": 0.0
     },
-    "posicube_-_Llama2-chat-AYT-13B": {
-        "system_ram_gb": 0.173919677734375,
-        "GPU_ram_gb": 7.076171875
-    },
-    "glaiveai_-_glaive-coder-7b": {
-        "system_ram_gb": 0,
-        "GPU_ram_gb": 3.97845458984375
-    },
-    "WizardLM_-_WizardCoder-Python-34B-V1.0": {
-        "system_ram_gb": 3.9467315673828125,
-        "GPU_ram_gb": 17.4735107421875
-    },
-    "Open-Orca_-_Mistral-7B-OpenOrca": {
-        "system_ram_gb": 1.1166915893554688,
-        "GPU_ram_gb": 4.505859375
-    },
-    "HuggingFaceH4_-_zephyr-7b-alpha": {
-        "system_ram_gb": 0.16611480712890625,
-        "GPU_ram_gb": 7.60546875
-    },
-    "ehartford_-_dolphin-2.1-mistral-7b": {
-        "system_ram_gb": 0.1409759521484375,
-        "GPU_ram_gb": 7.6375732421875
+    "gpt-3.5-turbo": {
+        "system_ram_gb": 0.0,
+        "GPU_ram_gb": 0.0
     }
 }

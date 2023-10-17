@@ -33,6 +33,7 @@ class ModelsManager():
         """update the setup and deinstantiate models and embeddings if needed"""
         self.setup = setup
         self.debug = setup['debug']
+        print(f"ModelsManager.setup_update: models={self.setup['models_list'].keys()}")
         if os.path.exists(self.setup["known_models_file_name"]):
             with open(self.setup["known_models_file_name"]) as f:
                 self.known_models  = json.load(f)

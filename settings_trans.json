@@ -77,9 +77,10 @@
     },
     "actions": {
         "free": {
-            "model_name": "model6",
+            "model_name": "model8",
             "action_type": "generate",
             "temperature": 0.9,
+            "max_new_tokens": 1024,
             "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
             "prompt_template":["{text}"],
             "llm_returns": "text"

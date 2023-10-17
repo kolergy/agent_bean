@@ -1,19 +1,21 @@
-import abc     # Abstract base class
 
 from   neo4j   import GraphDatabase
 from   typing  import List
 from   typing  import Any
 
-class Task(abc.ABC):
+class Task():
     """
     Abstract base class for a task.
     """
-    @abc.abstractmethod
+    
     def __init__(self, id: int, 
                  description: str, 
                  inputs: List[str], 
                  outputs: List[str], 
-                 parent_task: Any = None) -> None:
+                 parent_task: Any      = None,
+                 action: str           = None, 
+                 queries: List[str]    = None, 
+                 sub_tasks: List[Task] = None) -> None:
         """
         Initialize a Task.
 
