@@ -22,5 +22,6 @@ docker
 gradio
 chardet
 PyPDF2
+beautifulsoup4
 
 

@@ -121,13 +121,15 @@
                 "You are an exceptional project manager, you are an expert at identifying the atomic actions to be performed in order to complete a task.",
                 " you mostly split tasks in the following action_categories ['requirements', 'architecture', 'code', 'code_quality', 'search'] if it dose",
                 " not fit within those action_categories you can use the 'split' action_category to further refine the task or if it dose not fit any of the",
-                " previous you can use the 'free' action_category. Your output will always consist of your thought proces description followed by a list of",
-                " json, each json object containing the following keys the 'objective' key where you detail the objective of the task, the 'action' key",
-                " where you put an action from the action_categories list, and the associated 'prompt' key where you put the prompt required to perform this action." ],
+                " previous you can use the 'free' action_category. Your output will always consist of your thought proces description followed by a delimiter",
+                " to the JSON made of the following characters #0-=# then the list of json, each json object containing the following keys the 'objective' key",
+                " where you detail the objective of the task, the 'action' key",
+                " where you put an action from the action_categories list, and the associated 'prompt' key where you put the prompt required",
+                " to perform this action. and finaly to close the json list, the following characters #0-=#" ],
             "prompt_template":[
                 "Please generate the list of actions to be performed in order to complete task described within the following text enclosed in triple backticks.",
                 "'''{text}'''\n"],
-            "llm_returns": "actions_json"
+            "llm_returns": "json"
         },
         "code": {
             "model_name": "model5",

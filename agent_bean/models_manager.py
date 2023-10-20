@@ -248,6 +248,9 @@ class ModelsManager():
         if self.debug:
             print(f"Testing models memory ressources requirements")
             self.si.print_GPU_info()
+        with open(self.setup["known_models_file_name"], 'r') as f:  # store the known models dict to a file to avoid doing it again
+            self.known_models  = json.load(f)
+            print(f"known_models file: {self.setup['known_models_file_name']} loaded")
         for model_name in self.setup["models_list"].keys():
             k_model_id = TfModel.keyify_model_id(self.setup['models_list'][model_name]['model_id'])
             print(f"Testing model {model_name}, k_model id: {k_model_id}")
@@ -265,10 +268,11 @@ class ModelsManager():
 
                     mem_use_Gb     = float(   self.active_models[model_name].model.get_memory_footprint(return_buffers=True))/1024/1024/1024
                     model_ongpu    = False if self.active_models[model_name].model.device.type == "cpu" else True
-                    delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
-                    delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
-                    self.known_models[k_model_id]["system_ram_gb"] = delta_ram_gb
-                    self.known_models[k_model_id]["GPU_ram_gb"   ] = delta_v_ram_gb
+                    #delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
+                    #delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
+                    
+                    self.known_models[k_model_id]["system_ram_gb"] = mem_use_Gb if not model_ongpu else 0.0
+                    self.known_models[k_model_id]["GPU_ram_gb"   ] = mem_use_Gb if     model_ongpu else 0.0
                     if self.debug:
                         #print(f"Model {model_name} instantiated using: {delta_ram_gb:6.2} Gb of system RAM and: {delta_v_ram_gb:6.2} Gb of V RAM on the GPU, model on GPU:{model_ongpu} , memory use: {mem_use_Gb:6.2} Gb")
                         self.si.print_GPU_info()

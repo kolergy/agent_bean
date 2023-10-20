@@ -9,6 +9,8 @@ from   agent_bean.file_loader            import FileLoader
 
 class AgentAction():
     """This class is used to define the actions that the agent can take."""
+
+    
     def __init__(self, setup: dict, sys_info: SystemInfo, mm: ModelsManager) -> None:
 
         self.setup_update(setup)
@@ -78,9 +80,11 @@ class AgentAction():
         """search for the input text using duckduckgo"""
         return self.search.run(input)
 
+
     def __function_load_file__(self, input:str) -> str:
         """load the file specified in the input"""
         return FileLoader.load_file(input)
+
 
     def __action_generate__(self, action_params) -> str:
         """use a llm agent to generate text based on input prompt"""
@@ -111,10 +115,10 @@ class AgentAction():
 
             prompt         = special_tokens['model_sys_delim']['start'] 
             prompt        += ''.join(action_params['prompt_system']).format(code_language=code_language) 
-            prompt        += special_tokens['model_sys_delim']['end']
+            prompt        += special_tokens['model_sys_delim']['end'  ]
             prompt        += special_tokens['model_usr_delim']['start'] 
             prompt        += ''.join(action_params['prompt_template']).format(text=chunk_text, code_language=code_language) 
-            prompt        += special_tokens['model_usr_delim']['end']
+            prompt        += special_tokens['model_usr_delim']['end'  ]
 
             self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
                                         'temperature':       action_params.get('temperature'      ,   1.0  ),
