@@ -49,6 +49,7 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 ## Backlog and Work in Progress (WIP):
 - **Improve Model managment** Model memory estimation depending on model quantisation
+- **Encapsulate model input outputs in objects**: this will allow easier text manipulation, parsing and treatments in a single place 
 - **Ability to perform action on files** to have an actual effect on code
 - **improve transformers loading**: for 8 and 4 bits quantisation with GPTQ and GGML models
 - **Actions backlog**: a backlog of actions to be executed
