@@ -1,7 +1,8 @@
 import json
 import chardet
 
-from   bs4 import BeautifulSoup as bs
+from typing import Dict
+from   bs4  import BeautifulSoup as bs
 
 
 class TextUtils():
@@ -15,10 +16,31 @@ class TextUtils():
 
   """
 
-  def __init__(self) -> None:
-    
-    pass
+  def __init__(self, prompt_recepee:Dict, prompt_inputs:[str]) -> None:
+    self.prompt_template  = None
+    self.prompt_inputs    = prompt_inputs
+    self.assembled_prompt = None
+    self.prompt_recepee   = prompt_recepee
+    self.prompt_target    = None  # LLM, comandline, files, etc
+    self.prompt_len_char  = 0
+    self.prompt_len_tok   = 0
+    self.prompt_sucess    = 0
 
+
+  def apply_recepee(self) -> None:
+    """
+    apply the prompt recepee to fetch the template and assemble the prompt with the inputs
+    """
+    self.prompt_template      = self.prompt_recepee['template']
+    self.prompt_target        = self.prompt_recepee['target_use']
+    self.prompt_input_mapping = self.prompt_recepee['input_mapping']
+    if len(self.prompt_inputs) < len(self.prompt_input_mapping):
+      raise ValueError("Not enough inputs for the input mapping")
+    #self.assembled_prompt     = ''.join(action_params['prompt_system']).format(code_language=code_language) 
+            
+    #self.prompt_len_char = 
+    #self.prompt_len_tok  = 
+    
 
   @staticmethod
   def extract_text_from_html(self, string:str) -> str:
