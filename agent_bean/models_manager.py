@@ -393,7 +393,7 @@ class ModelsManager():
                 else:
                     print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")
 
-                with open(self.setup["known_models_file_name"], 'w+') as f:  # store the known models dict to a file to avoid doing it again
+                with open(self.setup["known_models_file_name"], 'a') as f:  # store the known models dict to a file to avoid doing it again
                         json.dump(self.known_models, f, indent=4)
                         print(f"Model {k_model_id} added to known_models")
 

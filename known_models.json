@@ -1,14 +1,8 @@
 {
-    "gpt-4": {
-        "system_ram_gb": 0.0,
-        "GPU_ram_gb": 0.0
+    "glaiveai_-_glaive-coder-7b": {
+        "GPU_ram_gb": 3.754669189453125
     },
-    "gpt-3.5-turbo-16k": {
-        "system_ram_gb": 0.0,
-        "GPU_ram_gb": 0.0
-    },
-    "gpt-3.5-turbo": {
-        "system_ram_gb": 0.0,
-        "GPU_ram_gb": 0.0
+    "WizardLM_-_WizardCoder-Python-13B-V1.0": {
+        "GPU_ram_gb": 6.831855773925781
     }
 }
