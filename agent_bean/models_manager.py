@@ -13,7 +13,12 @@ from   agent_bean.transformers_model     import TfModel, TransformersEmbeddings
 
 
 class ModelsManager():
-    """This class is used to manage the models and their ressources useage"""
+    """This class is used to manage the models and their resource usage.
+
+    It handles instantiation, parameter setting, prediction, and resource management
+    for various machine learning models, ensuring that the system's memory constraints
+    are respected.
+    """
     def __init__(self, setup: dict, si: SystemInfo) -> None:
 
         self.setup_update(setup)
@@ -30,7 +35,15 @@ class ModelsManager():
     
 
     def setup_update(self, setup: dict) -> None:
-        """update the setup and deinstantiate models and embeddings if needed"""
+        """Update the setup configuration for the model manager.
+
+        This method updates the internal setup dictionary and debug flag. It also
+        handles the reloading of models by deinstantiating any active models if
+        the 'reload_models' flag is set in the setup.
+
+        Args:
+            setup (dict): A dictionary containing the new setup configuration.
+        """
         self.setup = setup
         self.debug = setup['debug']
         print(f"ModelsManager.setup_update: models={self.setup['models_list'].keys()}")
@@ -45,7 +58,22 @@ class ModelsManager():
 
 
     def model_need(self, model_name:str) -> bool:
-        """if model not already instantiated check memory resources and instantiate a nneded model, may remove other instantiated models if needed"""
+        """Ensure a model is instantiated and ready for use.
+
+        If the model is not already instantiated, this method checks memory resources
+        and instantiates the model if needed. It may also remove other instantiated
+        models to free up resources.
+
+        Args:
+            model_name (str): The name of the model to instantiate.
+
+        Returns:
+            bool: True if the model is successfully instantiated or already active,
+                  False otherwise.
+
+        Raises:
+            RuntimeError: If there are not enough resources to instantiate the model.
+        """
         if model_name not in self.active_models:
             if self.debug:
                 print(f"Model {model_name} not yet instantiated, instantiating it now")
@@ -66,7 +94,15 @@ class ModelsManager():
         
 
     def set_model_params(self, model_name:str, params:dict) -> None:
-        """set model parameters"""
+        """Set parameters for a specified model.
+
+        This method updates the model's parameters if the model is active and the
+        parameters are applicable to the model type.
+
+        Args:
+            model_name (str): The name of the model for which to set parameters.
+            params (dict): A dictionary of parameters to set for the model.
+        """
         if self.model_need(model_name):
             for p in params.keys():
                 #print(f" model type: {type(self.active_models[model_name])}, param: {p}, value: {params[p]}")
@@ -85,7 +121,18 @@ class ModelsManager():
 
 
     def predict(self, model_name:str, prompt:str ) -> str:
-        """predict using a model"""
+        """Generate a prediction using a specified model.
+
+        This method uses the active model to generate a prediction based on the
+        provided prompt.
+
+        Args:
+            model_name (str): The name of the model to use for prediction.
+            prompt (str): The input prompt for the model.
+
+        Returns:
+            str: The prediction result from the model.
+        """
         if self.model_need(model_name):
             res =  self.active_models[model_name].predict(prompt)
             print(f"predict result: {res}") 
@@ -95,7 +142,15 @@ class ModelsManager():
 
 
     def decode(self, model_name:str, tokens:[float]) -> str:
-        """decode using a model"""
+        """Decode a sequence of tokens using a specified model's embeddings.
+
+        Args:
+            model_name (str): The name of the model to use for decoding.
+            tokens ([float]): A list of tokens to decode.
+
+        Returns:
+            str: The decoded text from the tokens.
+        """
         if self.model_need(model_name):
             return self.active_embeddings[model_name].decode(tokens)
         else:
@@ -103,7 +158,15 @@ class ModelsManager():
 
 
     def get_embeddings(self, model_name:str, text:str) -> torch.tensor:
-        """get embeddings using a model"""
+        """Retrieve embeddings for a given text using a specified model.
+
+        Args:
+            model_name (str): The name of the model to use for generating embeddings.
+            text (str): The input text to encode into embeddings.
+
+        Returns:
+            torch.tensor: The tensor containing the embeddings for the input text.
+        """
         if self.model_need(model_name):
             return self.active_embeddings[model_name].encode(text)
             #return self.active_embeddings[model_name].embed_query(text)
@@ -112,7 +175,19 @@ class ModelsManager():
 
 
     def manage_mem_resources(self, model_name:str) -> bool:
-        """check model memory need vs available resources, may remove other instantiated models if needed"""
+        """Check and manage memory resources for a model instantiation.
+
+        This method compares the memory requirements of a model against available
+        system and GPU memory. It may de-instantiate other models to free up
+        resources if necessary.
+
+        Args:
+            model_name (str): The name of the model for which to manage resources.
+
+        Returns:
+            bool: True if there are enough resources to instantiate the model,
+                  False otherwise.
+        """
         k_model_id = TfModel.keyify_model_id(self.setup['models_list'][model_name]['model_id'])
         if self.debug:
             print(f"Checking memory resources for model {k_model_id}")
@@ -169,7 +244,18 @@ class ModelsManager():
             
 
     def free_resources(self, required_free_ram_gb:float, required_free_v_ram_gb:float) -> bool:
-        """free resources to meet the required free resources"""
+        """Free up system and GPU memory to meet required thresholds.
+
+        This method attempts to de-instantiate models to free up the specified
+        amount of system and GPU memory.
+
+        Args:
+            required_free_ram_gb (float): The required amount of free system RAM in GB.
+            required_free_v_ram_gb (float): The required amount of free GPU VRAM in GB.
+
+        Returns:
+            bool: True if the required resources are successfully freed, False otherwise.
+        """
         ram_contrib_ratio     = {}
         v_ram_contrib_ratio   = {}
         current_free_ram_gb   = self.si.get_ram_free()
@@ -221,7 +307,23 @@ class ModelsManager():
 
 
     def __models_knap_sack__(self, avail_mem_gb:float, models_mem_gb:[float],  models_value:[float], models_names:[str], n) -> (float, [str]):
-        """Knapsack algorithm to find the list of best models to keep in memory """
+        """Apply the Knapsack algorithm to determine the best models to keep in memory.
+
+        This method uses the Knapsack algorithm to select a subset of models that
+        optimizes the use of available memory while maximizing the value of the
+        selected models.
+
+        Args:
+            avail_mem_gb (float): The available memory in GB.
+            models_mem_gb ([float]): A list of memory requirements for each model in GB.
+            models_value ([float]): A list of values for each model.
+            models_names ([str]): A list of model names.
+            n (int): The number of models to consider.
+
+        Returns:
+            tuple: A tuple containing the total value of the selected models and
+                   a list of model names to keep in memory.
+        """
         if n == 0 or avail_mem_gb == 0:   # Base Case
             return 0, []
     
@@ -244,7 +346,15 @@ class ModelsManager():
 
 
     def test_models_resources_reqs(self) -> None:
-        """Test the models ressources requirements and update the known_models dict accordingly"""
+        """Test the memory resource requirements of models and update the known_models dictionary.
+
+        This method iterates through the models listed in the setup configuration and
+        tests their memory usage. It updates the known_models dictionary with the
+        memory requirements for each model.
+
+        Note: This method should be used with caution as it may instantiate and
+        de-instantiate models, which can be resource-intensive.
+        """
         if self.debug:
             print(f"Testing models memory ressources requirements")
             self.si.print_GPU_info()
