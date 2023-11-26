@@ -28,12 +28,8 @@ class ModelsManager():
         self.active_models            = {}
         self.active_embeddings        = {}
         self.known_models             = {}
-OPENAI_PARAMS = ["temperature", "max_tokens"]
-TRANSFORMERS_PARAMS = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p"]
-
-...
-        self.openai_params_list       = OPENAI_PARAMS
-        self.transformers_params_list = TRANSFORMERS_PARAMS
+        self.openai_params_list       = ["temperature", "max_tokens"]
+        self.transformers_params_list = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p"]
 
         self.test_models_resources_reqs()
     
@@ -377,9 +373,7 @@ TRANSFORMERS_PARAMS = ["temperature", "max_tokens", "stop", "presence_penalty", 
                     #v_ram_b4 = self.si.get_v_ram_free()
                     self.instantiate_model(model_name)
 
-BYTES_PER_GB = 1024 * 1024 * 1024
-...
-                    mem_use_Gb     = float(self.active_models[model_name].model.get_memory_footprint(return_buffers=True)) / BYTES_PER_GB
+                    mem_use_Gb     = float(self.active_models[model_name].model.get_memory_footprint(return_buffers=True))/1024/1024/1024
                     model_ongpu    = False if self.active_models[model_name].model.device.type == "cpu" else True
                     #delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
                     #delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
