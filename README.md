@@ -38,13 +38,13 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - It is not yet able to write to files
 - Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models!? (they use a different proces for loading that needs to be implemented)
 - Imprecise memory estimation for models
-- Tested only on linux up to now but should work on windows and Mac as well (not tested)
+- Tested only on linux up to now but should work on windows and Mac as well
 
 
 ## Using local generation with transformers models:
 - You need at least 16GB of video RAM to run 15B models in 4bits to be able to have correct coding and splitting result
-- With 8GB V RAM you can run the 7B models in 4Bits there you need to select the realy best ones like 'dolphin-2.1-mistral-7b' as codding is demanding
-- You may use a computer with less V RAM for testing purpose with 3B or 1.5B models but do not expect usefull results.
+- With 8GB V RAM you can run the 7B models in 4Bits there you need to select the realy best ones like 'deepseek-coder-6.7b-instruct' as codding is demanding
+- You may use a computer with less V RAM for testing purpose with 3B or 1.5B models like deepseek-coder-1.3b-instruct but do not expect usefull results.
 
 
 ## Backlog and Work in Progress (WIP):
