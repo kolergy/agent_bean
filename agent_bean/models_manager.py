@@ -259,16 +259,19 @@ class ModelsManager():
                     self.si.print_GPU_info()
                     
                 if self.setup["models_list"][model_name]["model_type"] == "transformers":
-                    ram_b4   = self.si.get_ram_free()
-                    v_ram_b4 = self.si.get_v_ram_free()
+                    #ram_b4   = self.si.get_ram_free()
+                    #v_ram_b4 = self.si.get_v_ram_free()
                     self.instantiate_model(model_name)
 
                     mem_use_Gb     = float(   self.active_models[model_name].model.get_memory_footprint(return_buffers=True))/1024/1024/1024
                     model_ongpu    = False if self.active_models[model_name].model.device.type == "cpu" else True
-                    delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
-                    delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
-                    self.known_models[k_model_id]["system_ram_gb"] = delta_ram_gb
-                    self.known_models[k_model_id]["GPU_ram_gb"   ] = delta_v_ram_gb
+                    #delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
+                    #delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
+                    if model_ongpu:
+                        self.known_models[k_model_id]["GPU_ram_gb"   ] = mem_use_Gb
+                    else:
+                        self.known_models[k_model_id]["system_ram_gb"] = mem_use_Gb
+                    
                     if self.debug:
                         #print(f"Model {model_name} instantiated using: {delta_ram_gb:6.2} Gb of system RAM and: {delta_v_ram_gb:6.2} Gb of V RAM on the GPU, model on GPU:{model_ongpu} , memory use: {mem_use_Gb:6.2} Gb")
                         self.si.print_GPU_info()
@@ -280,11 +283,11 @@ class ModelsManager():
                 else:
                     print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")
 
-            with open(self.setup["known_models_file_name"], 'w') as f:  # store the known models dict to a file to avoid doing it again
+                with open(self.setup["known_models_file_name"], 'w+') as f:  # store the known models dict to a file to avoid doing it again
                         json.dump(self.known_models, f, indent=4)
                         print(f"Model {k_model_id} added to known_models")
 
-            self.deinstantiate_model(model_name)
+                self.deinstantiate_model(model_name)
 
         if self.debug:
             print(f"Models memory ressources requirements test complete")
