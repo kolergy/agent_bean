@@ -1,7 +1,7 @@
 # AI Agent Bean
 Agent Bean doese not yet have the competencies of 007 it is more at Mr Mean level. It is AI agent that is designed to interact with users and perform various tasks. The initial focus is on coding but there are no limitations to other activities. 
 
-It has been designed to be able to run local llm models like Llama2 and Mistral that are available on the huggingface portal as well as interfacing with the openAI API to be able to run GPT3.4 or GPT4. So you can run the model fully localy if you have the a GPU with enough VRAM or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different actions.
+It has been designed to be able to run local llm models like Llama2 and Mistral, zephyr-7b-beta, Orca-2, WizardCoder, etc... that are available on the huggingface portal in totally private mode with out any API but it can as well be interfaced with the openAI API to be able to run GPT3.4 or GPT4 and the new GPT4 turbo If you want. So you can run the model fully localy if you have the a GPU with enough VRAM or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different actions.
 
 It has a memory management system that can instantiate / dinstantiate models dependings on the needs of the task (it is still a bit rough )
 
