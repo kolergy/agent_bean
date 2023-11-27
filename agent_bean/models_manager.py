@@ -189,14 +189,16 @@ class ModelsManager():
                   False otherwise.
         """
         k_model_id = TfModel.keyify_model_id(self.setup['models_list'][model_name]['model_id'])
-        if self.debug:
-            print(f"Checking memory resources for model {k_model_id}")
-            self.si.print_GPU_info()
+        #if self.debug:
+        #    print(f"Checking memory resources for model {k_model_id}")
+        #    self.si.print_GPU_info()
         if k_model_id not in self.known_models:
             print(f"WARNING: Model {k_model_id} not in known_models list, running blind de instanciating everything just in case") 
             keys = list(self.active_models.keys())  # avoid -> RuntimeError: dictionary changed size during iteration
             for m in keys:
-                self.deinstantiate_model(m)
+                print(f"####### {type(self.active_models[m])}")
+                if type(self.active_models[m]) == "TFModel":
+                    self.deinstantiate_model(m)
             return True
         else:
             if self.debug:
@@ -417,23 +419,23 @@ class ModelsManager():
             self.active_embeddings[model_name] = tiktoken.encoding_for_model(model_id)
 
         elif self.setup['models_list'][model_name]['model_type'] == "transformers":
-            if self.debug:
-                print(f"GPU state before model instantiation: {torch.cuda.is_available()}")
-                self.si.print_GPU_info()
+            #if self.debug:
+            #    print(f"GPU state before model instantiation: {torch.cuda.is_available()}")
+            #    self.si.print_GPU_info()
 
             self.active_models[model_name]     = TfModel(self.setup, self.si, model_name)
             self.active_embeddings[model_name] = TransformersEmbeddings(self.active_models[model_name].tokenizer)
-            if self.debug:
-                print(f"GPU state after model instantiation: {torch.cuda.is_available()}")
-                self.si.print_GPU_info()
+            #if self.debug:
+            #    print(f"GPU state after model instantiation: {torch.cuda.is_available()}")
+            #    self.si.print_GPU_info()
     
 
     def deinstantiate_model(self, model_name:str) -> None: 
         """deinstantiate the model provided in the argument end ensure proper deletion of all the model ressources"""
         print(f"Deinstantiating model {model_name}")
-        if self.debug:
-            print(f"GPU state before and after model deinstantiation: {torch.cuda.is_available()}")
-            self.si.print_GPU_info()
+        #if self.debug:
+        #    print(f"GPU state before and after model deinstantiation: {torch.cuda.is_available()}")
+        #    self.si.print_GPU_info()
 
         if model_name in self.active_embeddings:
             print(self.active_embeddings)
@@ -454,6 +456,6 @@ class ModelsManager():
             #print("-m--Emptying CUDA cache----")
             torch.cuda.empty_cache()
 
-        if self.debug:
-            self.si.print_GPU_info()
+        #if self.debug:
+        #    self.si.print_GPU_info()
         

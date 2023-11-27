@@ -13,6 +13,7 @@ class SystemInfo:
         """
         Constructor initializes CPU and GPU information.
         """
+        self.ERROR_VALUE   = -9999
         cpu_info           = self.get_cpu_info()
         self.cpu_brand_raw = cpu_info["brand_raw"]
         self.cpu_brand     = cpu_info["brand_raw"].split(" ")[0].strip()
@@ -37,12 +38,13 @@ class SystemInfo:
         Returns a dictionary with CPU brand, number of cores, total RAM in GB, and used RAM in GB.
         """
         ci = cpuinfo.get_cpu_info()
+        #print(ci)
         if 'brand_raw' in ci:
             br = str(ci['brand_raw'])
         else:
             br = "unknown"
         cpu_info = {
-            "brand_raw": str(cpuinfo.get_cpu_info()['brand_raw']),
+            "brand_raw": str(br),
             "cores": int(psutil.cpu_count()),
             "ram_total_gb": float(psutil.virtual_memory().total / (1024 ** 3)), # convert bytes to GB
             "ram_used_gb": float(psutil.virtual_memory().used / (1024 ** 3))
@@ -64,45 +66,70 @@ class SystemInfo:
 
     def get_ram_free(self) -> float:
         cpu_info = self.get_cpu_info()
-        return cpu_info["ram_total_gb"] - cpu_info["ram_used_gb"]
- 
+        ram_free = cpu_info["ram_total_gb"] - cpu_info["ram_used_gb"]
+        if ram_free != None: 
+            return ram_free
+        else:
+            return self.ERROR_VALUE
+
     def get_cpu_brand(self) -> str:
-        return self.cpu_brand
+        if self.cpu_brand != None: 
+            return self.cpu_brand
+        else:
+            return self.ERROR_VALUE
 
     def get_cpu_cores(self) -> int:
-        return self.cpu_cores
+        if self.cpu_cores != None: 
+            return self.cpu_cores
+        else:
+            return self.ERROR_VALUE
 
     def get_ram_total(self) -> float:
-        return self.ram_total_gb
+        if self.ram_total_gb != None: 
+            return self.ram_total_gb
+        else:
+            return self.ERROR_VALUE
 
     def get_ram_used(self) -> float:
         cpu_info = self.get_cpu_info()
-        return cpu_info["ram_used_gb"]
+        if cpu_info != None: 
+            return cpu_info["ram_used_gb"]
+        else:
+            return self.ERROR_VALUE
 
     def get_gpu_brand(self) -> str:
-        return self.gpu_brand
+        if self.gpu_brand != None: 
+            return self.gpu_brand
+        else:
+            return self.ERROR_VALUE
 
     def get_v_ram_total(self) -> float:
-        return self.vram_total_gb
+        if self.vram_total_gb != None: 
+            return self.vram_total_gb
+        else:
+            return self.ERROR_VALUE
 
     def get_v_ram_used(self) -> float:
         if torch.cuda.is_available():
             self.vram_used_gb = self.vram_total_gb - torch.cuda.mem_get_info()[0]/(1024 ** 3) if torch.cuda.is_available() else None
         else:
-            self.vram_used_gb = None
+            self.vram_used_gb = self.ERROR_VALUE
         #print(f"UUU vram UUU: {self.vram_used_gb}")
         return self.vram_used_gb
 
     def get_v_ram_free(self) -> float:
         vram  = torch.cuda.mem_get_info()   if torch.cuda.is_available() else None
         #print(f"XXX vram XXX: {vram}")
-        self.vram_free_gb = (vram[0]) / (1024 ** 3) if vram else None
+        self.vram_free_gb = (vram[0]) / (1024 ** 3) if vram else self.ERROR_VALUE
         #print(f"FFF vram FFF: {self.vram_free_gb}")
         return(self.vram_free_gb)
 
     def get_GPU_current_device(self) -> int:
-        return self.GPU_current_device
-    
+        if self.GPU_current_device != None: 
+            return self.GPU_current_device
+        else:
+            return self.ERROR_VALUE
+        
     def print_GPU_info(self) -> None:
         vram               = torch.cuda.mem_get_info()                 if torch.cuda.is_available() else None
         self.vram_used_gb  = self.vram_total_gb - vram[0]/(1024 ** 3)  if vram else None
