@@ -191,7 +191,7 @@
             "llm_returns": "actions_json"
         },
         "code": {
-            "model_name": "deepseek_coder_inst_6_7b",
+            "model_name": "WizardCoder_34b",
             "action_type": "generate",
             "code_language": "python",
             "temperature": 0.4,
@@ -205,7 +205,7 @@
             "llm_returns": "code_text"               
         },
         "code_openAI": {
-            "model_name": "openAI_gpt_4_turbo",
+            "model_name": "openAI_gpt_4",
             "action_type": "generate",
             "code_language": "python",
             "temperature": 0.4,

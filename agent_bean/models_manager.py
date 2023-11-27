@@ -31,7 +31,7 @@ class ModelsManager():
         self.openai_params_list       = ["temperature", "max_tokens"]
         self.transformers_params_list = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p"]
 
-        self.test_models_resources_reqs()
+        #self.test_models_resources_reqs()
     
 
     def setup_update(self, setup: dict) -> None:
@@ -379,7 +379,9 @@ class ModelsManager():
                     #delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
                     if model_ongpu:
                         self.known_models[k_model_id]["GPU_ram_gb"   ] = mem_use_Gb
+                        self.known_models[k_model_id]["system_ram_gb"] = 0.0
                     else:
+                        self.known_models[k_model_id]["GPU_ram_gb"   ] = 0.0
                         self.known_models[k_model_id]["system_ram_gb"] = mem_use_Gb
                     
                     if self.debug:
@@ -393,7 +395,7 @@ class ModelsManager():
                 else:
                     print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")
 
-                with open(self.setup["known_models_file_name"], 'a') as f:  # store the known models dict to a file to avoid doing it again
+                with open(self.setup["known_models_file_name"], 'w') as f:  # store the known models dict to a file to avoid doing it again
                         json.dump(self.known_models, f, indent=4)
                         print(f"Model {k_model_id} added to known_models")
 

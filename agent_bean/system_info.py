@@ -36,6 +36,11 @@ class SystemInfo:
         Method to get CPU information.
         Returns a dictionary with CPU brand, number of cores, total RAM in GB, and used RAM in GB.
         """
+        ci = cpuinfo.get_cpu_info()
+        if 'brand_raw' in ci:
+            br = str(ci['brand_raw'])
+        else:
+            br = "unknown"
         cpu_info = {
             "brand_raw": str(cpuinfo.get_cpu_info()['brand_raw']),
             "cores": int(psutil.cpu_count()),

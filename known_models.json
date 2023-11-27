@@ -1,8 +1,10 @@
 {
     "glaiveai_-_glaive-coder-7b": {
-        "GPU_ram_gb": 3.754669189453125
+        "GPU_ram_gb": 3.754669189453125,
+        "system_ram_gb": 0.0
     },
     "WizardLM_-_WizardCoder-Python-13B-V1.0": {
-        "GPU_ram_gb": 6.831855773925781
+        "GPU_ram_gb": 6.831855773925781,
+        "system_ram_gb": 0.0
     }
 }
