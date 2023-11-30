@@ -8,7 +8,6 @@ from   agent_bean.file_loader import FileLoader
 
 
 settings_file  = 'settings.json'
-#settings_file  = 'settings_trans.json'
 
 ram_total_Gb   = 0.0
 v_ram_total_Gb = 0.0
@@ -27,16 +26,16 @@ else:
     print(f"ERROR: Could not load the settings file: {settings_file}")
     
 
-cpu_brand      = agent.si.get_cpu_brand(   )
-cpu_cores      = agent.si.get_cpu_cores(   )
-ram_total_Gb   = agent.si.get_ram_total(   )
-gpu_brand      = agent.si.get_gpu_brand(   )
-v_ram_total_Gb = agent.si.get_v_ram_total( )
+cpu_brand      =  agent.si.get_cpu_brand(   )
+cpu_cores      =  agent.si.get_cpu_cores(   )
+ram_total_Gb   =  agent.si.get_ram_total(   )
+gpu_brand      =  agent.si.get_gpu_brand(   )
+v_ram_total_Gb =  agent.si.get_v_ram_total( )
 
 ram_used_Gb    = [agent.si.get_ram_used()   ]
 v_ram_used_Gb  = [agent.si.get_v_ram_used() ]
 time_s         = [0.0                       ]
-start_time     = time.time()
+start_time     =  time.time()
 
 ram_label      = f"CPU: {cpu_brand}, {cpu_cores} Cores, RAM Total: {ram_total_Gb:6.2f} Gb, RAM Used: {agent.si.get_ram_used():6.2f} Gb, RAM Free: {agent.si.get_ram_free():6.2f} Gb"
 v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM Used: {agent.si.get_v_ram_used():6.2f} Gb, VRAM Free: {agent.si.get_v_ram_free():6.2f} Gb"
