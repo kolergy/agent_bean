@@ -101,6 +101,12 @@ def update_v_ram():
 
     return update_v_ram
 
+def update_model_name(action_name):
+    # Get the default model for the selected action
+    #default_model = agent.aa.get_default_model_for_action(action_name)
+    default_model = setup["actions"][action_name]["model_name"]
+    # Update the model dropdown
+    model_name.update(value=default_model)
 
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
@@ -110,12 +116,6 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     with gr.Row():
         action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value="code_OpenAI", change=update_model_name)
         model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models(), label="Model Name", interactive=False)
-
-        def update_model_name(action_name):
-            # Get the default model for the selected action
-            default_model = agent.aa.get_default_model_for_action(action_name)
-            # Update the model dropdown
-            model_name.update(value=default_model)
 
         # Link the action_name dropdown to the update_model_name function
         action_name.change(update_model_name, inputs=[action_name], outputs=[model_name])
