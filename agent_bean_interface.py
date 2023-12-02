@@ -115,7 +115,7 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     set_button           = gr.Button(             variant = 'secondary'                             , value = "Load Setup file")
     with gr.Row():
         action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value="code_OpenAI", change=update_model_name)
-        model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models(), label="Model Name", interactive=False)
+        model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models(), label="Model Name")
 
         # Link the action_name dropdown to the update_model_name function
         action_name.change(update_model_name, inputs=[action_name], outputs=[model_name])
