@@ -14,11 +14,6 @@ from   agent_bean.transformers_model     import TfModel, TransformersEmbeddings
 
 class ModelsManager():
     """This class is used to manage the models and their resource usage.
-
-    def get_available_models(self) -> List[str]:
-        """Return a list of available model names."""
-        return list(self.setup['models_list'].keys())
-
     It handles instantiation, parameter setting, prediction, and resource management
     for various machine learning models, ensuring that the system's memory constraints
     are respected.
@@ -60,7 +55,10 @@ class ModelsManager():
                     for m in self.active_models.keys():
                         self.deinstantiate_model(m)
 
-
+    def get_available_models(self) -> [str]:
+        """Return a list of available model names."""
+        return list(self.setup['models_list'].keys())
+    
     def model_need(self, model_name:str) -> bool:
         """Ensure a model is instantiated and ready for use.
 

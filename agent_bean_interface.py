@@ -25,6 +25,8 @@ if res['json_content'] is not None:
 else:
     print(f"ERROR: Could not load the settings file: {settings_file}")
     
+default_action = "code_OpenAI"
+default_model  = setup["actions"][default_action]["model_name"]
 
 cpu_brand      =  agent.si.get_cpu_brand(   )
 cpu_cores      =  agent.si.get_cpu_cores(   )
@@ -106,23 +108,26 @@ def update_model_name(action_name):
     #default_model = agent.aa.get_default_model_for_action(action_name)
     default_model = setup["actions"][action_name]["model_name"]
     # Return a new Dropdown object with the default model selected
-    return gr.Dropdown(choices=agent.mm.get_available_models(), value=default_model, label="Model Name")
+    print(f"ZZZZZZZZZ default model:{default_model}\n{agent.mm.get_available_models()}\nZZZZZZZZZ")
+    #return gr.components.Dropdown(choices=agent.mm.get_available_models(), value=default_model, label="Model Name")
+    return gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model  )
 
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
-    gr.Markdown("# Agent Bean Interface")
-    setup_file           = gr.components.File(file_count=1, file_types=["json"], value=settings_file, label = "Setup File"     )
-    set_button           = gr.Button(             variant = 'secondary'                             , value = "Load Setup file")
     with gr.Row():
-        action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value="code_OpenAI", change=update_model_name)
-        model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models(), label="Model Name")
+        gr.Markdown("# Agent Bean Interface  ")
+        setup_file       = gr.components.File(file_count=1, file_types=["json"], value=settings_file, label = "Setup File"     )
+        set_button       = gr.Button(             variant = 'secondary'                             , value = "Load Setup file")
+    with gr.Row():
+        action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value=default_action, change=update_model_name)
+        model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model  )
 
         # Link the action_name dropdown to the update_model_name function
         action_name.change(update_model_name, inputs=[action_name], outputs=[model_name])
-    action_input         = gr.components.Textbox( lines   = 5                                       , label = "Action Input"   )
-    run_button           = gr.Button(             variant = 'primary'                               , value = "Run Agent"      )
+    action_input         = gr.components.Textbox( lines   = 3,  autoscroll = True , label = "Action Input"   )
+    run_button           = gr.Button(             variant = 'primary'             , value = "Run Agent"      )
     # Removed the duplicate render() calls
-    text_output          = gr.components.Textbox( lines   = 20,  autoscroll = True                  , label = "Output Text"    )
+    text_output          = gr.components.Textbox( lines   = 10,  autoscroll = True, label = "Output Text"    )
     with gr.Row():
         ram_plt          = gr.components.LinePlot(show_label=False)
         v_ram_plt        = gr.components.LinePlot(show_label=False)

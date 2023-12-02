@@ -196,7 +196,7 @@
             "llm_returns": "text"
         },
         "split": {
-            "model_name": "orca_2_13b",
+            "model_name": "WizardCoder_34b",
             "action_type": "generate",
             "temperature": 0.01,
             "presence_penalty":  0.6,
