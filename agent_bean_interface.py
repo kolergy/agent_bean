@@ -108,7 +108,7 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     setup_file           = gr.components.File(file_count=1, file_types=["json"], value=settings_file, label = "Setup File"     )
     set_button           = gr.Button(             variant = 'secondary'                             , value = "Load Setup file")
     with gr.Row():
-        action_name      = gr.components.Dropdown(choices = agent.aa.get_available_actions()        , label = "Action Name"    )
+        action_name      = gr.components.Dropdown(choices = agent.aa.get_available_actions(), label = "Action Name", value="code_OpenAI")
         model_name       = gr.components.Dropdown(choices = agent.mm.get_available_models()         , label = "Model Name"     )
     action_input         = gr.components.Textbox( lines   = 5                                       , label = "Action Input"   )
     run_button           = gr.Button(             variant = 'primary'                               , value = "Run Agent"      )
