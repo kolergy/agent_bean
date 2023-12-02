@@ -114,8 +114,9 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     run_button           = gr.Button(             variant = 'primary'                               , value = "Run Agent"      )
     # Removed the duplicate render() calls
     text_output          = gr.components.Textbox( lines   = 20,  autoscroll = True                  , label = "Output Text"    )
-    ram_plt              = gr.components.LinePlot(show_label=False)
-    v_ram_plt            = gr.components.LinePlot(show_label=False)
+    with gr.Row():
+        ram_plt          = gr.components.LinePlot(show_label=False)
+        v_ram_plt        = gr.components.LinePlot(show_label=False)
 
     set_button.click( set_action, setup_file)
     run_button.click( run_action, [action_name, action_input], outputs = text_output)
