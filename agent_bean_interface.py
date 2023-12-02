@@ -105,8 +105,8 @@ def update_model_name(action_name):
     # Get the default model for the selected action
     #default_model = agent.aa.get_default_model_for_action(action_name)
     default_model = setup["actions"][action_name]["model_name"]
-    # Update the model dropdown
-    model_name.update(value=default_model)
+    # Return a new Dropdown object with the default model selected
+    return gr.Dropdown(choices=agent.mm.get_available_models(), value=default_model, label="Model Name")
 
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
