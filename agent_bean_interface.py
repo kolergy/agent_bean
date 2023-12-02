@@ -111,11 +111,7 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     model_name           = gr.components.Dropdown(choices = agent.mm.get_available_models()         , label = "Model Name"     )
     action_input         = gr.components.Textbox( lines   = 5                                       , label = "Action Input"   )
     run_button           = gr.Button(             variant = 'primary'                               , value = "Run Agent"      )
-    with gr.Row():
-        with gr.Column():
-            action_name.render()
-        with gr.Column():
-            model_name.render()
+    # Removed the duplicate render() calls
     text_output          = gr.components.Textbox( lines   = 20,  autoscroll = True                  , label = "Output Text"    )
     ram_plt              = gr.components.LinePlot(show_label=False)
     v_ram_plt            = gr.components.LinePlot(show_label=False)
