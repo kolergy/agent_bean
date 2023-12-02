@@ -138,7 +138,7 @@
     },
     "actions": {
         "free": {
-            "model_name": "intel_7b",
+            "model_name": "zephyr_b_7b",
             "action_type": "generate",
             "temperature": 0.9,
             "max_new_tokens": 1024,
@@ -258,7 +258,7 @@
             "llm_returns": "actions_json"
         },
         "project_requirements": {
-            "model_name": "orca_2_13b",
+            "model_name": "zephyr_b_7b",
             "action_type": "generate",
             "code_language": "python",
             "max_new_tokens": 2048,
