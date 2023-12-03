@@ -139,4 +139,4 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     dep_v_ram            = iface.load(update_v_ram, None, v_ram_plt, every=1)
 
 # Launch the interface
-iface.queue().launch(share=False)
+iface.queue().launch(share=True)
