@@ -15,11 +15,11 @@ gputil
 py-cpuinfo
 optimum
 auto-gptq
-gradio
+git+https://github.com/gradio-app/gradio
 neo4j
 pylint
 docker
-gradio
+gradio == 3.44.4
 chardet
 PyPDF2
 
