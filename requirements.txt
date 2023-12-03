@@ -1,5 +1,5 @@
 langchain
-openai == 0.28.1
+openai
 tiktoken
 faiss-cpu
 duckduckgo-search
@@ -9,6 +9,7 @@ torch
 torchvision
 torchaudio
 bitsandbytes
+scipy
 git+https://github.com/huggingface/transformers
 psutil
 gputil
@@ -19,7 +20,7 @@ git+https://github.com/gradio-app/gradio
 neo4j
 pylint
 docker
-gradio == 3.44.4
+gradio
 chardet
 PyPDF2
 
