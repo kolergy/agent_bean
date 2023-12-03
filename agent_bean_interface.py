@@ -119,7 +119,7 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
         setup_file       = gr.components.File(file_count=1, file_types=["json"], value=settings_file, label = "Setup File"     )
         set_button       = gr.Button(             variant = 'secondary'                             , value = "Load Setup file")
     with gr.Row():
-        action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value=default_action, change=update_model_name)
+        action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value=default_action, update=update_model_name)
         model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model, allow_custom_value=True  )
 
         # Link the action_name dropdown to the update_model_name function
