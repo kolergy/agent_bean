@@ -83,6 +83,14 @@
             "max_tokens": 32768,
             "model_sys_delim": { "start": "<|system|>\n", "end": "</s>\n"        },
             "model_usr_delim": { "start": "<|user|>\n"  , "end": "</s>\n"        }
+        },        
+        "hermes_mistral_7b": {
+            "model_type": "transformers",
+            "model_id": "mlabonne/NeuralHermes-2.5-Mistral-7B",
+            "model_bits": 8,
+            "max_tokens": 32768,
+            "model_sys_delim": { "start": "<|system|>\n", "end": "</s>\n"        },
+            "model_usr_delim": { "start": "<|user|>\n"  , "end": "</s>\n"        }
         },
         "dolphin_7b": {
             "model_type": "transformers",
