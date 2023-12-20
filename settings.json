@@ -116,6 +116,14 @@
             "model_sys_delim": { "start": "<|im_start|>system\n", "end": "<|im_end|>\n" },
             "model_usr_delim": { "start": "<|im_start|>user\n"  , "end": "<|im_end|>\n" }
         },
+        "phi_2_2.7b": {
+            "model_type": "transformers",
+            "model_id": "microsoft/phi-2",
+            "model_bits": 4,
+            "max_tokens": 2048,
+            "model_sys_delim": { "start": "system: "  , "end": "\n"        },
+            "model_usr_delim": { "start": "Instruct: ", "end": "\nOutput:" }
+        },
         "openAI_gpt_4_turbo": {
             "model_type": "openAI",
             "model_id": "gpt-4-1106-preview",
