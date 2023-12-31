@@ -13,10 +13,15 @@ class TextUtils():
      - cleaning of strings for commandline
      - extraction of json from text
      - extraction of text from html
-
   """
 
-  def __init__(self, prompt_recepee:Dict, prompt_inputs:[str]) -> None:
+  def __init__(self, action:str, text_input:str) -> None:
+    self.action     = action
+    self.text_input = text_input
+
+  
+"""
+  def NOT_READY__init__(self, prompt_recepee:Dict, prompt_inputs:[str]) -> None:
     self.prompt_template  = None
     self.prompt_inputs    = prompt_inputs
     self.assembled_prompt = None
@@ -25,9 +30,10 @@ class TextUtils():
     self.prompt_len_char  = 0
     self.prompt_len_tok   = 0
     self.prompt_sucess    = 0
+    
+"""
 
-
-  def apply_recepee(self) -> None:
+  def NOT_READY_apply_recepee(self) -> None:
     """
     apply the prompt recepee to fetch the template and assemble the prompt with the inputs
     """
@@ -41,6 +47,7 @@ class TextUtils():
     #self.prompt_len_char = 
     #self.prompt_len_tok  = 
     
+
 
   @staticmethod
   def extract_text_from_html(self, string:str) -> str:
