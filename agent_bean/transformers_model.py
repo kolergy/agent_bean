@@ -3,7 +3,7 @@ import gc
 import torch
 import transformers
 
-from   typing                  import List, Optional
+from   typing                  import List, Dict
 from   agent_bean.system_info  import SystemInfo
 
 
@@ -103,6 +103,13 @@ class TfModel:
             else:
                 self.trust_remote_code = False
 
+            if 'flash_attn' in self.setup['models_list'][model_name]:
+                self.flash_attn = self.setup['models_list'][model_name]['flash_attn']
+            else:
+                self.flash_attn = False
+            if 'max_tokens' in self.setup['models_list'][model_name]:
+                self.max_new_tokens = self.setup['models_list'][model_name]['max_tokens'] * 0.7
+
             self.device     = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
             print(f"model: {self.model_id}, trust_remote_code: {self.trust_remote_code}")
             print(f"device: {self.device}, brand: {self.GPU_brand}")
@@ -160,6 +167,9 @@ class TfModel:
                 self.model = transformers.AutoModelForCausalLM.from_pretrained(
                     self.model_id,
                     trust_remote_code   = self.trust_remote_code,
+                    flash_attn          = self.flash_attn, 
+                    flash_rotary        = self.flash_attn, 
+                    fused_dense         = self.flash_attn,
                     quantization_config = bnb_config,
                     torch_dtype         = self.compute_dtype,
                     device_map          = 'auto',
@@ -168,6 +178,9 @@ class TfModel:
                 self.model = transformers.AutoModelForCausalLM.from_pretrained(
                     self.model_id,
                     trust_remote_code   = self.trust_remote_code,
+                    flash_attn          = self.flash_attn, 
+                    flash_rotary        = self.flash_attn, 
+                    fused_dense         = self.flash_attn,
                     torch_dtype         = self.compute_dtype,
                     device_map          = 'auto',
                 )
@@ -206,9 +219,16 @@ class TfModel:
             #        repetition_penalty = self.repetition_penalty,    # without this output begins repeating
             #    )
             
-    def predict(self, prompt: str) -> List[str]:
+    def predict(self, prompt: str, params:Dict={}) -> List[str]:
         """predict the next token based on the prompt"""
-
+        if 'max_new_tokens' in params:
+            self.max_new_tokens = params['max_new_tokens']
+        if 'temperature' in params:
+            self.temperature = params['temperature']
+        if 'top_p' in params:
+            self.top_p = params['top_p']
+        if 'top_k' in params:
+            self.top_k = params['top_k']
         print(f"### PREDICT ### prompt length: {len(prompt)}")
         print(f"### PREDICT ### prompt: {prompt}")
         if self.temperature <= 0.0: self.temperature = 0.01          # temp need to be strictly positive

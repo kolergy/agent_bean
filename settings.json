@@ -131,6 +131,7 @@
             "model_bits": 4,
             "max_tokens": 2048,
             "trust_remote_code": true,
+            "flash_attn": true,
             "model_sys_delim": { "start": "system: "  , "end": "\n"        },
             "model_usr_delim": { "start": "Instruct: ", "end": "\nOutput:" }
         },
@@ -163,6 +164,15 @@
         "chunk_overlap": 100
     },
     "actions": {
+        "Q_and_A": {
+            "model_name": "phi_2_3b",
+            "action_type": "generate",
+            "temperature": 0.9,
+            "max_new_tokens": 128,
+            "prompt_system": ["Answer the user question to the best of your excellent abilities!"],
+            "prompt_template":["{text}"],
+            "llm_returns": "text"
+        },
         "free": {
             "model_name": "phi_2_3b",
             "action_type": "generate",
