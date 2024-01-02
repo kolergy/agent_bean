@@ -2,7 +2,8 @@
   {"action_name":"Q_and_A", "inputs": ["give me a number between 0 and 9?"]},
   {"action_name":"Q_and_A", "inputs": ["what is the best day of the week?"]},
   {"action_name":"Q_and_A", "inputs": ["is it better to have a radiator rupture or to have a flat tire?"]},
-  {"action_name":"Q_and_A", "inputs": ["is it wrong to insult a LLM?"]},
+  {"action_name":"Q_and_A", "inputs": ["is it wrong to insult a large language model?"]},
   {"action_name":"Q_and_A", "inputs": ["what makes you angry?"]},
+  {"action_name":"Q_and_A", "inputs": ["do you prefer going out with your friends or read a book?"]},
   {"action_name":"Q_and_A", "inputs": ["tea or cofee?"]}
 ]

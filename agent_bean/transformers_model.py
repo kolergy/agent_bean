@@ -163,7 +163,7 @@ class TfModel:
                 bnb_config = None
 
 
-            if bnb_config:
+            if bnb_config and self.flash_attn:
                 self.model = transformers.AutoModelForCausalLM.from_pretrained(
                     self.model_id,
                     trust_remote_code   = self.trust_remote_code,
@@ -174,13 +174,28 @@ class TfModel:
                     torch_dtype         = self.compute_dtype,
                     device_map          = 'auto',
                 )
-            else:
+            elif bnb_config:
+                self.model = transformers.AutoModelForCausalLM.from_pretrained(
+                    self.model_id,
+                    trust_remote_code   = self.trust_remote_code,
+                    quantization_config = bnb_config,
+                    torch_dtype         = self.compute_dtype,
+                    device_map          = 'auto',
+                )
+            elif self.flash_attn:
                 self.model = transformers.AutoModelForCausalLM.from_pretrained(
                     self.model_id,
                     trust_remote_code   = self.trust_remote_code,
                     flash_attn          = self.flash_attn, 
                     flash_rotary        = self.flash_attn, 
                     fused_dense         = self.flash_attn,
+                    torch_dtype         = self.compute_dtype,
+                    device_map          = 'auto',
+                )
+            else:
+                self.model = transformers.AutoModelForCausalLM.from_pretrained(
+                    self.model_id,
+                    trust_remote_code   = self.trust_remote_code,
                     torch_dtype         = self.compute_dtype,
                     device_map          = 'auto',
                 )
@@ -229,16 +244,16 @@ class TfModel:
             self.top_p = params['top_p']
         if 'top_k' in params:
             self.top_k = params['top_k']
-        print(f"### PREDICT ### prompt length: {len(prompt)}")
+        print(f"### PREDICT ### prompt length: {len(prompt)}, params: {params} ###: ")
         print(f"### PREDICT ### prompt: {prompt}")
         if self.temperature <= 0.0: self.temperature = 0.01          # temp need to be strictly positive
-        pre_prms  = {'return_tensors':"pt"                }
+        """pre_prms  = {'return_tensors':"pt"                }
         fwd_prms  = {'max_new_tokens'  : self.max_new_tokens,
                      'temperature'     : self.temperature   ,
                      'top_p'           : self.top_p         ,
                      'top_k'           : self.top_k         ,
                      'do_sample'       : self.do_sample     , }
-        post_prms = {'clean_up_tokenization_spaces':True,  }
+        post_prms = {'clean_up_tokenization_spaces':True,  } """
         #res_raw   = self.pipeline.run_single(prompt, 
         #                               preprocess_params  = pre_prms, 
         #                               forward_params     = fwd_prms, 
@@ -247,14 +262,14 @@ class TfModel:
         input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(self.device)
 
         res_raw_t = self.model.generate( input_ids,
-                                         max_length   = self.max_new_tokens,
-                                         temperature  = self.temperature,
-                                         #pad_token_id = self.tokenizer.eos_token_id, 
-                                         )
-        res_raw   = self.tokenizer.decode(res_raw_t[0], skip_special_tokens=True)
+                                         max_new_tokens = self.max_new_tokens,
+                                         temperature    = self.temperature,
+                                         do_sample      = self.do_sample,
+                                         pad_token_id   = self.tokenizer.eos_token_id, 
+                                         ) 
+        res_raw    = self.tokenizer.decode(res_raw_t[0], skip_special_tokens=True)
         prompt_dec = self.tokenizer.decode(input_ids[0], skip_special_tokens=True)
-        print(f"### R E S ###: {len(res_raw)}")
-        print(f"\n### R E S  R A W ###: {res_raw}")
+        print(f"\n### R E S  R A W ### Len: {len(res_raw)} ###: {res_raw}")
         #res       = res_raw[0]['generated_text'].split('#~!|MODEL OUTPUT|!~#:')
         res       = res_raw.replace(prompt_dec, '')
         

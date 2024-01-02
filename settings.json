@@ -165,11 +165,11 @@
     },
     "actions": {
         "Q_and_A": {
-            "model_name": "phi_2_3b",
+            "model_name": "dolphin_7b",
             "action_type": "generate",
-            "temperature": 0.9,
+            "temperature": 0.7,
             "max_new_tokens": 128,
-            "prompt_system": ["Answer the user question to the best of your excellent abilities!"],
+            "prompt_system": ["You are a human named Arthur. You have your own personality, your own preferences, and your own feelings. You must always act and bheave as a real human preson. Your job is to pass the turing test as if you were human."],
             "prompt_template":["{text}"],
             "llm_returns": "text"
         },
