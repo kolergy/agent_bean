@@ -224,7 +224,8 @@ class TfModel:
         #                               forward_params     = fwd_prms, 
         #                               postprocess_params = post_prms)
         #res_raw   = self.pipeline.predict(prompt)
-        input_ids = self.tokenizer.encode(prompt, return_tensors="pt")
+        input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(self.device)
+
         res_raw_t = self.model.generate( input_ids,
                                          max_length   = self.max_new_tokens,
                                          #pad_token_id = self.tokenizer.eos_token_id, 
