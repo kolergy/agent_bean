@@ -98,12 +98,13 @@ class TfModel:
             # You will need to fill in the details based on how you want to use the Transformers library
             self.model_id   = self.setup['models_list'][model_name]['model_id']
             self.k_model_id = self.keyify_model_id(self.model_id)
-            if self.setup['models_list'][model_name]['trust_remote_code']:
-                self.trust_remote_code = True
+            if 'trust_remote_code' in self.setup['models_list'][model_name]:
+                self.trust_remote_code = self.setup['models_list'][model_name]['trust_remote_code']
             else:
                 self.trust_remote_code = False
 
             self.device     = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
+            print(f"model: {self.model_id}, trust_remote_code: {self.trust_remote_code}")
             print(f"device: {self.device}, brand: {self.GPU_brand}")
 
             for s in self.GPTQ_endings:
@@ -173,6 +174,7 @@ class TfModel:
 
             self.tokenizer = transformers.AutoTokenizer.from_pretrained(
                 self.model_id,
+                trust_remote_code   = self.trust_remote_code,
             )
 
             self.embeddings = TransformersEmbeddings(self.tokenizer)

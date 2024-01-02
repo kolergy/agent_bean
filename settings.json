@@ -125,11 +125,12 @@
             "model_sys_delim": { "start": "<|im_start|>system\n", "end": "<|im_end|>\n" },
             "model_usr_delim": { "start": "<|im_start|>user\n"  , "end": "<|im_end|>\n" }
         },
-        "phi_2_2_7b": {
+        "phi_2_3b": {
             "model_type": "transformers",
             "model_id": "microsoft/phi-2",
             "model_bits": 4,
             "max_tokens": 2048,
+            "trust_remote_code": true,
             "model_sys_delim": { "start": "system: "  , "end": "\n"        },
             "model_usr_delim": { "start": "Instruct: ", "end": "\nOutput:" }
         },
@@ -163,7 +164,7 @@
     },
     "actions": {
         "free": {
-            "model_name": "deepseek_coder_inst_1_3b",
+            "model_name": "phi_2_3b",
             "action_type": "generate",
             "temperature": 0.9,
             "max_new_tokens": 1024,

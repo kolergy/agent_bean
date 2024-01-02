@@ -21,9 +21,10 @@ auto-gptq
 neo4j
 pylint
 docker
-gradio == 4.10
+gradio #== 4.10
 chardet
 PyPDF2
 tinydb
+einops
 
 
