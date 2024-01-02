@@ -248,6 +248,7 @@ class TfModel:
 
         res_raw_t = self.model.generate( input_ids,
                                          max_length   = self.max_new_tokens,
+                                         temperature  = self.temperature,
                                          #pad_token_id = self.tokenizer.eos_token_id, 
                                          )
         res_raw   = self.tokenizer.decode(res_raw_t[0], skip_special_tokens=True)
