@@ -9,19 +9,21 @@ torch
 torchvision
 torchaudio
 bitsandbytes
+accelerate
 scipy
-git+https://github.com/huggingface/transformers
+transformers
+#git+https://github.com/huggingface/transformers
 psutil
 gputil
 py-cpuinfo
 optimum
 auto-gptq
-git+https://github.com/gradio-app/gradio
 neo4j
 pylint
 docker
-gradio
+gradio == 4.10
 chardet
 PyPDF2
+tinydb
 
 

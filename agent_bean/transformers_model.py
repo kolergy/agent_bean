@@ -98,6 +98,11 @@ class TfModel:
             # You will need to fill in the details based on how you want to use the Transformers library
             self.model_id   = self.setup['models_list'][model_name]['model_id']
             self.k_model_id = self.keyify_model_id(self.model_id)
+            if self.setup['models_list'][model_name]['trust_remote_code']:
+                self.trust_remote_code = True
+            else:
+                self.trust_remote_code = False
+
             self.device     = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
             print(f"device: {self.device}, brand: {self.GPU_brand}")
 
@@ -116,7 +121,6 @@ class TfModel:
                         
             if self.GPU_brand == 'NVIDIA':
                 self.compute_dtype    = torch.bfloat16
-                #self.compute_dtype    = torch.float16
             else:
                 self.compute_dtype    = torch.float16
 
@@ -154,7 +158,7 @@ class TfModel:
             if bnb_config:
                 self.model = transformers.AutoModelForCausalLM.from_pretrained(
                     self.model_id,
-                    #trust_remote_code   = True,
+                    trust_remote_code   = self.trust_remote_code,
                     quantization_config = bnb_config,
                     torch_dtype         = self.compute_dtype,
                     device_map          = 'auto',
@@ -162,7 +166,7 @@ class TfModel:
             else:
                 self.model = transformers.AutoModelForCausalLM.from_pretrained(
                     self.model_id,
-                    #trust_remote_code   = True,
+                    trust_remote_code   = self.trust_remote_code,
                     torch_dtype         = self.compute_dtype,
                     device_map          = 'auto',
                 )

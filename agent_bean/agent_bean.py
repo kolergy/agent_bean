@@ -12,24 +12,27 @@ and at terms it will be extended to
  - make the link with the context manager
  
  """
-
+from   typing                            import Dict
 from   dotenv                            import load_dotenv
+from   tinydb                            import TinyDB, Query
+
 from   agent_bean.agent_actions          import AgentAction
 from   agent_bean.models_manager         import ModelsManager
 from   agent_bean.system_info            import SystemInfo
 
 
 class AgentBean:
-  """ AgentBean is a langchain interface to collect questions and feed them to a llm """
+  """ AgentBean is an interface to collect questions and feed them to a llm """
 
   def __init__(self, setup: dict) -> None:
-    load_dotenv()
+    load_dotenv()       # to get API keys if any
     self.setup          = setup
     self.debug          = setup['debug']
+    self.db_file_name   = setup['db_file_name']
     self.si             = SystemInfo()
     self.mm             = ModelsManager(setup, self.si            )
     self.aa             = AgentAction(  setup, self.si,  self.mm, )
-
+    self.db             = TinyDB('agent_db.json')
 
   def setup_update(self, setup: dict) -> None:
     """update the setup and propagate it to the other components"""
@@ -40,14 +43,19 @@ class AgentBean:
 
 
   def agent_action(self, action_name: str, inputs: list) -> str:
-    """prepare the prompt for a given action and call the model"""
-
+    """Execute a given action and store the inputs and outputs in the db"""
     if self.debug:
       print(f"Action: {action_name}, num Inputs: {len(inputs)}")
 
     resp = self.aa.perform_action(action_name, inputs)
     print(f"ZZZ R E S P O N S E: {resp}")
 
+    task = {"action":action_name, "inputs":inputs, "responce":resp}
+    self.db.insert(task)
     return resp
 
-
+  def action_list(self, list_of_a:[Dict]) -> None:
+    """execute a list of actions"""
+    for a in list_of_a: 
+      print(f"Action: {a}")
+      self.agent_action(action_name=a["action_name"], inputs=a["inputs"])

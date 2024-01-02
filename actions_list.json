@@ -1,0 +1,8 @@
+[
+  {"action_name":"free_OpenAI", "inputs": ["give me a number between 0 and 9?"]},
+  {"action_name":"free_OpenAI", "inputs": ["what is the number of the day of the week?"]},
+  {"action_name":"free_OpenAI", "inputs": ["is it better to have a meeting or to have a flat tire?"]},
+  {"action_name":"free_OpenAI", "inputs": ["is it wrong to anoy a robot?"]},
+  {"action_name":"free_OpenAI", "inputs": ["what makes you angry?"]},
+  {"action_name":"free_OpenAI", "inputs": ["tea or cofee?"]}
+]

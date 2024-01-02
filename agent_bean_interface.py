@@ -8,6 +8,7 @@ from   agent_bean.file_loader import FileLoader
 
 
 settings_file  = 'settings.json'
+a_list_file    = 'actions_list.json'
 
 ram_total_Gb   = 0.0
 v_ram_total_Gb = 0.0
@@ -44,22 +45,20 @@ v_ram_label    = f"GPU: {gpu_brand}, VRAM Total: {v_ram_total_Gb:6.2f} Gb, VRAM 
 
 
 # Define the function to be called when the setup button is pressed
-def set_action(setup_file):
-    """ Run the action: using the configured llm agent"""
-    type_f = type(setup_file)
-    print(f"type_f: {type_f}")
+def run_list_action(actions_list):
+    """ load and run the action list: using the configured llm agent"""
+    type_f = type(actions_list)
     if type_f == list:             # How can someone decide to return a list or an object?
-        settings_file = setup_file[0]
-    print(f"file: {setup_file.name}")
-    res = FileLoader.load_json_file(settings_file)
-    if res['json_content'] is not None:
-        setup = res['json_content'] 
-        agent.setup_update(setup)
+        a_list_file = actions_list[0]
+    #print(f"file: {actions_list.name}")
+    a_list_file = FileLoader.load_json_file(a_list_file)
+    if a_list_file['json_content'] is not None:
+        a_list = a_list_file['json_content'] 
+        print(f"Loaded actions list: {a_list}")
+        agent.action_list(a_list)
     else:
-        print(f"ERROR: Could not load the settings file: {settings_file}")
+        print(f"ERROR: Could not load the actions file: {actions_list.name}, no json content")
         
-
-
 
 # Define the function to be called when the Run button is pressed
 def run_action(action_name, action_input):
@@ -104,7 +103,7 @@ def update_v_ram():
     return update_v_ram
 
 def update_model_name(action_name):
-    # Get the default model for the selected action
+    """Get the default model for the selected action"""
     #default_model = agent.aa.get_default_model_for_action(action_name)
     default_model = setup["actions"][action_name]["model_name"]
     # Return a new Dropdown object with the default model selected
@@ -114,16 +113,17 @@ def update_model_name(action_name):
 
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
-    with gr.Row():
-        gr.Markdown("# Agent Bean Interface  ")
-        setup_file       = gr.components.File(file_count=1, file_types=["json"], value=settings_file, label = "Setup File"     )
-        set_button       = gr.Button(             variant = 'secondary'                             , value = "Load Setup file")
+    gr.Markdown("# Agent Bean Interface  ")
     with gr.Row():
         action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value=default_action, interactive=True)
         model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model, interactive=True )
 
         # Link the action_name dropdown to the update_model_name function
         action_name.change(update_model_name, inputs=[action_name], outputs=[model_name])
+    with gr.Row():
+        actions_list     = gr.components.File(file_count=1, file_types=["json"], value=a_list_file, label = "Actions List File"     )
+        run_list_button  = gr.Button(             variant = 'secondary'           , value = "Run List Agent"  )
+    
     action_input         = gr.components.Textbox( lines   = 3,  autoscroll = True , label = "Action Input"   )
     run_button           = gr.Button(             variant = 'primary'             , value = "Run Agent"      )
     # Removed the duplicate render() calls
@@ -132,11 +132,11 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
         ram_plt          = gr.components.LinePlot(show_label=False)
         v_ram_plt        = gr.components.LinePlot(show_label=False)
 
-    set_button.click( set_action, setup_file)
+    run_list_button.click( run_list_action, actions_list)
     run_button.click( run_action, [action_name, action_input], outputs = text_output)
 
     dep_ram              = iface.load(update_ram  , None, ram_plt  , every=1)
     dep_v_ram            = iface.load(update_v_ram, None, v_ram_plt, every=1)
 
 # Launch the interface
-iface.queue().launch(share=True)
+iface.queue().launch(share=False)
