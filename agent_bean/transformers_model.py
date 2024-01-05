@@ -91,28 +91,13 @@ class TfModel:
 
     def instantiate_pipeline(self) -> None:
         """instantiate the pipeline defined in the set-up """
-        model_name = self.model_name
+        self.device     = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
+        model_name      = self.model_name
                 
         if self.setup['models_list'][model_name]['model_type'] == "transformers":
-            # Instantiate the Transformers model here
-            # You will need to fill in the details based on how you want to use the Transformers library
+            # Prepare the parametters to instantiate the Transformers model
             self.model_id   = self.setup['models_list'][model_name]['model_id']
             self.k_model_id = self.keyify_model_id(self.model_id)
-            if 'trust_remote_code' in self.setup['models_list'][model_name]:
-                self.trust_remote_code = self.setup['models_list'][model_name]['trust_remote_code']
-            else:
-                self.trust_remote_code = False
-
-            if 'flash_attn' in self.setup['models_list'][model_name]:
-                self.flash_attn = self.setup['models_list'][model_name]['flash_attn']
-            else:
-                self.flash_attn = False
-            if 'max_tokens' in self.setup['models_list'][model_name]:
-                self.max_new_tokens = self.setup['models_list'][model_name]['max_tokens'] * 0.7
-
-            self.device     = f'cuda:{torch.cuda.current_device()}' if torch.cuda.is_available() else 'cpu'
-            print(f"model: {self.model_id}, trust_remote_code: {self.trust_remote_code}")
-            print(f"device: {self.device}, brand: {self.GPU_brand}")
 
             for s in self.GPTQ_endings:
                 if self.model_id.endswith(s):
@@ -123,94 +108,81 @@ class TfModel:
                 if self.model_id.endswith(s):
                     raise ValueError("GGUF models are not yet supported by Agent Bean")
 
-            # check if the number of bits for quantization is set in setum model
-            if 'model_bits' in self.setup['models_list'][model_name]:
-                self.model_bits = self.setup['models_list'][model_name]['model_bits']
-                        
+            # define the model kwargs
+            pretrained_kwargs = {'device_map':'auto'}
+
+            self.trust_remote_code = False
+            if 'trust_remote_code' in self.setup['models_list'][model_name]:
+                self.trust_remote_code = self.setup['models_list'][model_name]['trust_remote_code']
+                pretrained_kwargs['trust_remote_code'] = self.trust_remote_code
+
+            if 'flash_attn' in self.setup['models_list'][model_name]:
+                self.flash_attn = self.setup['models_list'][model_name]['flash_attn']
+                if self.flash_attn:
+                    pretrained_kwargs['flash_attn'  ] = True
+                    pretrained_kwargs['flash_rotary'] = True
+                    pretrained_kwargs['fused_dense' ] = True
+
+            if 'max_tokens' in self.setup['models_list'][model_name]:
+                self.max_new_tokens = self.setup['models_list'][model_name]['max_tokens'] * 0.7
+
             if self.GPU_brand == 'NVIDIA':
                 self.compute_dtype    = torch.bfloat16
             else:
                 self.compute_dtype    = torch.float16
-
-            if self.model_bits == 4:
-                # check if 4bit_quant_type in setum model
-                if '4bit_quant_type' in self.setup['models_list'][model_name]:
-                    self.quant_type_4bit = self.setup['models_list'][model_name]['4bit_quant_type']
-                else:
-                    self.quant_type_4bit = 'nf4'
-                # set quantization configuration to load large model with less GPU memory
-                # this requires the `bitsandbytes` library
-                bnb_config = transformers.BitsAndBytesConfig(
-                    load_in_4bit              = True,
-                    bnb_4bit_quant_type       = self.quant_type_4bit,
-                    bnb_4bit_use_double_quant = True,
-                    bnb_4bit_compute_dtype    = self.compute_dtype,
-                    disable_exllama           = True,
-                    get_loading_attributes    = True,
-                )
             
-            elif self.model_bits == 8:
-                # set quantization configuration to load large model with less GPU memory
-                # this requires the `bitsandbytes` library
-                bnb_config = transformers.BitsAndBytesConfig(
-                    load_in_8bit              = True,
-                    bnb_8bit_use_double_quant = True,
-                    bnb_8bit_compute_dtype    = self.compute_dtype,
-                    disable_exllama           = True,
-                    get_loading_attributes    = True,
-                )
-            else:
-                bnb_config = None
+            pretrained_kwargs['torch_dtype'  ] = self.compute_dtype
 
+            # check if the number of bits for quantization is set in setum model
+            # set quantization configuration to load large model with less GPU memory
+            # this requires the `bitsandbytes` library
+            bnb_kwargs = {}
 
-            if bnb_config and self.flash_attn:
-                self.model = transformers.AutoModelForCausalLM.from_pretrained(
-                    self.model_id,
-                    trust_remote_code   = self.trust_remote_code,
-                    flash_attn          = self.flash_attn, 
-                    flash_rotary        = self.flash_attn, 
-                    fused_dense         = self.flash_attn,
-                    quantization_config = bnb_config,
-                    torch_dtype         = self.compute_dtype,
-                    device_map          = 'auto',
-                )
-            elif bnb_config:
-                self.model = transformers.AutoModelForCausalLM.from_pretrained(
-                    self.model_id,
-                    trust_remote_code   = self.trust_remote_code,
-                    quantization_config = bnb_config,
-                    torch_dtype         = self.compute_dtype,
-                    device_map          = 'auto',
-                )
-            elif self.flash_attn:
-                self.model = transformers.AutoModelForCausalLM.from_pretrained(
-                    self.model_id,
-                    trust_remote_code   = self.trust_remote_code,
-                    flash_attn          = self.flash_attn, 
-                    flash_rotary        = self.flash_attn, 
-                    fused_dense         = self.flash_attn,
-                    torch_dtype         = self.compute_dtype,
-                    device_map          = 'auto',
-                )
-            else:
-                self.model = transformers.AutoModelForCausalLM.from_pretrained(
-                    self.model_id,
-                    trust_remote_code   = self.trust_remote_code,
-                    torch_dtype         = self.compute_dtype,
-                    device_map          = 'auto',
-                )
+            if 'model_bits' in self.setup['models_list'][model_name]:
+                self.model_bits = self.setup['models_list'][model_name]['model_bits']
+                        
+                if self.model_bits == 4:
+                    # check if 4bit_quant_type in setum model
+                    if '4bit_quant_type' in self.setup['models_list'][model_name]:
+                        self.quant_type_4bit = self.setup['models_list'][model_name]['4bit_quant_type']
+                        print(f"quant_type_4bit: {self.quant_type_4bit}")
+                    else:
+                        self.quant_type_4bit = 'nf4'
 
+                    bnb_kwargs['disable_exllama'          ] = True
+                    bnb_kwargs['get_loading_attributes'   ] = True
+                    bnb_kwargs['load_in_4bit'             ] = True
+                    bnb_kwargs['bnb_4bit_use_double_quant'] = True
+                    bnb_kwargs['bnb_4bit_quant_type'      ] = self.quant_type_4bit
+                    bnb_kwargs['bnb_4bit_compute_dtype'   ] = self.compute_dtype
+
+                elif self.model_bits == 8:
+                    bnb_kwargs['disable_exllama'          ] = True
+                    bnb_kwargs['get_loading_attributes'   ] = True
+                    bnb_kwargs['load_in_8bit'             ] = True
+                    bnb_kwargs['bnb_8bit_use_double_quant'] = True
+                    bnb_kwargs['bnb_8bit_compute_dtype'   ] = self.compute_dtype
+                
+            
+            if bnb_kwargs:
+                print(f" BnB kwargs: {bnb_kwargs}")
+                bnb_config = transformers.BitsAndBytesConfig(**bnb_kwargs)
+                pretrained_kwargs['quantization_config'] = bnb_config
+
+            print(f" pretrained kwargs: {pretrained_kwargs}")
+            self.model     = transformers.AutoModelForCausalLM.from_pretrained(self.model_id, **pretrained_kwargs)
             self.tokenizer = transformers.AutoTokenizer.from_pretrained(
                 self.model_id,
                 trust_remote_code   = self.trust_remote_code,
             )
 
-            self.embeddings = TransformersEmbeddings(self.tokenizer)
+            self.embeddings        = TransformersEmbeddings(self.tokenizer)
 
+            
             # set stopping criteria
-            stop_list         = ['\nHuman:', '\n```\n']
+            """
+            stop_list         = ['\nHuman:', '\n```\n', '\nInstruction:', '\nUser:', '\n<|user|>' ]
             stop_token_ids    = [self.tokenizer(x)['input_ids'] for x in stop_list     ]
-            #stop_token_ids_LT = [torch.LongTensor(x).to(self.device) for x in stop_token_ids]  # convert to LongTensor for compatibility with model
             stop_token_ids_LT = [torch.LongTensor(x) for x in stop_token_ids]  # convert to LongTensor for compatibility with model
 
             class StopOnTokens(transformers.StoppingCriteria):
@@ -221,6 +193,10 @@ class TfModel:
                     return False
 
             self.stopping_criteria = transformers.StoppingCriteriaList([StopOnTokens()])
+            """
+
+            self.my_generation_config              = transformers.generation.GenerationConfig.from_model_config(self.model.config)
+            self.my_generation_config.eos_token_id = self.model.config.eos_token_id
 
             #self.pipeline          = transformers.pipeline(
             #        model              = self.model, 
@@ -233,47 +209,23 @@ class TfModel:
             #        max_new_tokens     = self.max_new_tokens,        # max number of tokens to generate in the output
             #        repetition_penalty = self.repetition_penalty,    # without this output begins repeating
             #    )
+        else:
+            print(f"ERROR: NOT A TRANSFORMER MODEL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             
-    def predict(self, prompt: str, params:Dict={}) -> List[str]:
+    def predict(self, prompt: str) -> List[str]:
         """predict the next token based on the prompt"""
-        if 'max_new_tokens' in params:
-            self.max_new_tokens = params['max_new_tokens']
-        if 'temperature' in params:
-            self.temperature = params['temperature']
-        if 'top_p' in params:
-            self.top_p = params['top_p']
-        if 'top_k' in params:
-            self.top_k = params['top_k']
-        print(f"### PREDICT ### prompt length: {len(prompt)}, params: {params} ###: ")
-        print(f"### PREDICT ### prompt: {prompt}")
-        if self.temperature <= 0.0: self.temperature = 0.01          # temp need to be strictly positive
-        """pre_prms  = {'return_tensors':"pt"                }
-        fwd_prms  = {'max_new_tokens'  : self.max_new_tokens,
-                     'temperature'     : self.temperature   ,
-                     'top_p'           : self.top_p         ,
-                     'top_k'           : self.top_k         ,
-                     'do_sample'       : self.do_sample     , }
-        post_prms = {'clean_up_tokenization_spaces':True,  } """
-        #res_raw   = self.pipeline.run_single(prompt, 
-        #                               preprocess_params  = pre_prms, 
-        #                               forward_params     = fwd_prms, 
-        #                               postprocess_params = post_prms)
-        #res_raw   = self.pipeline.predict(prompt)
-        input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(self.device)
 
-        res_raw_t = self.model.generate( input_ids,
-                                         max_new_tokens = self.max_new_tokens,
-                                         temperature    = self.temperature,
-                                         do_sample      = self.do_sample,
-                                         pad_token_id   = self.tokenizer.eos_token_id, 
-                                         ) 
-        res_raw    = self.tokenizer.decode(res_raw_t[0], skip_special_tokens=True)
-        prompt_dec = self.tokenizer.decode(input_ids[0], skip_special_tokens=True)
-        print(f"\n### R E S  R A W ### Len: {len(res_raw)} ###: {res_raw}")
-        #res       = res_raw[0]['generated_text'].split('#~!|MODEL OUTPUT|!~#:')
-        res       = res_raw.replace(prompt_dec, '')
+        print(f"### PREDICT ### prompt length: {len(prompt)}, ### Gen CFG:\n{self.my_generation_config}\n")
+        print(f"### PREDICT ### prompt: {prompt}")
+
+        input_ids  = self.tokenizer.encode(prompt, return_tensors="pt"                           ).to(self.device)
+        res_raw_t  = self.model.generate(  input_ids, generation_config=self.my_generation_config) 
+        res_raw    = self.tokenizer.decode(res_raw_t[0], skip_special_tokens=True                )
+        prompt_dec = self.tokenizer.decode(input_ids[0], skip_special_tokens=True                )
         
-        #print(f"\n### R E S ###: {res}")
+        print(f"\n### R E S  R A W ### Len: {len(res_raw)} ###: {res_raw}")
+        res       = res_raw.replace(prompt_dec, '')
+
         if len(res) > 1:
             return res
         else:

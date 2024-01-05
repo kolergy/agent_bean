@@ -167,8 +167,9 @@
         "Q_and_A": {
             "model_name": "dolphin_7b",
             "action_type": "generate",
-            "temperature": 0.7,
-            "max_new_tokens": 128,
+            "model_params": {
+                "temperature": 0.7,
+                "max_new_tokens": 128 },
             "prompt_system": ["You are a human named Arthur. You have your own personality, your own preferences, and your own feelings. You must always act and bheave as a real human preson. Your job is to pass the turing test as if you were human."],
             "prompt_template":["{text}"],
             "llm_returns": "text"
@@ -176,8 +177,9 @@
         "free": {
             "model_name": "phi_2_3b",
             "action_type": "generate",
-            "temperature": 0.9,
-            "max_new_tokens": 1024,
+            "model_params": {
+                "temperature": 0.9,
+                "max_new_tokens": 1024 },
             "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
             "prompt_template":["{text}"],
             "llm_returns": "text"
@@ -185,8 +187,9 @@
         "free_OpenAI": {
             "model_name": "openAI_gpt_4_turbo",
             "action_type": "generate",
-            "temperature": 0.9,
-            "max_new_tokens": 1024,
+            "model_params": {
+                "temperature": 0.9,
+                "max_new_tokens": 1024 },
             "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
             "prompt_template":["{text}"],
             "llm_returns": "text"
@@ -195,7 +198,8 @@
             "model_name": "zephyr_b_7b",
             "action_type": "generate",
             "chunkable_action": true,
-            "temperature": 0.1,
+            "model_params": {
+                "temperature": 0.1 },
             "prompt_system": [
                 "you are the finest summarizer in the world, You manage to condense a text to it's quintessence preserving the informations",
                 " and the style of the original text. You provide a summary where no words are wasted and no information is lost." ],
@@ -208,7 +212,8 @@
             "model_name": "openAI_gpt_3_5_turbo",
             "action_type": "generate",
             "chunkable_action": true,
-            "temperature": 0.1,
+            "model_params": {
+                "temperature": 0.1 },
             "prompt_system": [
                 "you are the finest summarizer in the world, You manage to condense a text to it's quintessence preserving the informations",
                 " and the style of the original text. You provide a summary where no words are wasted and no information is lost." ],
@@ -221,7 +226,8 @@
             "model_name": "zephyr_b_7b",
             "action_type": "generate",
             "action_post_function": "search",
-            "temperature": 0.7,
+            "model_params": {
+                "temperature": 0.7 },
             "prompt_system": [
                 "you are the finest internet search expert in the world, You know all the tricks to find the most relevant information on the web",
                 " and and you use this knowledge to craft the most relevant search queries to answer to the user demand" ],
@@ -234,8 +240,9 @@
         "split": {
             "model_name": "WizardCoder_34b",
             "action_type": "generate",
-            "temperature": 0.01,
-            "presence_penalty":  0.6,
+            "model_params": {
+                "temperature": 0.01,
+                "presence_penalty": 0.6 },
             "prompt_system": [
                 "You are an exceptional project manager, you are an expert at identifying the atomic actions to be performed in order to complete a task.",
                 " you mostly split tasks in the following action_categories ['requirements', 'architecture', 'code', 'code_quality', 'search'] if it dose",
@@ -252,7 +259,8 @@
             "model_name": "WizardCoder_34b",
             "action_type": "generate",
             "code_language": "python",
-            "temperature": 0.4,
+            "model_params": {
+                "temperature": 0.4 },
             "prompt_system": [
                 "you are an exceptional {code_language} coder, you produce {code_language} code that function as pre requirements and that is safe, easy to read",
                 " and to understand for all coders, you respects the best practices of codding and documentation",
@@ -266,7 +274,8 @@
             "model_name": "openAI_gpt_4",
             "action_type": "generate",
             "code_language": "python",
-            "temperature": 0.4,
+            "model_params": {
+                "temperature": 0.4 },
             "prompt_system": [
                 "you are an exceptional {code_language} coder, you produce {code_language} code that function as pre requirements and that is safe, easy to read",
                 " and to understand for all coders, you respects the best practices of codding and documentation",
@@ -280,7 +289,8 @@
             "model_name": "deepseek_coder_inst_6_7b",
             "action_type": "generate",
             "code_language": "python",
-            "temperature": 0.1,
+            "model_params": {
+                "temperature": 0.1 },
             "prompt_system": [
                 "you are an exceptionaly sharp {code_language} quality expert, you analyze the provided code and ensure that it function as per requirements and that is",
                 " safe, easy to read, and adequately documented and that it respects the best practices of codding and documentation. Your output will always",
@@ -297,8 +307,9 @@
             "model_name": "zephyr_b_7b",
             "action_type": "generate",
             "code_language": "python",
-            "max_new_tokens": 2048,
-            "temperature": 0.5,
+            "model_params": {
+                "temperature": 0.5,
+                "max_new_tokens": 2048 },
             "prompt_system": [
                 "you are a talented and experienced {code_language} product owner, a large number of projects have been sucessfull thanks to you ability to",
                 " define the right requirements for them. You ewperience enables you to analyze partial project informations and deduce the",
@@ -321,8 +332,9 @@
         "team_manager": {
             "model_name": "zephyr_b_7b",
             "action_type": "generate",
-            "max_new_tokens": 1024,
-            "temperature": 0.6,
+            "model_params": {
+                "temperature": 0.6,
+                "max_new_tokens": 1024 },
             "prompt_system": [
                 "You are a awesome maager you are highly skilled with excellent human touch and value standards",
                 " that enable you to motivate and protect your team you are able to recognise their work and",

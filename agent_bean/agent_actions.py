@@ -87,9 +87,10 @@ class AgentAction():
         ##action_name    = kwargs['action_name']
         model_name           = action_params['model_name' ]
         inputs               = action_params['inputs'     ].copy()
-        action_pre_function  = action_params.get('action_pre_function' , None)
-        action_post_function = action_params.get('action_post_function', None)
-        code_language        = action_params.get('code_language', 'python')
+        action_model_params  = action_params.get('model_params', {})
+        action_pre_function  = action_params.get('action_pre_function' ,  None   )
+        action_post_function = action_params.get('action_post_function',  None   )
+        code_language        = action_params.get('code_language'       , 'python')
 
         if action_pre_function is not None and len(inputs) > 0:
             function_res:str    = self.perform_function(action_pre_function, inputs.pop(0))
@@ -116,6 +117,7 @@ class AgentAction():
             prompt        += ''.join(action_params['prompt_template']).format(text=chunk_text, code_language=code_language) 
             prompt        += special_tokens['model_usr_delim']['end']
 
+            """
             self.mm.set_model_params(model_name, params={'max_tokens':       max_tokens,
                                         'temperature':       action_params.get('temperature'      ,   1.0  ),
                                         'top_p':             action_params.get('top_p'            ,   1.0  ),
@@ -123,6 +125,9 @@ class AgentAction():
                                         'presence_penalty':  action_params.get('presence_penalty' ,   0.1  ),
                                         'max_new_tokens':    action_params.get('max_new_tokens'   , 512    ),
                                         'stop':              action_params.get('stop'             , ["\n"] )})
+            """
+            self.mm.set_model_params(model_name, params=action_model_params)
+            
             resp           = self.mm.predict(model_name, prompt).copy()
 
             if chunkable_action:              # If the action is chunkable, 

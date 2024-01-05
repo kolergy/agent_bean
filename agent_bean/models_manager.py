@@ -10,7 +10,7 @@ from   langchain.chat_models             import ChatOpenAI
 from   langchain.embeddings.openai       import OpenAIEmbeddings
 from   agent_bean.system_info            import SystemInfo
 from   agent_bean.transformers_model     import TfModel, TransformersEmbeddings
-
+from   transformers                      import GenerationConfig
 
 class ModelsManager():
     """This class is used to manage the models and their resource usage.
@@ -28,7 +28,15 @@ class ModelsManager():
         self.active_embeddings        = {}
         self.known_models             = {}
         self.openai_params_list       = ["temperature", "max_tokens"]
-        self.transformers_params_list = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p"]
+        self.transformers_params_list = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p", "top_k", "repetition_penalty", 
+                                         "do_sample", "max_new_tokens", "min_length", "min_new_tokens", "early_stopping", "max_time", "num_beams", "num_beam_groups",
+                                         "penalty_alpha", "use_cache", "typical_p", "epsilon_cutoff", "eta_cutoff", "diversity_penalty", "repetition_penalty", 
+                                         "encoder_repetition_penalty", "length_penalty", "no_repeat_ngram_size", "bad_words_ids", "force_words_ids", "renormalize_logits",
+                                         "constraints", "forced_bos_token_id", "forced_eos_token_id", "remove_invalid_values", "exponential_decay_length_penalty",
+                                         "suppress_tokens", "begin_suppress_tokens", "forced_decoder_ids", "sequence_bias", "guidance_scale", "low_memory", "num_return_sequences",
+                                         "output_attentions", "output_hidden_states", "output_scores", "return_dict_in_generate", "pad_token_id", "bos_token_id", "eos_token_id",
+                                         "encoder_no_repeat_ngram_size", "decoder_start_token_id", "num_assistant_tokens", "num_assistant_tokens_schedule", "generation_kwargs",
+                                         "_from_model_config", "transformers_version"]
 
         #self.test_models_resources_reqs()
     
@@ -90,8 +98,8 @@ class ModelsManager():
                 print(f"ERROR: Model {model_name} not enough resources for instantion")
                 raise RuntimeError(f"ERROR: Model {model_name} not enough resources for instantion")
         else:
-            if self.debug:
-                print(f"Model {model_name} already instantiated")
+            #if self.debug:
+            #    print(f"Model {model_name} already instantiated")
             return True
         
 
@@ -106,18 +114,32 @@ class ModelsManager():
             params (dict): A dictionary of parameters to set for the model.
         """
         if self.model_need(model_name):
-            for p in params.keys():
-                #print(f" model type: {type(self.active_models[model_name])}, param: {p}, value: {params[p]}")
-                #print(f" openAI type: {type(ChatOpenAI)}, transformers type: {type(TfModel)}")
-                if isinstance(self.active_models[model_name],ChatOpenAI): 
+            print(f" model Parametrisation: model type: {type(self.active_models[model_name])}")
+            if isinstance(self.active_models[model_name],ChatOpenAI):
+                for p in params.keys():
                     if p in self.openai_params_list:
                         print(f"setting param: {p}, value: {params[p]}")
                         setattr(self.active_models[model_name], p, params[p])
-                elif isinstance(self.active_models[model_name], TfModel):
-                    if p in self.transformers_params_list:
-                        setattr(self.active_models[model_name], p, params[p])
-                else:
-                    print(f"ERROR: Unknown model type: {type(self.active_models[model_name])}")
+                    else:
+                        print(f"WARNING: Ignoring unknown param: {p} for model type: {type(self.active_models[model_name])}")
+
+            elif isinstance(self.active_models[model_name], TfModel):
+                cur_params = self.active_models[model_name].my_generation_config.to_dict()
+                cur_params.update(params)
+                for p in list(cur_params.keys()):
+                    if p not in self.transformers_params_list:
+                        print(f"WARNING: Ignoring unknown param: {p} for model type: {type(self.active_models[model_name])}")
+                        del cur_params[p]
+                    elif p == "temperature":   # if temperature is set to > 0 then it necessitates sampling
+                            if cur_params['temperature'] > 0:
+                                cur_params['do_sample'] = True
+                            else:
+                                cur_params['do_sample'] = False
+
+                cur_params['pad_token_id'] = self.active_models[model_name].tokenizer.eos_token_id   # to avoid the warning: "Setting `pad_token_id` to `eos_token_id`
+                self.active_models[model_name].my_generation_config = GenerationConfig(**cur_params)
+            else:
+                print(f"ERROR: Unknown model type: {type(self.active_models[model_name])}")
         else:
             print(f"ERROR: can not set params Model {model_name} could not be instantiated")
 
