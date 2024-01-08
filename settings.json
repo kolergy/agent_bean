@@ -185,7 +185,7 @@
             "llm_returns": "text"
         },
         "free": {
-            "model_name": "phi_2_3b",
+            "model_name": "solar_11b",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.9,
