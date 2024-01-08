@@ -21,9 +21,9 @@
             "model_sys_delim": { "start": "### Instruction:\n", "end": "\n"            },
             "model_usr_delim": { "start": ""                  , "end": "### Response:" }
         },
-        "WizardCoder_34b": {
+        "WizardCoder_33b": {
             "model_type": "transformers",
-            "model_id": "WizardLM/WizardCoder-Python-34B-V1.0",
+            "model_id": "WizardLM/WizardCoder-33B-V1.1",
             "model_bits": 4,
             "max_tokens": 16384,
             "model_sys_delim": { "start": ""                  , "end": "\n\n"                     },
@@ -135,6 +135,16 @@
             "model_sys_delim": { "start": "system: "  , "end": "\n"        },
             "model_usr_delim": { "start": "Instruct: ", "end": "\nOutput:" }
         },
+        "solar_11b": {
+            "model_type": "transformers",
+            "model_id": "DopeorNope/SOLARC-M-10.7B",
+            "model_bits": 4,
+            "max_tokens": 4096,
+            "use_cache": true,
+            "flash_attn": true,
+            "model_sys_delim": { "start": "<s> ### System:\n", "end": "\n"                 },
+            "model_usr_delim": { "start": "<s> ### User:\n"  , "end": "\n### Assistant:\n" }
+        },
         "openAI_gpt_4_turbo": {
             "model_type": "openAI",
             "model_id": "gpt-4-1106-preview",
@@ -238,7 +248,7 @@
             "llm_returns": "text"
         },
         "split": {
-            "model_name": "WizardCoder_34b",
+            "model_name": "WizardCoder_33b",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.01,
@@ -256,7 +266,7 @@
             "llm_returns": "actions_json"
         },
         "code": {
-            "model_name": "WizardCoder_34b",
+            "model_name": "WizardCoder_33b",
             "action_type": "generate",
             "code_language": "python",
             "model_params": {
