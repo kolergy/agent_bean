@@ -143,7 +143,6 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
 
     with gr.Row():
         console_output = gr.components.Textbox(interactive=False, label="Console Output", lines=6, autoscroll=True, value="Console will display here...")
-        iface.set_console_callback(lambda text: console_output.update(value=text))
 
 # Launch the interface
 iface.queue().launch(share=False)
