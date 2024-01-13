@@ -38,7 +38,7 @@ class Logger:
         return False 
     
 sys.stdout = Logger("output.log")
-
+sys.stderr = Logger("output.log")
 
 def read_logs():
     sys.stdout.flush()
@@ -130,7 +130,7 @@ def update_v_ram():
 
     return update_v_ram
 
-def update_model_name(action_name):
+def update_action_name(action_name):
     """Get the default model for the selected action"""
     #default_model = agent.aa.get_default_model_for_action(action_name)
     default_model = setup["actions"][action_name]["model_name"]
@@ -139,6 +139,11 @@ def update_model_name(action_name):
     #return gr.components.Dropdown(choices=agent.mm.get_available_models(), value=default_model, label="Model Name")
     return gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model  )
 
+def update_model_name(action_name, model_name):
+    """update the settings with the selected model for the selected action"""
+    setup["actions"][action_name]["model_name"] = model_name
+    print(f"Model changed during this sessio for action: {action_name} to this model:{model_name}")
+ 
 # Define the Gradio display
 with gr.Blocks(title="Agent Bean Interface") as iface:
     gr.Markdown("# Agent Bean Interface  ")
@@ -147,8 +152,8 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
         model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model, interactive=True )
 
         # Link the action_name dropdown to the update_model_name function
-        action_name.change(update_model_name, inputs=[action_name], outputs=[model_name])
-
+        action_name.change(update_action_name, inputs=[action_name], outputs=[model_name])
+        model_name.change( update_model_name , inputs=[action_name,model_name])
     with gr.Row():
         action_input         = gr.components.Textbox( lines   = 2,  autoscroll = True , label = "Action Input", scale=1   )
         run_button           = gr.Button(             variant = 'primary'             , value = "Run Agent"   , scale=0   )
