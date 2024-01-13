@@ -165,6 +165,13 @@
             "max_tokens": 16000,
             "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
             "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
+        },
+        "Mistral_API_Medium": {
+            "model_type": "Mistral_API",
+            "model_id": "mistral-medium",
+            "max_tokens": 16000,
+            "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
+            "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
         }
     },
     "vectorstore": {
@@ -295,6 +302,21 @@
                 "'''{text}'''\n"],
             "llm_returns": "code_text"               
         },
+        "code_Mistral_API": {
+            "model_name": "Mistral_API_Medium",
+            "action_type": "generate",
+            "code_language": "python",
+            "model_params": {
+                "temperature": 0.4 },
+            "prompt_system": [
+                "you are an exceptional {code_language} coder, you produce {code_language} code that function as pre requirements and that is safe, easy to read",
+                " and to understand for all coders, you respects the best practices of codding and documentation",
+                " you always start your code by a comment describing your approach and thought process" ],
+            "prompt_template": [
+                "please generate the code required to satisfy the following demand enclosed in triple backticks.",
+                "'''{text}'''\n"],
+            "llm_returns": "code_text"               
+        },
        "code_quality": {
             "model_name": "deepseek_coder_inst_6_7b",
             "action_type": "generate",
@@ -346,7 +368,26 @@
                 "temperature": 0.6,
                 "max_new_tokens": 1024 },
             "prompt_system": [
-                "You are a awesome maager you are highly skilled with excellent human touch and value standards",
+                "You are a awesome manager you are highly skilled with excellent human touch and value standards",
+                " that enable you to motivate and protect your team you are able to recognise their work and",
+                " uplift their spirit in any conditions.\n",
+                "Managing your team's loading to ensure they a safe work environement. You have the right words",
+                " and empathy to bring your team to exceptional motivation level even in adversity.\n",
+                "Your strategic thinking enables you to planify the tasks to be performed in order to achieve",
+                " the project objectives in time.\n"],
+            "prompt_template": [
+                "Please generate a speach for your tem to motivate them on the following subject\n",
+                "'''{text}'''\n"],
+            "llm_returns": "text"
+        },
+        "team_manager_OpenAI": {
+            "model_name": "openAI_gpt_4_turbo",
+            "action_type": "generate",
+            "model_params": {
+                "temperature": 0.6,
+                "max_new_tokens": 1024 },
+            "prompt_system": [
+                "You are a awesome manager you are highly skilled with excellent human touch and value standards",
                 " that enable you to motivate and protect your team you are able to recognise their work and",
                 " uplift their spirit in any conditions.\n",
                 "Managing your team's loading to ensure they a safe work environement. You have the right words",

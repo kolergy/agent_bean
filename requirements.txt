@@ -26,5 +26,4 @@ chardet
 PyPDF2
 tinydb
 einops
-
-
+mistralai

@@ -120,14 +120,17 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
 
         # Link the action_name dropdown to the update_model_name function
         action_name.change(update_model_name, inputs=[action_name], outputs=[model_name])
-    with gr.Row():
-        actions_list     = gr.components.File(file_count=1, file_types=["json"], value=a_list_file, label = "Actions List File"     )
-        run_list_button  = gr.Button(             variant = 'secondary'           , value = "Run List Agent"  )
+
     
     action_input         = gr.components.Textbox( lines   = 3,  autoscroll = True , label = "Action Input"   )
     run_button           = gr.Button(             variant = 'primary'             , value = "Run Agent"      )
     # Removed the duplicate render() calls
     text_output          = gr.components.Textbox( lines   = 10,  autoscroll = True, label = "Output Text"    )
+    
+    with gr.Row():
+        actions_list     = gr.components.File(file_count=1, file_types=["json"], value=a_list_file, label = "Actions List File"     )
+        run_list_button  = gr.Button(             variant = 'secondary'           , value = "Run Actions List"  )
+
     with gr.Row():
         ram_plt          = gr.components.LinePlot(show_label=False)
         v_ram_plt        = gr.components.LinePlot(show_label=False)

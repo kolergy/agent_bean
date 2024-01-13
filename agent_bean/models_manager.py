@@ -10,6 +10,7 @@ from   langchain.chat_models             import ChatOpenAI
 from   langchain.embeddings.openai       import OpenAIEmbeddings
 from   agent_bean.system_info            import SystemInfo
 from   agent_bean.transformers_model     import TfModel, TransformersEmbeddings
+from   agent_bean.mistral_model          import MistralModel, MistralEmbeddings
 from   transformers                      import GenerationConfig
 
 class ModelsManager():
@@ -28,6 +29,7 @@ class ModelsManager():
         self.active_embeddings        = {}
         self.known_models             = {}
         self.openai_params_list       = ["temperature", "max_tokens"]
+        self.mistral_params_list      = ["temperature", "max_tokens"]
         self.transformers_params_list = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p", "top_k", "repetition_penalty", 
                                          "do_sample", "max_new_tokens", "min_length", "min_new_tokens", "early_stopping", "max_time", "num_beams", "num_beam_groups",
                                          "penalty_alpha", "use_cache", "typical_p", "epsilon_cutoff", "eta_cutoff", "diversity_penalty", "repetition_penalty", 
@@ -118,6 +120,14 @@ class ModelsManager():
             if isinstance(self.active_models[model_name],ChatOpenAI):
                 for p in params.keys():
                     if p in self.openai_params_list:
+                        print(f"setting param: {p}, value: {params[p]}")
+                        setattr(self.active_models[model_name], p, params[p])
+                    else:
+                        print(f"WARNING: Ignoring unknown param: {p} for model type: {type(self.active_models[model_name])}")
+
+            elif isinstance(self.active_models[model_name],MistralModel):
+                for p in params.keys():
+                    if p in self.mistral_params_list:
                         print(f"setting param: {p}, value: {params[p]}")
                         setattr(self.active_models[model_name], p, params[p])
                     else:
@@ -418,6 +428,10 @@ class ModelsManager():
                     self.known_models[k_model_id]["system_ram_gb"] = 0.0
                     self.known_models[k_model_id]["GPU_ram_gb"   ] = 0.0
 
+                elif self.setup["models_list"][model_name]["model_type"] == "Mistral_API":
+                    self.known_models[k_model_id]["system_ram_gb"] = 0.0
+                    self.known_models[k_model_id]["GPU_ram_gb"   ] = 0.0
+
                 else:
                     print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")
 
@@ -437,21 +451,19 @@ class ModelsManager():
         model_id   = self.setup['models_list'][model_name]['model_id']
         
         if self.setup['models_list'][model_name]['model_type'] == "openAI":
-            api_key                            = os.getenv('OPENAI_API_KEY')
-            self.active_models[model_name]     = ChatOpenAI(openai_api_key=api_key, model_name=model_id)
-            #self.active_embeddings[model_name] = OpenAIEmbeddings(openai_api_key=api_key)
+            OAI_api_key                        = os.getenv('OPENAI_API_KEY')
+            self.active_models[model_name]     = ChatOpenAI(openai_api_key=OAI_api_key, model_name=model_id)
             self.active_embeddings[model_name] = tiktoken.encoding_for_model(model_id)
 
-        elif self.setup['models_list'][model_name]['model_type'] == "transformers":
-            #if self.debug:
-            #    print(f"GPU state before model instantiation: {torch.cuda.is_available()}")
-            #    self.si.print_GPU_info()
+        if self.setup['models_list'][model_name]['model_type'] == "Mistral_API":
+            Mistral_api_key                    = os.getenv('MISTRAL_API_KEY')
+            self.active_models[model_name]     = MistralModel(self.setup, self.si,Mistral_api_key=Mistral_api_key, model_name=model_id)
+            self.active_embeddings[model_name] = MistralEmbeddings(Mistral_api_key=Mistral_api_key, model_name= "mistral-embed")
 
+        elif self.setup['models_list'][model_name]['model_type'] == "transformers":
             self.active_models[model_name]     = TfModel(self.setup, self.si, model_name)
             self.active_embeddings[model_name] = TransformersEmbeddings(self.active_models[model_name].tokenizer)
-            #if self.debug:
-            #    print(f"GPU state after model instantiation: {torch.cuda.is_available()}")
-            #    self.si.print_GPU_info()
+
     
 
     def deinstantiate_model(self, model_name:str) -> None: 
