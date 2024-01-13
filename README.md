@@ -1,5 +1,5 @@
 # AI Agent Bean
-Agent Bean doese not yet have the competencies of 007 it is more at Mr Bean level. It is AI agent that is designed to interact with users and perform various tasks. The initial focus is on coding but there are no limitations to other activities. 
+Agent Bean doese not yet have the competencies of 007 it is more at Mr Bean level. It is AI agent that is designed to interact with users and perform various tasks. The initial focus was on coding but some experimentation on team managment are surprisingly goodthere are no limitations to other activities. 
 
 It has been designed to be able to run local llm models like Llama2 and Mistral, zephyr-7b-beta, Orca-2, WizardCoder, etc... that are available on the huggingface portal in totally private mode with out any API but it can as well be interfaced with the openAI API to be able to run GPT3.4 or GPT4 and the new GPT4 turbo If you want. And just NOW you can use the Models from Mistral API. So you can run the model fully localy if you have the a GPU with enough VRAM or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different actions.
 
@@ -20,6 +20,7 @@ The agent Bean is currently capable of the following:
    - **Load**: files from the following format: text, json, PDF 
    - **Search**: Search on the internet for informations. 
 - **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently implemented actions:
+   - **Q_and_A**: Questions and answers with Arthur who tries to bheaves as a human
    - **free**: freetext query
    - **summarize**: generate a summary of the provided text
    - **search**: perform a search on the net
@@ -28,12 +29,14 @@ The agent Bean is currently capable of the following:
    - **code_quality**: analyse the quality of the code (not yet working well)
    - **project_requirements**: generate requirements
    - **team_manager**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
+   - **ideation_coach**: experimental agent to bheave as an innovation coach
 
 
 The agent is continuously evolving, with new capabilities being added regularly.
 
 
 ## Current limitations:
+- Using the interface to change the model dose not work yet 
 - When modifying the settings file whlie the model is running, it needs to be re-uploaded for the changes to take effects
 - It is not yet able to write to files
 - Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models!? (they use a different proces for loading that needs to be implemented)
@@ -64,6 +67,7 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 ## Recent improvments:
 - **Added Mistral API**: you can now use the models from the Mistral API!
+- **Added ideation_coach**: to guide innovators with refining their innovations 
 - **Added File loader**: to be able to load text, json, or PDF files
 - **Added settings file selection and loading**: to be able to easyly change the settings file
 - **added a team_manager agent**: not totaly related to the rest but it is an experiment 

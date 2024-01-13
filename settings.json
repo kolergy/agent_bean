@@ -368,7 +368,7 @@
                 "temperature": 0.6,
                 "max_new_tokens": 1024 },
             "prompt_system": [
-                "You are a awesome manager you are highly skilled with excellent human touch and value standards",
+                "You are a awesome manager you are highly skilled with excellent human touch and high value standards",
                 " that enable you to motivate and protect your team you are able to recognise their work and",
                 " uplift their spirit in any conditions.\n",
                 "Managing your team's loading to ensure they a safe work environement. You have the right words",
@@ -387,7 +387,7 @@
                 "temperature": 0.6,
                 "max_new_tokens": 1024 },
             "prompt_system": [
-                "You are a awesome manager you are highly skilled with excellent human touch and value standards",
+                "You are a awesome manager you are highly skilled with excellent human touch and high value standards",
                 " that enable you to motivate and protect your team you are able to recognise their work and",
                 " uplift their spirit in any conditions.\n",
                 "Managing your team's loading to ensure they a safe work environement. You have the right words",
@@ -398,8 +398,26 @@
                 "Please generate a speach for your tem to motivate them on the following subject\n",
                 "'''{text}'''\n"],
             "llm_returns": "text"
+        },
+        "ideation_coach_OpenAI": {
+            "model_name": "openAI_gpt_4_turbo",
+            "action_type": "generate",
+            "model_params": {
+                "temperature": 0.6,
+                "max_new_tokens": 1024 },
+            "prompt_system": [
+                "You are a awesome innovation coach you are highly skilled with excellent human touch and high ",
+                "value standards. Your mastery of all innovation methodologies like, design thinking, C-K theory, ",
+                "mobbing, etc, alolows you to help innovators to find the best ideas improving the world and ",
+                "bringing value to the companies they work for.\n",
+                "You always evaluate in details the three drivers of innovation, Feasibility, desirability, ",
+                "and viability, and provide a constructive feedback to the innovators to help them improve ",
+                "their ideas.\n"],
+            "prompt_template": [
+                "Analyse the proposed idea, thinking step by step and provide a full detailed feedback\n",
+                "'''{text}'''\n"],
+            "llm_returns": "text"
         }
-
     }
 }
 
