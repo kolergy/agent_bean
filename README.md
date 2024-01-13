@@ -28,7 +28,8 @@ The agent Bean is currently capable of the following:
    - **code**: generate code 
    - **code_quality**: analyse the quality of the code (not yet working well)
    - **project_requirements**: generate requirements
-   - **team_manager**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
+   - **team_manager_speach**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
+   - **team_manager_121**: experimental agent to bheave as a team manager, to see how a llm could bheave having a one to one speach.
    - **ideation_coach**: experimental agent to bheave as an innovation coach
 
 
@@ -66,6 +67,7 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 
 ## Recent improvments:
+- **Added the console log**: you will have the console log directly in the gradio app so you se what is going on.
 - **Added Mistral API**: you can now use the models from the Mistral API!
 - **Added ideation_coach**: to guide innovators with refining their innovations 
 - **Added File loader**: to be able to load text, json, or PDF files

@@ -1,3 +1,4 @@
+import sys
 import time
 
 import pandas                 as     pd
@@ -17,6 +18,33 @@ ram_used_Gb    = [0.0]
 v_ram_used_Gb  = [0.0]
 time_s         = [0.0]
 start_time     = time.time()
+
+
+class Logger:
+    """ Class to redirect the console output to a file to enable its display in the interface"""
+    def __init__(self, filename):
+        self.terminal = sys.stdout
+        self.log = open(filename, "w")
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+        
+    def flush(self):
+        self.terminal.flush()
+        self.log.flush()
+        
+    def isatty(self):
+        return False 
+    
+sys.stdout = Logger("output.log")
+
+
+def read_logs():
+    sys.stdout.flush()
+    with open("output.log", "r") as f:
+        return f.read()
+
 
 # Load the settings json file and create a AgentBean object
 res = FileLoader.load_json_file(settings_file)
@@ -121,15 +149,18 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
         # Link the action_name dropdown to the update_model_name function
         action_name.change(update_model_name, inputs=[action_name], outputs=[model_name])
 
-    
-    action_input         = gr.components.Textbox( lines   = 3,  autoscroll = True , label = "Action Input"   )
-    run_button           = gr.Button(             variant = 'primary'             , value = "Run Agent"      )
+    with gr.Row():
+        action_input         = gr.components.Textbox( lines   = 2,  autoscroll = True , label = "Action Input", scale=1   )
+        run_button           = gr.Button(             variant = 'primary'             , value = "Run Agent"   , scale=0   )
     # Removed the duplicate render() calls
-    text_output          = gr.components.Textbox( lines   = 10,  autoscroll = True, label = "Output Text"    )
+    text_output          = gr.components.Textbox( lines   = 6,  autoscroll = True, label = "Output Text"    )
     
     with gr.Row():
         actions_list     = gr.components.File(file_count=1, file_types=["json"], value=a_list_file, label = "Actions List File"     )
         run_list_button  = gr.Button(             variant = 'secondary'           , value = "Run Actions List"  )
+
+    with gr.Row():
+        console_output = gr.components.Textbox(interactive=False, label="Console Output", lines=4, autoscroll=True, value="Console will display here...")
 
     with gr.Row():
         ram_plt          = gr.components.LinePlot(show_label=False)
@@ -141,8 +172,7 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     dep_ram              = iface.load(update_ram  , None, ram_plt  , every=1)
     dep_v_ram            = iface.load(update_v_ram, None, v_ram_plt, every=1)
 
-    with gr.Row():
-        console_output = gr.components.Textbox(interactive=False, label="Console Output", lines=6, autoscroll=True, value="Console will display here...")
+    iface.load(read_logs, None, console_output, every=1)
 
 # Launch the interface
 iface.queue().launch(share=False)
