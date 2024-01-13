@@ -141,5 +141,9 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     dep_ram              = iface.load(update_ram  , None, ram_plt  , every=1)
     dep_v_ram            = iface.load(update_v_ram, None, v_ram_plt, every=1)
 
+    with gr.Row():
+        console_output = gr.components.Textbox(interactive=False, label="Console Output", lines=6, autoscroll=True, value="Console will display here...")
+        iface.set_console_callback(lambda text: console_output.update(value=text))
+
 # Launch the interface
 iface.queue().launch(share=False)
