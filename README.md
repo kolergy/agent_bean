@@ -20,7 +20,6 @@ The agent Bean is currently capable of the following:
    - **Load**: files from the following format: text, json, PDF 
    - **Search**: Search on the internet for informations. 
 - **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently implemented actions:
-   - **Q_and_A**: Questions and answers with Arthur who tries to bheaves as a human
    - **free**: freetext query
    - **summarize**: generate a summary of the provided text
    - **search**: perform a search on the net
@@ -31,6 +30,9 @@ The agent Bean is currently capable of the following:
    - **team_manager_speach**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
    - **team_manager_121**: experimental agent to bheave as a team manager, to see how a llm could bheave having a one to one speach.
    - **ideation_coach**: experimental agent to bheave as an innovation coach
+   - **Q_and_A**: Questions and answers with Arthur who tries to bheaves as a human
+   - **Q_and_A_generator**: Generate Questions and answers from the provided text
+   
 
 
 The agent is continuously evolving, with new capabilities being added regularly.

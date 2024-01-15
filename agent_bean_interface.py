@@ -54,7 +54,7 @@ if res['json_content'] is not None:
 else:
     print(f"ERROR: Could not load the settings file: {settings_file}")
     
-default_action = "code_OpenAI"
+default_action = "team_manager_speach"
 default_model  = setup["actions"][default_action]["model_name"]
 
 cpu_brand      =  agent.si.get_cpu_brand(   )
