@@ -399,7 +399,7 @@
                 "Analyse the provided text and generate ten questions to which the provided text contains an ",
                 "answer. you answer shall only consists as a json per question with the folowing keys:\n",
                 "'rationale': your step by step thinking to generate the question and the position of the answer in the provided text",
-                "'question': your generated question",
+                "'question': your generated question including suficient context from the provided text to be able to answer the question",
                 "'answer': the answer to the question as a copy paste from the provided text\n"],
             "prompt_template": [
                 "Provided text:\n",
