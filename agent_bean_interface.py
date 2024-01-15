@@ -132,11 +132,9 @@ def update_v_ram():
 
 def update_action_name(action_name):
     """Get the default model for the selected action"""
-    #default_model = agent.aa.get_default_model_for_action(action_name)
     default_model = setup["actions"][action_name]["model_name"]
     # Return a new Dropdown object with the default model selected
     print(f"ZZZZZZZZZ default model:{default_model}\n{agent.mm.get_available_models()}\nZZZZZZZZZ")
-    #return gr.components.Dropdown(choices=agent.mm.get_available_models(), value=default_model, label="Model Name")
     return gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model  )
 
 def update_model_name(action_name, model_name):
@@ -150,15 +148,15 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     with gr.Row():
         action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value=default_action, interactive=True)
         model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model, interactive=True )
-
         # Link the action_name dropdown to the update_model_name function
         action_name.change(update_action_name, inputs=[action_name], outputs=[model_name])
         model_name.change( update_model_name , inputs=[action_name,model_name])
+
     with gr.Row():
-        action_input         = gr.components.Textbox( lines   = 2,  autoscroll = True , label = "Action Input", scale=1   )
-        run_button           = gr.Button(             variant = 'primary'             , value = "Run Agent"   , scale=0   )
+        action_input     = gr.components.Textbox( lines   = 2,  autoscroll = True , label = "Action Input", scale=1   )
+        run_button       = gr.Button(             variant = 'primary'             , value = "Run Agent"   , scale=0   )
     # Removed the duplicate render() calls
-    text_output          = gr.components.Textbox( lines   = 6,  autoscroll = True, label = "Output Text"    )
+    text_output  = gr.components.Textbox( lines   = 6,  autoscroll = True, label = "Output Text"    )
     
     with gr.Row():
         actions_list     = gr.components.File(file_count=1, file_types=["json"], value=a_list_file, label = "Actions List File"     )
@@ -174,8 +172,8 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     run_list_button.click( run_list_action, actions_list)
     run_button.click( run_action, [action_name, action_input], outputs = text_output)
 
-    dep_ram              = iface.load(update_ram  , None, ram_plt  , every=1)
-    dep_v_ram            = iface.load(update_v_ram, None, v_ram_plt, every=1)
+    dep_ram      = iface.load(update_ram  , None, ram_plt  , every=1)
+    dep_v_ram    = iface.load(update_v_ram, None, v_ram_plt, every=1)
 
     iface.load(read_logs, None, console_output, every=1)
 
