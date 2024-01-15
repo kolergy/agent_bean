@@ -405,6 +405,23 @@
                 "Provided text:\n",
                 "'''{text}'''\n"],
             "llm_returns": "text"
+        },
+        "meal_planner": {
+            "model_name": "dolphin_7b",
+            "action_type": "generate",
+            "model_params": {
+                "temperature": 0.6,
+                "max_new_tokens": 1024 },
+            "prompt_system": [
+                "You are a highly skilled Chef your task is to plan a meal for a group of people, you have",
+                " to take into account their preferences, ensure to direct them with food that they can ",
+                "easyly obtain, and that they have the skills to cook. You have to ensure that the meal ",
+                "is balanced and that it is not too expensive. You have to provide a list of ingredients ",
+                "and the detailde instructions to cook the meal."],
+            "prompt_template": [
+                "Provided meal event need:\n",
+                "'''{text}'''\n"],
+            "llm_returns": "text"
         }
     }
 }
