@@ -2,7 +2,7 @@
 import torch
 
 from   typing                            import List, Dict
-from   langchain.tools                   import DuckDuckGoSearchResults
+from   langchain_community.tools         import DuckDuckGoSearchResults
 from   agent_bean.system_info            import SystemInfo
 from   agent_bean.models_manager         import ModelsManager
 from   agent_bean.file_loader            import FileLoader

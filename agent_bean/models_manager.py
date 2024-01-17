@@ -6,8 +6,8 @@ import json
 import torch
 import tiktoken
 
-from   langchain.chat_models             import ChatOpenAI
-from   langchain.embeddings.openai       import OpenAIEmbeddings
+from   langchain_community.chat_models   import ChatOpenAI
+#from   langchain.embeddings.openai       import OpenAIEmbeddings
 from   agent_bean.system_info            import SystemInfo
 from   agent_bean.transformers_model     import TfModel, TransformersEmbeddings
 from   agent_bean.mistral_model          import MistralModel, MistralEmbeddings

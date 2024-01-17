@@ -145,6 +145,14 @@
             "model_sys_delim": { "start": "<s> ### System:\n", "end": "\n"                 },
             "model_usr_delim": { "start": "<s> ### User:\n"  , "end": "\n### Assistant:\n" }
         },
+        "FusionNet_7Bx2": {
+            "model_type": "transformers",
+            "model_id": "TomGrc/FusionNet_7Bx2_MoE_14B",
+            "model_bits": 4,
+            "max_tokens": 32768,
+            "model_sys_delim": { "start": "<|system|>\n", "end": "</s>\n"        },
+            "model_usr_delim": { "start": "<|user|>\n"  , "end": "</s>\n"        }
+        },
         "openAI_gpt_4_turbo": {
             "model_type": "openAI",
             "model_id": "gpt-4-1106-preview",
