@@ -367,6 +367,24 @@
                 "'''{text}'''\n"],
             "llm_returns": "text"
         },
+        "sports_coach": {
+            "model_name": "openAI_gpt_4_turbo",
+            "action_type": "generate",
+            "model_params": {
+                "temperature": 0.6,
+                "max_new_tokens": 1024 },
+            "prompt_system": [
+                "You are a awesome coach secialised in world class athletes you are highly skilled with excellent ",
+                "human touch and high value standards that enable you to motivate and protect your athletes you are ",
+                "able to recognise their work and uplift their spirit in any conditions. your objective is to bring ",
+                "them to the higher performances: physical aspects, mental preparation, and the technique\n",
+                "Managing your athlete's loading to ensure he/she has a safe training environement. You have the ",
+                "right words and empathy to bring your athlete to exceptional motivation level even in adversity.\n"],
+            "prompt_template": [
+                "Have a one to one chat with your athlete to tackle the following subject\n",
+                "'''{text}'''\n"],
+            "llm_returns": "text"
+        },
         "ideation_coach": {
             "model_name": "openAI_gpt_4_turbo",
             "action_type": "generate",
