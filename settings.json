@@ -190,7 +190,7 @@
     },
     "actions": {
         "free": {
-            "model_name": "solar_11b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.9,
@@ -200,7 +200,7 @@
             "llm_returns": "text"
         },
         "summarize": {
-            "model_name": "zephyr_b_7b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "chunkable_action": true,
             "model_params": {
@@ -214,7 +214,7 @@
             "llm_returns": "text"
         },
         "search": {
-            "model_name": "zephyr_b_7b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "action_post_function": "search",
             "model_params": {
@@ -229,7 +229,7 @@
             "llm_returns": "text"
         },
         "split": {
-            "model_name": "WizardCoder_33b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.01,
@@ -247,7 +247,7 @@
             "llm_returns": "actions_json"
         },
         "code": {
-            "model_name": "WizardCoder_33b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "code_language": "python",
             "model_params": {
@@ -262,7 +262,7 @@
             "llm_returns": "code_text"               
         },
        "code_quality": {
-            "model_name": "deepseek_coder_inst_6_7b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "code_language": "python",
             "model_params": {
@@ -280,7 +280,7 @@
             "llm_returns": "actions_json"
         },
         "project_requirements": {
-            "model_name": "zephyr_b_7b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "code_language": "python",
             "model_params": {
@@ -306,7 +306,7 @@
             "llm_returns": "requirements_json"
         },
         "team_manager_speach": {
-            "model_name": "openAI_gpt_4_turbo",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.6,
@@ -325,7 +325,7 @@
             "llm_returns": "text"
         },
         "team_manager_121": {
-            "model_name": "openAI_gpt_4_turbo",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.6,
@@ -344,7 +344,7 @@
             "llm_returns": "text"
         },
         "sports_coach": {
-            "model_name": "openAI_gpt_4_turbo",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.6,
@@ -362,7 +362,7 @@
             "llm_returns": "text"
         },
         "ideation_coach": {
-            "model_name": "openAI_gpt_4_turbo",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.6,
@@ -382,7 +382,7 @@
             "llm_returns": "text"
         },
         "Q_and_A": {
-            "model_name": "dolphin_7b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.7,
@@ -392,7 +392,7 @@
             "llm_returns": "text"
         },
         "Q_and_A_generator": {
-            "model_name": "dolphin_7b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.4,
@@ -409,7 +409,7 @@
             "llm_returns": "text"
         },
         "meal_planner": {
-            "model_name": "dolphin_7b",
+            "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.6,
@@ -427,6 +427,41 @@
             "prompt_template": [
                 "Provided meal event need:\n",
                 "'''{text}'''\n"],
+            "llm_returns": "text"
+        },
+        "acoustic_engineer": {
+            "model_name": "Mistral_API_Medium",
+            "action_type": "generate",
+            "model_params": {
+                "temperature": 0.6,
+                "max_new_tokens": 1024 },
+            "prompt_system": [
+                "You are a highly skilled acoustic engineer, you are able to design the best acoustic solution for any ",
+                "space, mastering the acoustic properties of all materials and the best acoustic solutions for any ",
+                "pa, comercial, or industrial space. finding the adequeate solutions for the best acoustic experience ",
+                "for the users of the space. using tools like delay, reverb, and echo to create the best acoustic ",
+                " while minimizing the complexity and cost of the solution. and the simples operation of the system.\n"],
+            "prompt_template": [
+                "Provide a solution to the folowing acoustic subject:\n",
+                "'''{text}'''\n"],
+            "llm_returns": "text"
+        },
+        "Cybersecurity_advisor": {
+            "model_name": "Mistral_API_Medium",
+            "action_type": "generate",
+            "model_params": {
+                "temperature": 0.6,
+                "max_new_tokens": 1024 },
+            "prompt_system": [
+                "You are a highly skilled cybersecurity engineer, you are able to analyse the security of any systems, ",
+                "you are mastering ISO 27001, NIST cybersecurity, the mittre attack matrix and thanks you start by ",
+                "identifying the weaknesses of the system, and provide a full description and detailed explaination ",
+                "to the user of the system \n",
+                "You then propose the best solutions adapt the system to solve the identified weaknesses to protect it ",
+                "from any attack. finding the adequeate solutions for the best security experience for the users of the ",
+                "system. you are able to adapt your speach to users with moderate skills in cybersecurity\n"],
+            "prompt_template": [
+                "Analyse step by step cybersecurity the issue provided by the user: '''{text}'''\n"],
             "llm_returns": "text"
         }
     }
