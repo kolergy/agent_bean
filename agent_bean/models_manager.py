@@ -29,7 +29,7 @@ class ModelsManager():
         self.active_embeddings        = {}
         self.known_models             = {}
         self.openai_params_list       = ["temperature", "max_tokens"]
-        self.mistral_params_list      = ["temperature", "max_tokens"]
+        self.mistral_params_list      = ["temperature", "max_tokens", "top_p", "stream", "safe_prompt", "random_seed",]
         self.transformers_params_list = ["temperature", "max_tokens", "stop", "presence_penalty", "frequency_penalty", "top_p", "top_k", "repetition_penalty", 
                                          "do_sample", "max_new_tokens", "min_length", "min_new_tokens", "early_stopping", "max_time", "num_beams", "num_beam_groups",
                                          "penalty_alpha", "use_cache", "typical_p", "epsilon_cutoff", "eta_cutoff", "diversity_penalty", "repetition_penalty", 

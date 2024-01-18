@@ -104,13 +104,14 @@ def update_ram():
     time_s.append(       time.time() - start_time  )
 
     df         = pd.DataFrame({'time_s': time_s, 'ram_used_Gb': ram_used_Gb, 'v_ram_used_Gb': v_ram_used_Gb})
+    df = df.tail(4998)  # Limit the number of points gradio crashes at 5000
     update_ram = gr.LinePlot(
                         value  = df, 
                         title  = ram_label, 
                         x      = 'time_s', 
                         y      = 'ram_used_Gb', 
                         y_lim  = [0.0, ram_total_Gb], 
-                        height =  250, 
+                        height =  200, 
                         width  = 1000)
 
     return update_ram
@@ -119,13 +120,14 @@ def update_v_ram():
     """ Update the v_ram plot """
     #print(f"update_v_ram() called, elapsed: {time.time() - start_time:6.2f} s. v_ram_used_Gb: {agent.si.get_v_ram_used():6.2f} Gb. v_ram_total_Gb: {agent.si.get_v_ram_total():6.2f} Gb. v_ram_free_Gb: {agent.si.get_v_ram_free():6.2f} Gb.")
     df         = pd.DataFrame({'time_s': time_s, 'ram_used_Gb': ram_used_Gb, 'v_ram_used_Gb': v_ram_used_Gb})  
+    df = df.tail(4998)  # Limit the number of points gradio crashes at 5000
     update_v_ram = gr.LinePlot(
                         value  = df, 
                         title  = v_ram_label, 
                         x      = 'time_s', 
                         y      = 'v_ram_used_Gb',  
                         y_lim  = [0.0, v_ram_total_Gb],
-                        height =  250, 
+                        height =  200, 
                         width  = 1000)
 
     return update_v_ram
@@ -146,8 +148,8 @@ def update_model_name(action_name, model_name):
 with gr.Blocks(title="Agent Bean Interface") as iface:
     gr.Markdown("# Agent Bean Interface  ")
     with gr.Row():
-        action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value=default_action, interactive=True)
-        model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model, interactive=True )
+        action_name      = gr.components.Dropdown(choices=agent.aa.get_available_actions(), label="Action Name", value=default_action, interactive=True )
+        model_name       = gr.components.Dropdown(choices=agent.mm.get_available_models() , label="Model Name" , value=default_model , interactive=True )
         # Link the action_name dropdown to the update_model_name function
         action_name.change(update_action_name, inputs=[action_name], outputs=[model_name])
         model_name.change( update_model_name , inputs=[action_name,model_name])
@@ -159,23 +161,23 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     text_output  = gr.components.Textbox( lines   = 6,  autoscroll = True, label = "Output Text"    )
     
     with gr.Row():
-        actions_list     = gr.components.File(file_count=1, file_types=["json"], value=a_list_file, label = "Actions List File"     )
-        run_list_button  = gr.Button(             variant = 'secondary'           , value = "Run Actions List"  )
+        actions_list     = gr.components.File(file_count=1, file_types=["json"], value = a_list_file, label = "Actions List File" )
+        run_list_button  = gr.Button(         variant    = 'secondary'         , value = "Run Actions List"                       )
 
     with gr.Row():
-        console_output = gr.components.Textbox(interactive=False, label="Console Output", lines=4, autoscroll=True, value="Console will display here...")
+        console_output   = gr.components.Textbox(interactive=False, label="Console Output", lines=4, autoscroll=True, value="Console will display here...")
 
     with gr.Row():
         ram_plt          = gr.components.LinePlot(show_label=False)
         v_ram_plt        = gr.components.LinePlot(show_label=False)
 
-    run_list_button.click( run_list_action, actions_list)
-    run_button.click( run_action, [action_name, action_input], outputs = text_output)
+    run_list_button.click( run_list_action, actions_list                                  )
+    run_button.click(      run_action, [action_name, action_input], outputs = text_output )
 
-    dep_ram      = iface.load(update_ram  , None, ram_plt  , every=1)
-    dep_v_ram    = iface.load(update_v_ram, None, v_ram_plt, every=1)
+    dep_ram      = iface.load(update_ram  , None, ram_plt  , every=1 )
+    dep_v_ram    = iface.load(update_v_ram, None, v_ram_plt, every=1 )
 
-    iface.load(read_logs, None, console_output, every=1)
+    iface.load(read_logs, None, console_output, every=1 )
 
 # Launch the interface
 iface.queue().launch(share=False)

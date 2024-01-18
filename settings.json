@@ -199,32 +199,8 @@
             "prompt_template":["{text}"],
             "llm_returns": "text"
         },
-        "free_OpenAI": {
-            "model_name": "openAI_gpt_4_turbo",
-            "action_type": "generate",
-            "model_params": {
-                "temperature": 0.9,
-                "max_new_tokens": 1024 },
-            "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
-            "prompt_template":["{text}"],
-            "llm_returns": "text"
-        },
         "summarize": {
             "model_name": "zephyr_b_7b",
-            "action_type": "generate",
-            "chunkable_action": true,
-            "model_params": {
-                "temperature": 0.1 },
-            "prompt_system": [
-                "you are the finest summarizer in the world, You manage to condense a text to it's quintessence preserving the informations",
-                " and the style of the original text. You provide a summary where no words are wasted and no information is lost." ],
-            "prompt_template":[
-                "Please provide a summary of the following text enclosed in triple backticks.",
-                "'''{text}''':\n"],
-            "llm_returns": "text"
-        },
-        "summarize_OpenAI": {
-            "model_name": "openAI_gpt_3_5_turbo",
             "action_type": "generate",
             "chunkable_action": true,
             "model_params": {
