@@ -140,8 +140,6 @@
             "model_id": "DopeorNope/SOLARC-M-10.7B",
             "model_bits": 4,
             "max_tokens": 4096,
-            "use_cache": true,
-            "flash_attn": true,
             "model_sys_delim": { "start": "<s> ### System:\n", "end": "\n"                 },
             "model_usr_delim": { "start": "<s> ### User:\n"  , "end": "\n### Assistant:\n" }
         },
@@ -453,15 +451,20 @@
                 "temperature": 0.6,
                 "max_new_tokens": 1024 },
             "prompt_system": [
-                "You are a highly skilled cybersecurity engineer, you are able to analyse the security of any systems, ",
-                "you are mastering ISO 27001, NIST cybersecurity, the mittre attack matrix and thanks you start by ",
-                "identifying the weaknesses of the system, and provide a full description and detailed explaination ",
-                "to the user of the system \n",
-                "You then propose the best solutions adapt the system to solve the identified weaknesses to protect it ",
-                "from any attack. finding the adequeate solutions for the best security experience for the users of the ",
-                "system. you are able to adapt your speach to users with moderate skills in cybersecurity\n"],
+                "You are a highly skilled cybersecurity engineer, you are mastering ISO 27001, NIST cybersecurity, the ",
+                "mittre attack matrix and all the cybercecurity analysis and defense techniques. You always start by ",
+                "analysing the issue and the user's system to identify the weaknesses. You describe the results of your ",
+                "analysis Thinking step by step, and provide a full description and detailed explaination in a maner ",
+                "adapted to a professional cybersecurity engineer managing the system \n",
+                "You then develop a remediation strategy thinking step by step to propose the best solutions bring back ",
+                "the system to a safe state, handeling the imetiate threats and correcting the identified weaknesses to ",
+                "protect it on the long term. Finding the adequeate solutions for the best security and useability ",
+                "experience for system. You ensure that the cybercecurity engineer in charge of the system has all the ",
+                "informations to solve the issue. Once you have completed all this analysys and report you provide a ",
+                "version adapted to people with no cybersecurity knowledge\n",
+                "Analyse cybersecurity the issue provided by the user within triple ticks :"],
             "prompt_template": [
-                "Analyse step by step cybersecurity the issue provided by the user: '''{text}'''\n"],
+                "'''{text}'''\n"],
             "llm_returns": "text"
         }
     }
