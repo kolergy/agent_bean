@@ -20,18 +20,22 @@ The agent Bean is currently capable of the following:
    - **Load**: files from the following format: text, json, PDF 
    - **Search**: Search on the internet for informations. 
 - **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently implemented actions:
-   - **free**: freetext query
-   - **summarize**: generate a summary of the provided text
-   - **search**: perform a search on the net
-   - **split**: split a task executable actions 
-   - **code**: generate code 
-   - **code_quality**: analyse the quality of the code (not yet working well)
-   - **project_requirements**: generate requirements
-   - **team_manager_speach**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
-   - **team_manager_121**: experimental agent to bheave as a team manager, to see how a llm could bheave having a one to one speach.
-   - **ideation_coach**: experimental agent to bheave as an innovation coach
+   - **Free**: freetext query
+   - **Summarize**: generate a summary of the provided text
+   - **Search**: perform a search on the net
+   - **Split**: split a task executable actions 
+   - **Code**: generate code 
+   - **Code_quality**: analyse the quality of the code (not yet working well)
+   - **Project_requirements**: generate requirements
+   - **Team_manager_speach**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
+   - **Team_manager_121**: experimental agent to bheave as a team manager, to see how a llm could bheave having a one to one speach.
+   - **Sports_coach**: Coach to help with the preparation of High level athletes
+   - **Ideation_coach**: experimental agent to bheave as an innovation coach
    - **Q_and_A**: Questions and answers with Arthur who tries to bheaves as a human
    - **Q_and_A_generator**: Generate Questions and answers from the provided text
+   - **Meal_planner**: Plan meals depending of your tastes
+   - **Acoustic_engineer**: agent to help you to solve issues with your acoustic system
+   - **Cybersecurity_engineer**: agent to help you with cybersecurity issues
    
 
 
