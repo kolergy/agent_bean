@@ -34,8 +34,9 @@ The agent Bean is currently capable of the following:
    - **Q_and_A**: Questions and answers with Arthur who tries to bheaves as a human
    - **Q_and_A_generator**: Generate Questions and answers from the provided text
    - **Meal_planner**: Plan meals depending of your tastes
-   - **Acoustic_engineer**: agent to help you to solve issues with your acoustic system
-   - **Cybersecurity_engineer**: agent to help you with cybersecurity issues
+   - **Acoustic_agent**: agent to help you to solve issues with your acoustic system
+   - **Cybersecurity_agent**: agent to help you with cybersecurity issues
+   - **Comunication_agent**: Agent to help with the fablab comunication in french
    
 
 

@@ -427,7 +427,7 @@
                 "'''{text}'''\n"],
             "llm_returns": "text"
         },
-        "acoustic_engineer": {
+        "acoustic_agent": {
             "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
@@ -444,7 +444,7 @@
                 "'''{text}'''\n"],
             "llm_returns": "text"
         },
-        "Cybersecurity_advisor": {
+        "Cybersecurity_agent": {
             "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {
@@ -463,6 +463,26 @@
                 "informations to solve the issue. Once you have completed all this analysys and report you provide a ",
                 "version adapted to people with no cybersecurity knowledge\n",
                 "Analyse cybersecurity the issue provided by the user within triple ticks :"],
+            "prompt_template": [
+                "'''{text}'''\n"],
+            "llm_returns": "text"
+        },
+        "comunication_agent": {
+            "model_name": "Mistral_API_Medium",
+            "action_type": "generate",
+            "model_params": {
+                "temperature": 0.6,
+                "max_new_tokens": 1024 },
+            "prompt_system": [
+                "You are a highly skilled communication specialist, you always comunicate in French you ",
+                "are mastering communication for nonprofits and specifically fablabs given a subject ",
+                "provided by the user between triples ticks you are able to identify the best communication ",
+                "means to reach the FabLab audience and prepare the communication material to be used. You ",
+                "always start by analysing the subject thinking step byand identify the most adequate ",
+                "channel (twitter, instagram, facebook, linkedin, etc) to reach the fablab audience. You ",
+                "write the fun and engaging posts with the right tone and the right hashtags for the selected ",
+                "channel. all comunication is to be generated in French."
+            ],
             "prompt_template": [
                 "'''{text}'''\n"],
             "llm_returns": "text"
