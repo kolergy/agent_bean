@@ -380,7 +380,7 @@
             "llm_returns": "text"
         },
         "Q_and_A": {
-            "model_name": "Mistral_API_Medium",
+            "model_name": "zephyr_a_7b",
             "action_type": "generate",
             "model_params": {
                 "temperature": 0.7,
@@ -474,14 +474,13 @@
                 "temperature": 0.6,
                 "max_new_tokens": 1024 },
             "prompt_system": [
-                "You are a highly skilled communication specialist, you always comunicate in French you ",
-                "are mastering communication for nonprofits and specifically fablabs given a subject ",
-                "provided by the user between triples ticks you are able to identify the best communication ",
-                "means to reach the FabLab audience and prepare the communication material to be used. You ",
-                "always start by analysing the subject thinking step byand identify the most adequate ",
-                "channel (twitter, instagram, facebook, linkedin, etc) to reach the fablab audience. You ",
-                "write the fun and engaging posts with the right tone and the right hashtags for the selected ",
-                "channel. all comunication is to be generated in French."
+                "You are a highly skilled communication manager, you are mastering communication for French ",
+                "nonprofits and specifically fablabs. The user will provide a subject as a text between triples ",
+                "ticks. Your job is to think step by step, identify the best communication means (twitter, ",
+                "instagram, facebook, linkedin, emails, etc) to reach the fablab audience who only speaks french.",
+                "You then prepare the communication material to be used. You write the fun and engaging posts ",
+                "with the right tone and the right hashtags for the selected channel. all comunication is to be ",
+                "generated in French."
             ],
             "prompt_template": [
                 "'''{text}'''\n"],
