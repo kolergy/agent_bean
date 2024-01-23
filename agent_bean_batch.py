@@ -25,7 +25,7 @@ def run_list_action(actions_list):
     a_list_file = FileLoader.load_json_file(a_list_file)
     if a_list_file['json_content'] is not None:
         a_list = a_list_file['json_content'] 
-        print(f"Loaded actions list: {a_list}")
+        print(f"Loaded actions list: {a_list}. Executing each actions sequentially")
         agent.action_list(a_list)
     else:
         print(f"ERROR: Could not load the actions file: {actions_list.name}, no json content")
@@ -35,8 +35,9 @@ res = FileLoader.load_json_file(settings_file)
 if res['json_content'] is not None:
     setup = res['json_content']
     agent = AgentBean(setup)
+    print(f"Settings loading from: {setup} completed")
 else:
     print(f"ERROR: Could not load the settings file: {settings_file}")
 
 
-    run_list_action([a_list_file])
+run_list_action([a_list_file])
