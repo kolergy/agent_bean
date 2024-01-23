@@ -38,8 +38,5 @@ if res['json_content'] is not None:
 else:
     print(f"ERROR: Could not load the settings file: {settings_file}")
 
-actions_list = FileLoader.load_json_file(a_list_file)
-if actions_list['json_content'] is not None:
-    run_list_action(actions_list['json_content'])
-else:
-    print(f"ERROR: Could not load the actions file: {a_list_file}, no json content")
+
+    run_list_action([a_list_file])
