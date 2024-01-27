@@ -10,14 +10,21 @@ class ChatInteraction:
         self.output_text = output_text
         self.user_rating = user_rating
         self.model_id    = model_id
+        self.num_tokens  = None  # Initialize num_tokens as None
 
 
     def update_rating(self, rating):
         self.user_rating = rating
 
 
-    def update_num_tokens(self, num_tokens):
-        self.num_tokens = num_tokens
+    def update_num_tokens(self, text: str, tokenizer):
+        """
+        Update the number of tokens using the model's tokenizer.
+
+        :param text: The text to tokenize.
+        :param tokenizer: The tokenizer instance from the model.
+        """
+        self.num_tokens = len(tokenizer.encode(text))
 
 
 class ChatContent:
@@ -46,9 +53,16 @@ class ChatContent:
         if index < len(self.interactions):
             self.interactions[index].update_rating(rating)
 
-    def update_interaction_num_tokens(self, index, num_tokens):
+    def update_interaction_num_tokens(self, index, text: str, tokenizer):
+        """
+        Update the number of tokens for a specific interaction based on the text and tokenizer.
+
+        :param index: The index of the interaction to update.
+        :param text: The text to tokenize.
+        :param tokenizer: The tokenizer instance from the model.
+        """
         if index < len(self.interactions):
-            self.interactions[index].update_num_tokens(num_tokens)
+            self.interactions[index].update_num_tokens(text, tokenizer)
 
     def clear_interactions(self):
         self.interactions = []
