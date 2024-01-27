@@ -15,6 +15,7 @@ class ChatInteraction:
     def update_rating(self, rating):
         self.user_rating = rating
 
+
     def update_num_tokens(self, num_tokens):
         self.num_tokens = num_tokens
 
