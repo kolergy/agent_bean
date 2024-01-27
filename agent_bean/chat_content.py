@@ -1,30 +1,42 @@
+import uuid
+
+class TextContent:
+
+    def __init__(self, encoder, text:str, tokenised_text=None):
+        self.text           = text
+        self.tokenised_text = tokenised_text
+        self.num_tokens     = len(tokenised_text) if tokenised_text is not None else None
+        self.num_words      = len(text.split())
+        self.encoder        = encoder
+        self.uuid           = uuid.uuid4()
+        if self.tokenised_text is None:
+            self.encode()
+
+    def encode(self) -> None:
+        """
+        Encode the text using the model's tokenizer.
+        """
+        self.tokenised_text = self.encoder(self.text)
+        self.num_tokens     = len(self.tokenised_text)
+
 class ChatInteraction:
     """
     This class represents a single chat interaction, including input, context,
     output, user rating, and number of tokens.
     """
 
-    def __init__(self, model_id:str, input_text:[str], context:[str]=[], output_text:[str]=[],user_rating:int=None):
-        self.input_text  = input_text
-        self.context     = context
-        self.output_text = output_text
-        self.user_rating = user_rating
-        self.model_id    = model_id
-        self.num_tokens  = None  # Initialize num_tokens as None
-
+    def __init__(self, encoder:str, input_text:str, context:[str], output_text:[str]=[],user_rating:int=None):
+        self.encoder          =  encoder
+        self.encoder          =  None
+        self.input_text       =  TextContent(encoder, input_text)
+        self.context          = [TextContent(encoder, c) for c in context]
+        self.output_text      =  TextContent(encoder, output_text)
+        self.user_rating      =  user_rating
+        
 
     def update_rating(self, rating):
         self.user_rating = rating
 
-
-    def update_num_tokens(self, text: str, tokenizer):
-        """
-        Update the number of tokens using the model's tokenizer.
-
-        :param text: The text to tokenize.
-        :param tokenizer: The tokenizer instance from the model.
-        """
-        self.num_tokens = len(tokenizer.encode(text))
 
 
 class ChatContent:
