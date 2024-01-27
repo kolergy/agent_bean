@@ -4,12 +4,13 @@ class ChatInteraction:
     output, user rating, and number of tokens.
     """
 
-    def __init__(self, input_text, context, output_text, user_rating=None, num_tokens=None):
-        self.input_text = input_text
-        self.context = context
+    def __init__(self, model_id:str, input_text:[str], context:[str]=[], output_text:[str]=[],user_rating:int=None):
+        self.input_text  = input_text
+        self.context     = context
         self.output_text = output_text
         self.user_rating = user_rating
-        self.num_tokens = num_tokens
+        self.model_id    = model_id
+
 
     def update_rating(self, rating):
         self.user_rating = rating
