@@ -207,6 +207,19 @@ class ModelsManager():
         else:
             return None
 
+    def get_encoder(self, model_name:str):
+        """Retrieve the encoder for a specified model.
+
+        Args:
+            model_name (str): The name of the model for which to retrieve the encoder.
+
+        Returns:
+            object: The encoder object for the specified model.
+        """
+        if self.model_need(model_name):
+            return self.active_embeddings[model_name]
+        else:
+            return None
 
     def manage_mem_resources(self, model_name:str) -> bool:
         """Check and manage memory resources for a model instantiation.
