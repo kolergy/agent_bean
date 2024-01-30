@@ -11,14 +11,6 @@ Some of the code has been developped with the help of aider: https://github.com/
 
 ## Curent capabilities:
 The agent Bean is currently capable of the following:
-- **Manage models**: 
-   - Manage the models and ability to instantiate / deinstantiate models, 
-   - Each tasks, can have their own model so you can use the best model for each task. 
-   - Ability to use any transformers models, WizardCoder, Llama2, Mistral, dolphin-2.1-mistral-7b
-   - Ability to use OpenAI: GPT-4, gpt-3.5-turbo, gpt-3.5-turbo-16k 
-- **Agents**: have access to the following functions: 
-   - **Load**: files from the following format: text, json, PDF 
-   - **Search**: Search on the internet for informations. 
 - **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently implemented actions:
    - **Free**: free text query
    - **Summarize**: generate a summary of the provided text
@@ -37,19 +29,27 @@ The agent Bean is currently capable of the following:
    - **Acoustic_agent**: agent to help you to solve issues with your acoustic system
    - **Cybersecurity_agent**: agent to help you with cybersecurity issues
    - **Comunication_agent**: Agent to help with the fablab comunication in french
-   
 
+- **Manage models**: 
+   - Manage the models and ability to instantiate / deinstantiate models, 
+   - Each tasks, can have their own model so you can use the best model for each task. 
+   - Ability to use any transformers models, WizardCoder, Llama2, Mistral, dolphin-2.1-mistral-7b
+   - Ability to use OpenAI: GPT-4, gpt-3.5-turbo, gpt-3.5-turbo-16k 
+
+- **Actions**: have access to the following functions: 
+   - **Load**: files from the following format: text, json, PDF 
+   - **Search**: Search on the internet for informations. 
+   
 
 The agent is continuously evolving, with new capabilities being added regularly.
 
 
 ## Current limitations:
-- Using the interface to change the model dose not work yet 
 - When modifying the settings file whlie the model is running, it needs to be re-uploaded for the changes to take effects
 - It is not yet able to write to files
-- Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models!? (they use a different proces for loading that needs to be implemented)
-- Imprecise memory estimation for models
+- Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models! (they use a different proces for loading that needs to be implemented)
 - Tested only on linux up to now but should work on windows and Mac as well
+- no check on contect lenght for now
 
 
 ## Using local generation with transformers models:
@@ -58,23 +58,9 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - You may use a computer with less V RAM for testing purpose with 3B or 1.5B models like deepseek-coder-1.3b-instruct but do not expect usefull results.
 
 
-## Backlog and Work in Progress (WIP):
-- **Improve Model managment** Model memory estimation depending on model quantisation
-- **Encapsulate model input outputs in objects**: this will allow easier text manipulation, parsing, and treatments in a single place 
-- **Refactor update_num_tokens**: Refactor the method to calculate the number of tokens using the model tokenizer.
-- **Ability to perform action on files** to have an actual effect on code
-- **improve transformers loading**: for 8 and 4 bits quantisation with GPTQ and GGML models
-- **Actions backlog**: a backlog of actions to be executed
-- **Ability to execute code in a sealed container**: to provide direct feedback to the agent
-- **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. It can add new elements to the context, clear the context, and manage the context length to ensure it stays within a specified token limit.
-- **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup. And be ablee to load documents in the vector store
-- **Improve code quality verification action**: code quality checker is not yet working well (needs to improve the prompt)
-- **Task looping** ability to loop on repetitive tasks
-- **Classifier action** to classify inputs
-- **Implement LLAVA model** to interact with images/charts 
-
-
 ## Recent improvments:
+- **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. It can add new elements to the context, clear the context, 
+- **Encapsulate model input outputs in objects**: this will allow easier text manipulation, parsing, and treatments in a single place 
 - **Added the console log**: you will have the console log directly in the gradio app so you se what is going on.
 - **Added Mistral API**: you can now use the models from the Mistral API!
 - **Added ideation_coach**: to guide innovators with refining their innovations 
@@ -85,6 +71,22 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - **Make actions more generic** to allow beter variations from congig
 - **Improve Model managment** Removed memory leak and improved model managment
 - **Refactor update_num_tokens**: Updated the method to calculate the number of tokens using the model tokenizer for more accurate token counting.
+
+
+## Backlog and Work in Progress (WIP):
+- **Improve Model managment** Model memory estimation depending on model quantisation
+- **Refactor update_num_tokens**: Refactor the method to calculate the number of tokens using the model tokenizer.
+- **Ability to perform action on files** to have an actual effect on code
+- **improve transformers loading**: GPTQ and GGML models
+- **Actions backlog**: a backlog of actions to be executed
+- **Ability to execute code in a sealed container**: to provide direct feedback to the agent
+- **Improve Context Management**: manage context lenght
+- **Improve Context Management**: clear the system delimiters from the context
+- **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup. And be ablee to load documents in the vector store
+- **Improve code quality verification action**: code quality checker is not yet working well (needs to improve the prompt)
+- **Task looping** ability to loop on repetitive tasks
+- **Classifier action** to classify inputs
+- **Implement LLAVA model** to interact with images/charts 
 
 
 ## Useage:
