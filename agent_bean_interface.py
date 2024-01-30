@@ -99,6 +99,7 @@ def run_action(action_name, action_input):
 def clear_chat():
     """ clear the chat context and the input text box"""
     agent.clear_context()
+    action_input.update("")  # Clear the action input textbox
     
 
 def update_ram():
@@ -180,6 +181,7 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     run_list_button.click( run_list_action, actions_list                                  )
     run_button.click(      run_action, [action_name, action_input], outputs = text_output )
     clear_button.click(    clear_chat, []                         , outputs = []          )
+    clear_button.click(    clear_chat, []                         , outputs = [action_input] )
 
     dep_ram      = iface.load(update_ram  , None, ram_plt  , every=1 )
     dep_v_ram    = iface.load(update_v_ram, None, v_ram_plt, every=1 )
