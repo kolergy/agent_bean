@@ -4,7 +4,6 @@ Agent Bean does not yet have the competencies of 007; it is more at Mr Bean's le
 It has been designed to be able to run local llm models like Llama2 and Mistral, zephyr-7b-beta, Orca-2, WizardCoder, etc... that are available on the huggingface portal in totally private mode with out any API but it can as well be interfaced with the openAI API to be able to run GPT3.4 or GPT4 and the new GPT4 turbo If you want. And just NOW you can use the Models from Mistral API. So you can run the model fully localy if you have the a GPU with enough VRAM or use OpenAI API you can even mix booths if it make sense for you. As you can associate different models to different actions.
 
 It has a memory management system that can instantiate / dinstantiate models dependings on the needs of the task (it is still a bit rough )
-
 It has been designed as a library that can be integrated into projects but there is as well a gradio interface to be able to test it directly.
 
 Some of the code has been developped with the help of aider: https://github.com/paul-gauthier/aider (at the beginning while the code was less than 8k tokens)
@@ -13,11 +12,11 @@ Some of the code has been developped with the help of aider: https://github.com/
 The Agent Bean is currently capable of the following:
 
 - [x] **Action Execution**: Agent Bean can perform various actions. The actions are defined in the settings file and can be easily extended. Currently implemented actions:
-   - **Free**: free text query
-   - **Summarize**: generate a summary of the provided text
-   - **Search**: perform a search on the net
-   - **Split**: split a task executable actions 
-   - **Code**: generate code 
+   - Free text query
+   - Generate a summary of the provided text
+   - Perform a search on the net
+   - Split a task into executable actions 
+   - Generate code 
    - **Code_quality**: analyse the quality of the code (not yet working well)
    - **Project_requirements**: generate requirements
    - **Team_manager_speach**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
@@ -29,7 +28,7 @@ The Agent Bean is currently capable of the following:
    - **Meal_planner**: Plan meals depending of your tastes
    - **Acoustic_agent**: agent to help you to solve issues with your acoustic system
    - **Cybersecurity_agent**: agent to help you with cybersecurity issues
-   - **Comunication_agent**: Agent to help with the fablab comunication in french
+   - **Communication_agent**: Agent to help with the fablab communication in French
 
 - **Manage models**: 
    - Manage the models and ability to instantiate / deinstantiate models, 
@@ -47,7 +46,7 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 ## Current limitations:
 - When modifying the settings file whlie the model is running, it needs to be re-uploaded for the changes to take effects
-- It is not yet able to write to files
+- It is not yet able to write to files.
 - Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models! (they use a different proces for loading that needs to be implemented)
 - Tested only on linux up to now but should work on windows and Mac as well
 - no check on contect lenght for now
@@ -65,7 +64,7 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - **Encapsulate model input outputs in objects**: this will allow easier text manipulation, parsing, and treatments in a single place 
 - **Added the console log**: you will have the console log directly in the gradio app so you se what is going on.
 - **Added Mistral API**: you can now use the models from the Mistral API!
-- **Added ideation_coach**: to guide innovators with refining their innovations 
+- **Added ideation_coach**: to guide innovators with refining their innovations.
 - **Added File loader**: to be able to load text, JSON, or PDF files
 - **Added settings file selection and loading**: to be able to easyly change the settings file
 - **added a team_manager agent**: not totaly related to the rest but it is an experiment 
@@ -75,7 +74,7 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - **Refactor update_num_tokens**: Updated the method to calculate the number of tokens using the model tokenizer for more accurate token counting.
 
 
-## Backlog and Work in Progress (WIP):
+## Backlog and Work in Progress (WIP): 
 
 - [ ] **Improve Model management** Model memory estimation depending on model quantization
 - **Refactor update_num_tokens**: Refactor the method to calculate the number of tokens using the model tokenizer.
@@ -86,7 +85,7 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - **Improve Context Management**: manage context lenght
 - **Improve Context Management**: clear the system delimiters from the context
 - **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup. And be ablee to load documents in the vector store
-- **Improve code quality verification action**: code quality checker is not yet working well (needs to improve the prompt)
+- **Improve code quality verification action**: code quality checker is not yet working well (needs to improve the prompt).
 - **Task looping** ability to loop on repetitive tasks
 - **Classifier action** to classify inputs
 - **Implement LLAVA model** to interact with images/charts 
