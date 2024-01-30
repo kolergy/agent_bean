@@ -163,7 +163,7 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     with gr.Row():
         action_input     = gr.components.Textbox( lines   = 2,  autoscroll = True , label = "Action Input", scale=1   )
         run_button       = gr.Button(             variant = 'primary'             , value = "Run Agent"   , scale=0   )
-        clear_button     = gr.Button(             variant = 'primary'             , value = "clear"       , scale=0   )
+        clear_button     = gr.Button(             variant = 'stop'                , value = "clear"       , scale=0   )
     # Removed the duplicate render() calls
     text_output  = gr.components.Textbox( lines   = 6,  autoscroll = True, label = "Output Text"    )
     
