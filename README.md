@@ -58,40 +58,8 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - You may use a computer with less V RAM for testing purpose with 3B or 1.5B models like deepseek-coder-1.3b-instruct but do not expect usefull results.
 
 
-## Recent improvments:
 
-- [x] **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. It can add new elements to the context, clear the context, 
-- **Encapsulate model input outputs in objects**: this will allow easier text manipulation, parsing, and treatments in a single place 
-- **Added the console log**: you will have the console log directly in the gradio app so you se what is going on.
-- **Added Mistral API**: you can now use the models from the Mistral API!
-- **Added ideation_coach**: to guide innovators with refining their innovations.
-- **Added File loader**: to be able to load text, JSON, or PDF files
-- **Added settings file selection and loading**: to be able to easyly change the settings file
-- **added a team_manager agent**: not totaly related to the rest but it is an experiment 
-- **added requirements**: generate requirements
-- **Make actions more generic** to allow beter variations from congig
-- **Improve Model managment** Removed memory leak and improved model managment
-- **Refactor update_num_tokens**: Updated the method to calculate the number of tokens using the model tokenizer for more accurate token counting.
-
-
-## Backlog and Work in Progress (WIP): 
-
-- [ ] **Improve Model management** Model memory estimation depending on model quantization
-- **Refactor update_num_tokens**: Refactor the method to calculate the number of tokens using the model tokenizer.
-- **Ability to perform action on files** to have an actual effect on code
-- **improve transformers loading**: GPTQ and GGML models
-- **Actions backlog**: a backlog of actions to be executed
-- **Ability to execute code in a sealed container**: to provide direct feedback to the agent
-- **Improve Context Management**: manage context lenght
-- **Improve Context Management**: clear the system delimiters from the context
-- **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup. And be ablee to load documents in the vector store
-- **Improve code quality verification action**: code quality checker is not yet working well (needs to improve the prompt).
-- **Task looping** ability to loop on repetitive tasks
-- **Classifier action** to classify inputs
-- **Implement LLAVA model** to interact with images/charts 
-
-
-## Useage:
+## Set-up:
 
 Clone this repository:
 
@@ -109,11 +77,11 @@ Install the requirements:
 
 `pip install -U -r requirements.txt`
 
-If you intent to use the openAI models you have to rename the template.env file as follows:
+If you intent to use the openAI or Mistral models via their API you have to rename the template.env file as follows:
 
 `cp template.env .env`
 
-Then edit this .env file to insert your openAI API key 
+Then edit this .env file to insert your openAI or Mistral API key 
 
 Once edited you need to set the environement with:
 
@@ -122,3 +90,42 @@ Once edited you need to set the environement with:
 To test the code you can run the interface:
 
 `python agent_bean_interface.py`
+
+
+
+## Recent improvments:
+
+- [x] **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. elements are add to the context as exchanges progresses, clear the context, 
+- [x] **Added batch agent**: run the action list without the interface
+- [x] **Added action list**: ability to run an action list
+- [x] **Encapsulate model input outputs in objects**: this will allow easier text manipulation, parsing, and treatments in a single place 
+- [x] **Added the console log**: you will have the console log directly in the gradio app so you se what is going on.
+- [x] **Added Mistral API**: you can now use the models from the Mistral API!
+- [x] **Added ideation_coach**: to guide innovators with refining their innovations.
+- [x] **Added File loader**: to be able to load text, JSON, or PDF files
+- [x] **Added settings file selection and loading**: to be able to easyly change the settings file
+- [x] **added a team_manager agent**: not totaly related to the rest but it is an experiment 
+- [x] **added requirements**: generate requirements
+- [x] **Make actions more generic** to allow beter variations from congig
+- [x] **Improve Model managment** Removed memory leak and improved model managment
+- [x] **Refactor update_num_tokens**: Updated the method to calculate the number of tokens using the model tokenizer for more accurate token counting.
+
+
+## Backlog and Work in Progress (WIP): 
+
+- [ ] **Display API key availability on interface** to see if mistral or OpenAI API keys are present in env
+- [ ] **Improve Model management** Model memory estimation depending on model quantization
+- [ ] **Refactor update_num_tokens**: Refactor the method to calculate the number of tokens using the model tokenizer.
+- [ ] **Ability to perform action on files** to have an actual effect on code
+- [ ] **improve transformers loading**: GPTQ and GGML models
+- [ ] **Actions backlog**: a backlog of actions to be executed
+- [ ] **Ability to execute code in a sealed container**: to provide direct feedback to the agent
+- [ ] **Improve Context Management**: manage context lenght
+- [ ] **Improve Context Management**: clear the system delimiters from the context
+- [ ] **Model and Vectorstore Instantiation**: Agent Bean can instantiate different models and vectorstores based on the provided setup. And be ablee to load documents in the vector store
+- [ ] **Improve code quality verification action**: code quality checker is not yet working well (needs to improve the prompt).
+- [ ] **Task looping** ability to loop on repetitive tasks
+- [ ] **Classifier action** to classify inputs
+- [ ] **Implement LLAVA model** to interact with images/charts 
+
+
