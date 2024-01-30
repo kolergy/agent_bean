@@ -10,8 +10,9 @@ It has been designed as a library that can be integrated into projects but there
 Some of the code has been developped with the help of aider: https://github.com/paul-gauthier/aider (at the beginning while the code was less than 8k tokens)
 
 ## Curent capabilities:
-The agent Bean is currently capable of the following:
-- **Action Execution**: Agent Bean can perform various actions. The actions are defined in the setings file and can be easily extended. curently implemented actions:
+The Agent Bean is currently capable of the following:
+
+- [x] **Action Execution**: Agent Bean can perform various actions. The actions are defined in the settings file and can be easily extended. Currently implemented actions:
    - **Free**: free text query
    - **Summarize**: generate a summary of the provided text
    - **Search**: perform a search on the net
@@ -59,7 +60,8 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 
 ## Recent improvments:
-- **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. It can add new elements to the context, clear the context, 
+
+- [x] **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. It can add new elements to the context, clear the context, 
 - **Encapsulate model input outputs in objects**: this will allow easier text manipulation, parsing, and treatments in a single place 
 - **Added the console log**: you will have the console log directly in the gradio app so you se what is going on.
 - **Added Mistral API**: you can now use the models from the Mistral API!
@@ -74,7 +76,8 @@ The agent is continuously evolving, with new capabilities being added regularly.
 
 
 ## Backlog and Work in Progress (WIP):
-- **Improve Model managment** Model memory estimation depending on model quantisation
+
+- [ ] **Improve Model management** Model memory estimation depending on model quantization
 - **Refactor update_num_tokens**: Refactor the method to calculate the number of tokens using the model tokenizer.
 - **Ability to perform action on files** to have an actual effect on code
 - **improve transformers loading**: GPTQ and GGML models
