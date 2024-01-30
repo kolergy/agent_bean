@@ -95,6 +95,7 @@ To test the code you can run the interface:
 ## Recent improvments:
 
 - [x] **Context Management**: Agent Bean maintains a context of the conversation, which is used to generate relevant responses. elements are add to the context as exchanges progresses, clear the context, 
+- [x] **Added transformers_local setting**: gives you the possibility to run local only with transformers you have pre-loaded
 - [x] **Added batch agent**: run the action list without the interface
 - [x] **Added action list**: ability to run an action list
 - [x] **Encapsulate model input outputs in objects**: this will allow easier text manipulation, parsing, and treatments in a single place 
