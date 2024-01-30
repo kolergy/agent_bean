@@ -380,7 +380,7 @@
                 "'''{text}'''\n"],
             "llm_returns": "text"
         },
-        "Q_and_A": {
+        "Q_and_A_as_human": {
             "model_name": "zephyr_a_7b",
             "action_type": "generate",
             "model_params": {
@@ -445,7 +445,7 @@
                 "'''{text}'''\n"],
             "llm_returns": "text"
         },
-        "Cybersecurity_agent": {
+        "cybersecurity_agent": {
             "model_name": "Mistral_API_Medium",
             "action_type": "generate",
             "model_params": {

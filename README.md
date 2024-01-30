@@ -11,24 +11,28 @@ Some of the code has been developped with the help of aider: https://github.com/
 ## Curent capabilities:
 The Agent Bean is currently capable of the following:
 
-- [x] **Action Execution**: Agent Bean can perform various actions. The actions are defined in the settings file and can be easily extended. Currently implemented actions:
-   - Free text query
-   - Generate a summary of the provided text
-   - Perform a search on the net
-   - Split a task into executable actions 
-   - Generate code 
-   - **Code_quality**: analyse the quality of the code (not yet working well)
-   - **Project_requirements**: generate requirements
-   - **Team_manager_speach**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
-   - **Team_manager_121**: experimental agent to bheave as a team manager, to see how a llm could bheave having a one to one speach.
-   - **Sports_coach**: Coach to help with the preparation of High level athletes
-   - **Ideation_coach**: experimental agent to behave as an innovation coach
-   - **Q_and_A**: Questions and answers with Arthur who tries to bheaves as a human
+- **Action Execution**: Agent Bean can perform various actions. The actions are defined in the settings file and can be easily extended. Currently implemented actions:
+   - **free**: Free text query
+   - **summarize**: Generate a summary of the provided text
+   - **search**: Perform a search on the net
+   - **split**: Split a task into executable actions 
+   - **code**: Generate code 
+   - **code_quality**: analyse the quality of the code (not yet working well)
+   - **project_requirements**: generate requirements
+   - **team_manager_speach**: experimental agent to bheave as a team manager, to see how a llm could bheave writing speaches for a team manager.
+   - **team_manager_121**: experimental agent to bheave as a team manager, to see how a llm could bheave having a one to one speach.
+   - **sports_coach**: Coach to help with the preparation of High level athletes
+   - **ideation_coach**: experimental agent to behave as an innovation coach
+   - **Q_and_A_as_human**: Questions and answers with Arthur who tries to bheaves as a human
    - **Q_and_A_generator**: Generate Questions and answers from the provided text
-   - **Meal_planner**: Plan meals depending of your tastes
-   - **Acoustic_agent**: agent to help you to solve issues with your acoustic system
-   - **Cybersecurity_agent**: agent to help you with cybersecurity issues
-   - **Communication_agent**: Agent to help with the fablab communication in French
+   - **meal_planner**: Plan meals depending of your tastes
+   - **acoustic_agent**: agent to help you to solve issues with your acoustic system
+   - **cybersecurity_agent**: agent to help you with cybersecurity issues
+   - **comunication_agent**: Agent to help with the fablab communication in French
+
+- **Actions**: have access to the following functions: 
+   - **Load**: files from the following format: text, json, PDF 
+   - **Search**: Search on the internet for informations. 
 
 - **Manage models**: 
    - Manage the models and ability to instantiate / deinstantiate models, 
@@ -36,27 +40,22 @@ The Agent Bean is currently capable of the following:
    - Ability to use any transformers models, WizardCoder, Llama2, Mistral, dolphin-2.1-mistral-7b
    - Ability to use OpenAI: GPT-4, gpt-3.5-turbo, gpt-3.5-turbo-16k 
 
-- **Actions**: have access to the following functions: 
-   - **Load**: files from the following format: text, json, PDF 
-   - **Search**: Search on the internet for informations. 
    
-
 The agent is continuously evolving, with new capabilities being added regularly.
 
 
 ## Current limitations:
-- When modifying the settings file whlie the model is running, it needs to be re-uploaded for the changes to take effects
+- No check on contect lenght for now
 - It is not yet able to write to files.
 - Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models! (they use a different proces for loading that needs to be implemented)
+- When modifying the settings file whlie the model is running, it needs to be re-uploaded for the changes to take effects
 - Tested only on linux up to now but should work on windows and Mac as well
-- no check on contect lenght for now
 
 
 ## Using local generation with transformers models:
 - You need at least 16GB of video RAM to run 15B models in 4bits to be able to have correct coding and splitting result
 - With 8GB V RAM you can run the 7B models in 4Bits there you need to select the realy best ones like 'deepseek-coder-6.7b-instruct' as codding is demanding
 - You may use a computer with less V RAM for testing purpose with 3B or 1.5B models like deepseek-coder-1.3b-instruct but do not expect usefull results.
-
 
 
 ## Set-up:
