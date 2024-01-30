@@ -99,7 +99,7 @@ def run_action(action_name, action_input):
 def clear_chat():
     """ clear the chat context and the input text box"""
     agent.clear_context()
-    action_input.update("")  # Clear the action input textbox
+    action_input.value = ""  # Clear the action input textbox
     
 
 def update_ram():
