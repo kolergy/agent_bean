@@ -114,6 +114,7 @@ To test the code you can run the interface:
 ## Backlog and Work in Progress (WIP): 
 
 - [ ] **Display API key availability on interface** to see if mistral or OpenAI API keys are present in env
+- [ ] **Cleanely handle the inability to run/load a model**: just throw exception for now
 - [ ] **Improve Model management** Model memory estimation depending on model quantization
 - [ ] **Refactor update_num_tokens**: Refactor the method to calculate the number of tokens using the model tokenizer.
 - [ ] **Ability to perform action on files** to have an actual effect on code
