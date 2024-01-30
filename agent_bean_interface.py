@@ -96,6 +96,11 @@ def run_action(action_name, action_input):
     return output
 
 
+def clear_chat():
+    """ clear the chat context and the input text box"""
+    agent.clear_context()
+    
+
 def update_ram():
     """ Update the ram plot """
     #print(f"update_ram() called, elapsed: {time.time() - start_time:6.2f} s. ram_used_Gb: {agent.si.get_ram_used():6.2f} Gb.")
@@ -157,6 +162,7 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
     with gr.Row():
         action_input     = gr.components.Textbox( lines   = 2,  autoscroll = True , label = "Action Input", scale=1   )
         run_button       = gr.Button(             variant = 'primary'             , value = "Run Agent"   , scale=0   )
+        clear_button     = gr.Button(             variant = 'primary'             , value = "clear"       , scale=0   )
     # Removed the duplicate render() calls
     text_output  = gr.components.Textbox( lines   = 6,  autoscroll = True, label = "Output Text"    )
     
@@ -173,6 +179,7 @@ with gr.Blocks(title="Agent Bean Interface") as iface:
 
     run_list_button.click( run_list_action, actions_list                                  )
     run_button.click(      run_action, [action_name, action_input], outputs = text_output )
+    clear_button.click(    clear_chat, []                         , outputs = []          )
 
     dep_ram      = iface.load(update_ram  , None, ram_plt  , every=1 )
     dep_v_ram    = iface.load(update_v_ram, None, v_ram_plt, every=1 )

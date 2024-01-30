@@ -9,7 +9,7 @@ from   agent_bean.system_info  import SystemInfo
 
 class TransformersEmbeddings:
     """This class wraps the HuggingFace transformers tokenizers to be uses like langchain's OpenAIEmbeddings"""
-    def __init__(self, tokenizer: transformers.PreTrainedTokenizer) -> None:
+    def __init__(self, tokenizer: transformers.PreTrainedTokenizer, local_files_only=False) -> None:
         self.tokenizer = tokenizer
 
     def __call__(self, text: str) -> torch.Tensor:
@@ -126,6 +126,12 @@ class TfModel:
             if 'max_tokens' in self.setup['models_list'][model_name]:
                 self.max_new_tokens = self.setup['models_list'][model_name]['max_tokens'] * 0.7
 
+            if self.setup['transformers_local']:
+                local                                 = self.setup['transformers_local']
+                pretrained_kwargs['local_files_only'] = local
+            else:
+                local                                 = False
+
             if self.GPU_brand == 'NVIDIA':
                 self.compute_dtype    = torch.bfloat16
             else:
@@ -174,6 +180,7 @@ class TfModel:
             self.tokenizer = transformers.AutoTokenizer.from_pretrained(
                 self.model_id,
                 trust_remote_code   = self.trust_remote_code,
+                local_files_only    = local,
             )
 
             self.embeddings        = TransformersEmbeddings(self.tokenizer)

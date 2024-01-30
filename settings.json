@@ -4,6 +4,7 @@
     "reload_models": false,
     "db_file_name": "agent_bean_db",
     "known_models_file_name": "known_models.json",
+    "transformers_local": "true",
     "models_list": {
         "glaive-coder_7b": {
             "model_type": "transformers",

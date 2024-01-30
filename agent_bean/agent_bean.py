@@ -42,6 +42,9 @@ class AgentBean:
     self.mm.setup_update(setup)
     self.aa.setup_update(setup)
 
+  def clear_context(self) -> None:
+    """clear the context"""
+    self.chat_content = ChatContent(self.mm)
 
   def agent_action(self, action_name: str, inputs: list) -> str:
     """Execute a given action and store the inputs and outputs in the db"""
