@@ -50,6 +50,7 @@ The agent is continuously evolving, with new capabilities being added regularly.
 - Load on 4 or 8 bit loading works except for GPTQ or GGML quantized models! (they use a different proces for loading that needs to be implemented)
 - When modifying the settings file whlie the model is running, it needs to be re-uploaded for the changes to take effects
 - Tested only on linux up to now but should work on windows and Mac as well
+- Summarization seems broken since the addition of context
 
 
 ## Using local generation with transformers models:
