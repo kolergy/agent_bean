@@ -415,6 +415,24 @@
                 "'''{text}'''\n"],
             "llm_returns": "text"
         },
+        "extract_mention_physical_phenomenas": {
+            "model_name": "Mistral_API_Medium",
+            "action_type": "generate",
+            "model_params": {
+                "temperature": 0.4,
+                "max_new_tokens": 1024 },
+            "prompt_system": [
+                "Analyse the provided text in triple quote and identify the physical phenomenas to which the provided scientific text contains mentions. ",
+                "you answer shall only consists as a json per identified physical phenomena with the folowing keys:\n",
+                "'rationale': your step by step thinking to identify the physical phenomena and the position of the mention in the provided text",
+                "'phenomena': the identified phenomena including suficient context from the provided text to be able to identify and understand ",
+                "the phenomenawithout ambiguities.",
+                "'mention': the mention of the physical phenomenas in the original text as a copy paste from the provided text\n"],
+            "prompt_template": [
+                "Provided text:\n",
+                "'''{text}'''\n"],
+            "llm_returns": "text"
+        },
         "meal_planner": {
             "model_name": "Mistral_API_Medium",
             "action_type": "generate",
