@@ -132,9 +132,17 @@
             "model_bits": 4,
             "max_tokens": 2048,
             "trust_remote_code": true,
-            "flash_attn": true,
             "model_sys_delim": { "start": "system: "  , "end": "\n"        },
             "model_usr_delim": { "start": "Instruct: ", "end": "\nOutput:" }
+        },
+        "aanaphi_2_3b": {
+            "model_type": "transformers",
+            "model_id": "mobiuslabsgmbh/aanaphi2-v0.1",
+            "model_bits": 4,
+            "max_tokens": 2048,
+            "trust_remote_code": true,
+            "model_sys_delim": { "start": "### system: ", "end": "\n"                },
+            "model_usr_delim": { "start": "### Human: " , "end": "\n### Assistant: " }
         },
         "solar_11b": {
             "model_type": "transformers",
@@ -204,6 +212,19 @@
                 "max_new_tokens": 1024 },
             "prompt_system": ["please use your best skills to perform the actions or demands requested by the usser"],
             "prompt_template":["{text}"],
+            "llm_returns": "text"
+        },
+        "prompt_generator": {
+            "model_name": "Mistral_API_Medium",
+            "action_type": "generate",
+            "model_params": {
+                "temperature": 0.9,
+                "max_new_tokens": 1024 },
+            "prompt_system": [
+                "A text will be provided between triple ticks by the user. Analyse it as an experienced prompt ",
+                "engineer thinking step by step, and generate a prompt that will allow to perform the action or ",
+                "demand requested by the user."],
+            "prompt_template":["'''{text}'''"],
             "llm_returns": "text"
         },
         "summarize": {
@@ -346,7 +367,7 @@
                 "Your strategic thinking enables you to planify the tasks to be performed in order to achieve",
                 " the project objectives in time.\n"],
             "prompt_template": [
-                "Have a one to one chat wit one of your tem memer to tackle the following subject\n",
+                "Have a one to one chat with one of your tem memer to tackle the following subject\n",
                 "'''{text}'''\n"],
             "llm_returns": "text"
         },
