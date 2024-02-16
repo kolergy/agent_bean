@@ -1,6 +1,8 @@
 
 import os
 import sys
+from agent_bean.google_vertexai_model import VertexAIModel, VertexAIEmbeddings
+
 import gc
 import json
 import torch
@@ -472,6 +474,11 @@ class ModelsManager():
             Mistral_api_key                    = os.getenv('MISTRAL_API_KEY')
             self.active_models[model_name]     = MistralModel(self.setup, self.si,Mistral_api_key=Mistral_api_key, model_name=model_id)
             self.active_embeddings[model_name] = MistralEmbeddings(Mistral_api_key=Mistral_api_key, model_name= "mistral-embed")
+        elif self.setup['models_list'][model_name]['model_type'] == "vertexai_api":
+            VertexAI_project_id                = os.getenv('VERTEXAI_PROJECT_ID')
+            VertexAI_location                  = os.getenv('VERTEXAI_LOCATION')
+            self.active_models[model_name]     = VertexAIModel(project_id=VertexAI_project_id, location=VertexAI_location, model_id=model_id)
+            self.active_embeddings[model_name] = VertexAIEmbeddings(project_id=VertexAI_project_id, location=VertexAI_location, model_id=model_id)
 
         elif self.setup['models_list'][model_name]['model_type'] == "transformers":
             self.active_models[model_name]     = TfModel(self.setup, self.si, model_name)
