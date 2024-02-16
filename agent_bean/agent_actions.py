@@ -152,19 +152,16 @@ class AgentAction():
             
             resp           = self.mm.predict(model_name, prompt).copy()
 
-            if chunkable_action:              # If the action is chunkable, 
-                resps.append(resp[-1])        # we need to keep adding chunks to the response  
-                if len(input_tokens) == 0:
-                    break                     # until we reach the end of the input tokens
+            # Removed incorrect break statements and adjusted logic for handling chunkable actions
+            if chunkable_action:
+                resps.append(resp)  # Append the response for chunkable action
+            # No need for a break statement here as the loop logic was previously removed
 
-            else:                             # If the action is not chunkable, no need to loop
-                break
-
+        # Adjusted handling for chunkable actions and post function call
         if chunkable_action:
             resp = ' '.join(resps)  # Concatenate the chunks to form the final response
-
         if action_post_function is not None:
-            resp = self.perform_function(action_post_function, resp[-1])
+            resp = self.perform_function(action_post_function, resp)
 
         output_type = action_params.get('output_type', 'text')
         if output_type == 'text':
