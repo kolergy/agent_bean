@@ -144,6 +144,16 @@
             "model_sys_delim": { "start": "### system: ", "end": "\n"                },
             "model_usr_delim": { "start": "### Human: " , "end": "\n### Assistant: " }
         },
+        "prometheus_7b": {
+            "model_type": "transformers",
+            "model_id": "AiMavenAi/AiMaven-Prometheus",
+            "model_bits": 4,
+            "max_tokens": 32768,
+            "trust_remote_code": true,
+            "flash_attn": true,
+            "model_sys_delim": { "start": "system: "  , "end": "\n"        },
+            "model_usr_delim": { "start": "user", "end": "\nOutput:" }
+        },
         "solar_11b": {
             "model_type": "transformers",
             "model_id": "DopeorNope/SOLARC-M-10.7B",
