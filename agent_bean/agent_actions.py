@@ -98,17 +98,39 @@ class AgentAction():
             
         special_tokens   = self.get_special_tokens(model_name)
         max_tokens       = int(action_params.get('max_token_ratio', 0.7) * self.setup['models_list'][model_name]['max_tokens'])
-        input_tokens     = self.mm.get_embeddings(model_name, inputs[0])
+        # Assuming get_embeddings should return a list of embeddings for the entire input text, not character by character
+        # Adjusting to ensure it processes the full input text as a single string
+        input_text       = inputs[0]
+        input_tokens     = self.mm.get_embeddings(model_name, input_text)
         resps            = []
         chunkable_action = action_params.get('chunkable_action', False)
         if len(input_tokens) > max_tokens and not chunkable_action:
             raise ValueError(f"AgentAction ERROR: input text too long for model {model_name}")
         
-        while True:
-            token_index    = min(len(input_tokens), max_tokens)
-            chunk          = input_tokens[0:token_index].copy()       # Copy the chunk of tokens to avoid modifying the input tokens
-            input_tokens   = input_tokens[token_index: ]              # Remove the chunk from the input tokens
-            chunk_text     = str(self.mm.decode(model_name, chunk))
+        # Removed the loop that processes the input text character by character
+        # Assuming the entire input text is now correctly processed as a single string
+        # This change assumes that get_embeddings and the subsequent processing can handle the full input text appropriately
+        chunk_text       = input_text
+
+        prompt           = special_tokens['model_sys_delim']['start'] 
+        prompt          += ''.join(action_params['prompt_system']).format(code_language=code_language) 
+        prompt          += special_tokens['model_sys_delim']['end']
+        prompt          += special_tokens['model_usr_delim']['start'] 
+        prompt          += ''.join(action_params['prompt_template']).format(text=chunk_text, code_language=code_language) 
+        prompt          += special_tokens['model_usr_delim']['end']
+
+        self.mm.set_model_params(model_name, params=action_model_params)
+
+        resp             = self.mm.predict(model_name, prompt).copy()
+
+        if action_post_function is not None:
+            resp = self.perform_function(action_post_function, resp)
+
+        output_type = action_params.get('output_type', 'text')
+        if output_type == 'text':
+            return resp
+
+        # Additional handling for different output types (code_text, actions_json) can be added here as needed
 
             prompt         = special_tokens['model_sys_delim']['start'] 
             prompt        += ''.join(action_params['prompt_system']).format(code_language=code_language) 
