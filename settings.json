@@ -178,13 +178,6 @@
             "model_sys_delim": { "start": "<|system|>\n", "end": "</s>\n"        },
             "model_usr_delim": { "start": "<|user|>\n"  , "end": "</s>\n"        }
         },
-        "vertexai_gemini_1_0_pro": {
-            "model_type": "vertexai_api",
-            "model_id": "google/gemini-1.0-pro",
-            "max_tokens": 4096,
-            "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
-            "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
-        },
         "openAI_gpt_4_turbo": {
             "model_type": "openAI",
             "model_id": "gpt-4-1106-preview",
