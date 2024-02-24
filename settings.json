@@ -118,6 +118,14 @@
             "model_sys_delim": { "start": "### System:\n", "end": "\n"        },
             "model_usr_delim": { "start": "### User:\n"  , "end": "\n"        }
         },
+        "gemma_7b": {
+            "model_type": "transformers",
+            "model_id": "alpindale/gemma-7b",
+            "model_bits": 8,
+            "max_tokens": 32768,
+            "model_sys_delim": { "start": "### System:\n", "end": "\n"        },
+            "model_usr_delim": { "start": "### User:\n"  , "end": "\n"        }
+        },
         "orca_2_13b": {
             "model_type": "transformers",
             "model_id": "microsoft/Orca-2-13b",
@@ -202,6 +210,13 @@
         "Mistral_API_Medium": {
             "model_type": "Mistral_API",
             "model_id": "mistral-medium",
+            "max_tokens": 16000,
+            "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
+            "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
+        },
+        "Mistral_API_Next": {
+            "model_type": "Mistral_API",
+            "model_id": "mistral-next",
             "max_tokens": 16000,
             "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
             "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
