@@ -469,6 +469,9 @@ class ModelsManager():
             OAI_api_key                        = os.getenv('OPENAI_API_KEY')
             self.active_models[model_name]     = ChatOpenAI(openai_api_key=OAI_api_key, model_name=model_id)
             self.active_embeddings[model_name] = tiktoken.encoding_for_model(model_id)
+        elif self.setup['models_list'][model_name]['model_type'] == "ollama":
+            self.active_models[model_name]     = OllamaModel(self.setup, self.si, model_name=model_id)
+            self.active_embeddings[model_name] = OllamaEmbeddings(self.active_models[model_name].tokenizer)
 
         if self.setup['models_list'][model_name]['model_type'] == "Mistral_API":
             Mistral_api_key                    = os.getenv('MISTRAL_API_KEY')
@@ -483,6 +486,11 @@ class ModelsManager():
         elif self.setup['models_list'][model_name]['model_type'] == "transformers":
             self.active_models[model_name]     = TfModel(self.setup, self.si, model_name)
             self.active_embeddings[model_name] = TransformersEmbeddings(self.active_models[model_name].tokenizer)
+        #elif self.setup['models_list'][model_name]['model_type'] == "vertexai_api":
+        #    VertexAI_project_id                = os.getenv('VERTEXAI_PROJECT_ID')
+        #    VertexAI_location                  = os.getenv('VERTEXAI_LOCATION')
+        #    self.active_models[model_name]     = VertexAIModel(project_id=VertexAI_project_id, location=VertexAI_location, model_id=model_id)
+        #    self.active_embeddings[model_name] = VertexAIEmbeddings(project_id=VertexAI_project_id, location=VertexAI_location, model_id=model_id)#
 
     
 
