@@ -27,3 +27,4 @@ tinydb
 einops
 mistralai
 vertexai
+ollama

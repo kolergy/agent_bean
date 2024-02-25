@@ -3,32 +3,32 @@ import ollama
 from typing import List
 from agent_bean.system_info import SystemInfo
 
-class OllamaEmbeddings:
-    """This class wraps the Ollama tokenizer to be used like embeddings"""
-    def __init__(self, tokenizer: ollama.OllamaTokenizer) -> None:
-        self.tokenizer = tokenizer
+#class OllamaEmbeddings:
+#    """This class wraps the Ollama tokenizer to be used like embeddings"""
+#    def __init__(self, tokenizer: ollama.OllamaTokenizer) -> None:
+#        self.tokenizer = tokenizer
 
-    def encode(self, text: str) -> List[int]:
-        """Return the token IDs for the text"""
-        return self.tokenizer.encode(text)
+#    def encode(self, text: str) -> List[int]:
+#        """Return the token IDs for the text"""
+#        return self.tokenizer.encode(text)
 
-    def decode(self, tokens: List[int]) -> str:
-        """Return the text for the token IDs"""
-        return self.tokenizer.decode(tokens)
+#    def decode(self, tokens: List[int]) -> str:
+#        """Return the text for the token IDs"""
+#        return self.tokenizer.decode(tokens)
 
-    def free(self) -> None:
-        """Free the memory used by the tokenizer"""
-        self.tokenizer = None
+#    def free(self) -> None:
+#        """Free the memory used by the tokenizer"""
+#        self.tokenizer = None
 
 class OllamaModel:
     """This class wraps the Ollama model for generating predictions"""
     def __init__(self, setup: dict, system_info: SystemInfo, model_name: str) -> None:
-        self.setup = setup
+        self.setup       = setup
         self.system_info = system_info
-        self.model_name = model_name
-        self.model = None
-        self.tokenizer = None
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.model_name  = model_name
+        self.model       = None
+        self.tokenizer   = None
+        self.device      = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.instantiate_model()
 
     def instantiate_model(self) -> None:

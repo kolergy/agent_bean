@@ -8,9 +8,9 @@ import torch
 import tiktoken
 
 from   langchain_community.chat_models   import ChatOpenAI
-#from   langchain.embeddings.openai       import OpenAIEmbeddings
 from   agent_bean.system_info            import SystemInfo
-from   agent_bean.transformers_model     import TfModel, TransformersEmbeddings
+from   agent_bean.transformers_model     import TfModel     , TransformersEmbeddings
+from   agent_bean.ollama_model           import OllamaModel #, OllamaEmbeddings
 from   agent_bean.mistral_model          import MistralModel, MistralEmbeddings
 from   transformers                      import GenerationConfig
 #from agent_bean.google_vertexai_model import VertexAIModel, VertexAIEmbeddings
