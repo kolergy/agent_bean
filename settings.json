@@ -214,9 +214,9 @@
             "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
             "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
         },
-        "Mistral_API_Next": {
+        "Mistral_API_large": {
             "model_type": "Mistral_API",
-            "model_id": "mistral-next",
+            "model_id": "mistral-large",
             "max_tokens": 16000,
             "model_sys_delim": { "start": "System Instructions:\n", "end": "\n"          },
             "model_usr_delim": { "start": "User Instructions"     , "end": "\nResponse:" }
