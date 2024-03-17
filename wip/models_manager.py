@@ -355,6 +355,112 @@ class ModelsManager():
                 print(f"No active model -> model to deinstantiate")
             return False
 
+
+
+    def __models_knap_sack__(self, avail_mem_gb:float, models_mem_gb:[float],  models_value:[float], models_names:[str], n) -> (float, [str]):
+        """Apply the Knapsack algorithm to determine the best models to keep in memory.
+
+        This method uses the Knapsack algorithm to select a subset of models that
+        optimizes the use of available memory while maximizing the value of the
+        selected models.
+
+        Args:
+            avail_mem_gb (float): The available memory in GB.
+            models_mem_gb ([float]): A list of memory requirements for each model in GB.
+            models_value ([float]): A list of values for each model.
+            models_names ([str]): A list of model names.
+            n (int): The number of models to consider.
+
+        Returns:
+            tuple: A tuple containing the total value of the selected models and
+                   a list of model names to keep in memory.
+        """
+        if n == 0 or avail_mem_gb == 0:   # Base Case
+            return 0, []
+    
+        # If weight of the nth item is more than Knapsack of capacity avail_mem_gb,
+        # then this item cannot be included in the optimal solution
+        if (models_mem_gb[n-1] > avail_mem_gb):
+            return self.__models_knap_sack__(avail_mem_gb, models_mem_gb, models_value, models_names, n-1)
+    
+        # return the maximum of two cases: (1) nth item included
+        v1, keep_models_1 = self.__models_knap_sack__(avail_mem_gb-models_mem_gb[n-1], models_mem_gb, models_value, models_names, n-1)
+        v1               += models_value[n-1]
+        keep_models_1     = [models_names[n-1]] + keep_models_1
+        
+        # (2) not included
+        v2, keep_models_2 = self.__models_knap_sack__(avail_mem_gb, models_mem_gb, models_value, models_names, n-1)
+        
+        return (v1, keep_models_1) if v1 >= v2 else (v2, keep_models_2)
+        
+
+
+
+    def test_models_resources_reqs(self) -> None:
+        """Test the memory resource requirements of models and update the known_models dictionary.
+
+        This method iterates through the models listed in the setup configuration and
+        tests their memory usage. It updates the known_models dictionary with the
+        memory requirements for each model.
+
+        Note: This method should be used with caution as it may instantiate and
+        de-instantiate models, which can be resource-intensive.
+        """
+        if self.debug:
+            print(f"Testing models memory ressources requirements")
+            self.si.print_GPU_info()
+        for model_name in self.setup["models_list"].keys():
+            k_model_id = TfModel.keyify_model_id(self.setup['models_list'][model_name]['model_id'])
+            print(f"Testing model {model_name}, k_model id: {k_model_id}")
+            if k_model_id not in self.known_models.keys():
+                self.known_models[k_model_id]             = {}
+                #self.known_models[model_name]["model_id"] = self.setup["models_list"][model_name]["model_id"]
+                if self.debug:
+                    print(f"Model {k_model_id}: is not yet known Testing model memory ressources requirements")
+                    self.si.print_GPU_info()
+                    
+                if self.setup["models_list"][model_name]["model_type"] == "transformers":
+                    #ram_b4   = self.si.get_ram_free()
+                    #v_ram_b4 = self.si.get_v_ram_free()
+                    self.instantiate_model(model_name)
+
+                    mem_use_Gb     = float(self.active_models[model_name].model.get_memory_footprint(return_buffers=True))/1024/1024/1024
+                    model_ongpu    = False if self.active_models[model_name].model.device.type == "cpu" else True
+                    #delta_ram_gb   = max(0, ram_b4   - self.si.get_ram_free()  ) # min value is 0
+                    #delta_v_ram_gb = max(0, v_ram_b4 - self.si.get_v_ram_free()) # to avoid noise on the unused ram
+                    if model_ongpu:
+                        self.known_models[k_model_id]["GPU_ram_gb"   ] = mem_use_Gb
+                        self.known_models[k_model_id]["system_ram_gb"] = 0.0
+                    else:
+                        self.known_models[k_model_id]["GPU_ram_gb"   ] = 0.0
+                        self.known_models[k_model_id]["system_ram_gb"] = mem_use_Gb
+                    
+                    if self.debug:
+                        #print(f"Model {model_name} instantiated using: {delta_ram_gb:6.2} Gb of system RAM and: {delta_v_ram_gb:6.2} Gb of V RAM on the GPU, model on GPU:{model_ongpu} , memory use: {mem_use_Gb:6.2} Gb")
+                        self.si.print_GPU_info()
+
+                elif self.setup["models_list"][model_name]["model_type"] == "openAI":
+                    self.known_models[k_model_id]["system_ram_gb"] = 0.0
+                    self.known_models[k_model_id]["GPU_ram_gb"   ] = 0.0
+
+                elif self.setup["models_list"][model_name]["model_type"] == "Mistral_API":
+                    self.known_models[k_model_id]["system_ram_gb"] = 0.0
+                    self.known_models[k_model_id]["GPU_ram_gb"   ] = 0.0
+
+                else:
+                    print(f"ERROR: Unknown model type: {self.setup['models_list'][model_name]['model_type']}")
+
+                with open(self.setup["known_models_file_name"], 'w') as f:  # store the known models dict to a file to avoid doing it again
+                        json.dump(self.known_models, f, indent=4)
+                        print(f"Model {k_model_id} added to known_models")
+
+                self.deinstantiate_model(model_name)
+
+        if self.debug:
+            print(f"Models memory ressources requirements test complete")
+            self.si.print_GPU_info()
+
+
     def instantiate_model(self, model_name:str) -> None:
         """instantiate the model defined in the set-up by adding it to the active model list and creating the corresponding embeddings"""
         model_id   = self.setup['models_list'][model_name]['model_id']
