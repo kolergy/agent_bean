@@ -33,9 +33,9 @@ class Logger:
     def flush(self):
         self.terminal.flush()
         self.log.flush()
-        
+
     def isatty(self):
-        return False 
+        return False
     
 sys.stdout = Logger("output.log")
 sys.stderr = Logger("output.log")
@@ -109,8 +109,8 @@ def update_ram():
     v_ram_used_Gb.append(agent.si.get_v_ram_used() )
     time_s.append(       time.time() - start_time  )
 
-    df         = pd.DataFrame({'time_s': time_s, 'ram_used_Gb': ram_used_Gb, 'v_ram_used_Gb': v_ram_used_Gb})
-    df = df.tail(4998)  # Limit the number of points gradio crashes at 5000
+    df = pd.DataFrame({'time_s': time_s, 'ram_used_Gb': ram_used_Gb})
+    df = df.tail(4999)  # Limit the number of points gradio crashes at 5000
     update_ram = gr.LinePlot(
                         value  = df, 
                         title  = ram_label, 
@@ -125,8 +125,8 @@ def update_ram():
 def update_v_ram():
     """ Update the v_ram plot """
     #print(f"update_v_ram() called, elapsed: {time.time() - start_time:6.2f} s. v_ram_used_Gb: {agent.si.get_v_ram_used():6.2f} Gb. v_ram_total_Gb: {agent.si.get_v_ram_total():6.2f} Gb. v_ram_free_Gb: {agent.si.get_v_ram_free():6.2f} Gb.")
-    df         = pd.DataFrame({'time_s': time_s, 'ram_used_Gb': ram_used_Gb, 'v_ram_used_Gb': v_ram_used_Gb})  
-    df = df.tail(4998)  # Limit the number of points gradio crashes at 5000
+    df         = pd.DataFrame({'time_s': time_s, 'v_ram_used_Gb': v_ram_used_Gb})  
+    df = df.tail(4999)  # Limit the number of points gradio crashes at 5000
     update_v_ram = gr.LinePlot(
                         value  = df, 
                         title  = v_ram_label, 

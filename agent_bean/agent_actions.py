@@ -67,7 +67,7 @@ class AgentAction():
         return self.functions_str_list
     
 
-    def get_special_tokens(self, model_name:str) -> [dict]:
+    def get_special_tokens(self, model_name:str) -> Dict:
         """get the special tokens used by the model"""
         keys = ["model_sys_delim", "model_usr_delim"]
         out  = {k:self.setup['models_list'][model_name][k] for k in keys  }

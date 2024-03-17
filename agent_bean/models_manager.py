@@ -7,10 +7,11 @@ import json
 import torch
 import tiktoken
 
+from   typing                            import List
 from   langchain_community.chat_models   import ChatOpenAI
 from   agent_bean.system_info            import SystemInfo
 from   agent_bean.transformers_model     import TfModel     , TransformersEmbeddings
-from   agent_bean.ollama_model           import OllamaModel #, OllamaEmbeddings
+from   agent_bean.ollama_model           import OllamaModel , OllamaEmbeddings
 from   agent_bean.mistral_model          import MistralModel, MistralEmbeddings
 from   transformers                      import GenerationConfig
 #from agent_bean.google_vertexai_model import VertexAIModel, VertexAIEmbeddings
@@ -67,7 +68,7 @@ class ModelsManager():
                     for m in self.active_models.keys():
                         self.deinstantiate_model(m)
 
-    def get_available_models(self) -> [str]:
+    def get_available_models(self) -> List[str]:
         """Return a list of available model names."""
         return list(self.setup['models_list'].keys())
     
@@ -177,7 +178,7 @@ class ModelsManager():
             return None
 
 
-    def decode(self, model_name:str, tokens:[float]) -> str:
+    def decode(self, model_name:str, tokens:List[float]) -> str:
         """Decode a sequence of tokens using a specified model's embeddings.
 
         Args:

@@ -3,14 +3,14 @@ import ollama
 from typing import List
 from agent_bean.system_info import SystemInfo
 
-#class OllamaEmbeddings:
-#    """This class wraps the Ollama tokenizer to be used like embeddings"""
-#    def __init__(self, tokenizer: ollama.OllamaTokenizer) -> None:
-#        self.tokenizer = tokenizer
+class OllamaEmbeddings:
+    """This class wraps the Ollama tokenizer to be used like embeddings"""
+    def __init__(self, tokenizer: ollama.embeddings) -> None:
+        self.tokenizer = tokenizer
 
-#    def encode(self, text: str) -> List[int]:
-#        """Return the token IDs for the text"""
-#        return self.tokenizer.encode(text)
+    def encode(self, text: str) -> List[int]:
+        """Return the token IDs for the text"""
+        return self.tokenizer.encode(text)
 
 #    def decode(self, tokens: List[int]) -> str:
 #        """Return the text for the token IDs"""
