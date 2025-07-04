@@ -1,0 +1,4 @@
+Hello, World!
+
+This is a test file created by the AI Agent Bean coding agent.
+Welcome to the Agent Bean repository!
